@@ -3,224 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield - Painel de Controle</title>
+    <title>IPShield - Dashboard de Proteção</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --primary: #1a1a1a;
-            --secondary: #3498db;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --bg: #f4f7f6;
-        }
-
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background: var(--bg); 
-            margin: 0;
-            padding: 40px 20px;
-            color: #333; 
-        }
-
-        .container { max-width: 1000px; margin: auto; }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        h1 { margin: 0; color: var(--primary); font-size: 2.5rem; }
-        .subtitle { color: #666; margin-top: 10px; }
-
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 25px; 
-            margin-top: 20px; 
-        }
-
-        .card { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover { transform: translateY(-5px); }
+        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --danger: #ef4444; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: auto; }
         
-        .card h3 { 
-            margin: 0; 
-            font-size: 0.85rem; 
-            color: #888; 
-            text-transform: uppercase; 
-            letter-spacing: 1.5px; 
-        }
+        /* Header e Cards */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #334155; }
+        .stat-card h3 { margin: 0; font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; }
+        .stat-card p { margin: 10px 0 0; font-size: 1.8rem; font-weight: bold; color: var(--accent); }
 
-        .card p { 
-            margin: 15px 0 0; 
-            font-size: 2.8rem; 
-            font-weight: 800; 
-        }
+        /* Filtros */
+        .filter-bar { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; border: 1px solid #334155; }
+        .filter-bar input { background: var(--bg); border: 1px solid #334155; color: white; padding: 10px; border-radius: 6px; flex: 1; min-width: 150px; }
 
-        /* Estilos dos Cards */
-        .card.visit { border-top: 6px solid var(--secondary); color: var(--secondary); }
-        .card.blocked { border-top: 6px solid var(--danger); color: var(--danger); }
-        .card.saved { border-top: 6px solid var(--success); color: var(--success); }
-
-        .actions {
-            margin-top: 50px;
-            text-align: center;
-        }
-
-        .btn-report {
-            background: var(--primary);
-            color: white;
-            padding: 16px 32px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1.1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            transition: background 0.3s;
-        }
-
-        .btn-report:hover { background: #333; }
-
-        .status-footer {
-            margin-top: 40px;
-            font-size: 0.85rem;
-            color: #999;
-            text-align: center;
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
-        }
-
-        .live-dot {
-            height: 10px;
-            width: 10px;
-            background-color: var(--success);
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.7; }
-            70% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.7; }
-        }
+        /* Tabela */
+        .table-container { background: var(--card); border-radius: 12px; overflow-x: auto; border: 1px solid #334155; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 15px; border-bottom: 1px solid #334155; font-size: 0.9rem; }
+        th { background: #334155; color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        tr:hover { background: rgba(56, 189, 248, 0.05); }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .badge-geo { background: rgba(56, 189, 248, 0.2); color: var(--accent); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>🛡️ IPShield Dashboard</h1>
-            <p class="subtitle">Monitoramento de Tráfego e Proteção em Tempo Real</p>
-        </header>
-
-        <div class="grid">
-            <div class="card visit">
-                <h3>Total de Visitas</h3>
-                <p id="total_cliques">...</p>
-            </div>
-            <div class="card blocked">
-                <h3>Cliques Bloqueados</h3>
-                <p id="cliques_bloqueados">...</p>
-            </div>
-            <div class="card saved">
-                <h3>Economia Real</h3>
-                <p id="economia_estimada">...</p>
-            </div>
-        </div>
-
-        <div class="actions">
-            <button class="btn-report" onclick="gerarRelatorio()">
-                📊 Gerar Relatório de Performance
-            </button>
-        </div>
-
-        <footer class="status-footer">
-            <span class="live-dot"></span> 
-            Sistema Ativo | Site ID: <span id="display_id">3bb6f46e-a781-4afd-b9c4-3044b0873228</span> | Atualizando a cada 5s
-        </footer>
+<div class="container">
+    <div class="header">
+        <h1>🛡️ IPShield Dashboard</h1>
+        <div id="status-conexao" style="font-size: 0.8rem; color: #2ecc71;">● Sistema Ativo</div>
     </div>
 
-    <script>
-        // CONFIGURAÇÕES SUPABASE
-        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
-        const supabaseKey = 'sb_publishable_A5R5oMe2Xxks-tMfWcVFnA_yscoQYW9';
-        const siteUuid = '3bb6f46e-a781-4afd-b9c4-3044b0873228';
-
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
-        async function loadDashboard() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('dashboard_stats')
-                    .select('*')
-                    .eq('site_id', siteUuid);
-
-                if (error) throw error;
-
-                if (data && data.length > 0) {
-                    const stats = data[0];
-                    document.getElementById('total_cliques').innerText = stats.total_cliques;
-                    document.getElementById('cliques_bloqueados').innerText = stats.cliques_bloqueados;
-                    document.getElementById('economia_estimada').innerText = 'R$ ' + parseFloat(stats.economia_estimada).toFixed(2);
-                } else {
-                    document.getElementById('total_cliques').innerText = "0";
-                    document.getElementById('cliques_bloqueados').innerText = "0";
-                    document.getElementById('economia_estimada').innerText = "R$ 0,00";
-                }
-            } catch (err) {
-                console.error("Erro ao carregar dashboard:", err.message);
-            }
-        }
-
-        function gerarRelatorio() {
-            const total = document.getElementById('total_cliques').innerText;
-            const bloqueados = document.getElementById('cliques_bloqueados').innerText;
-            const economia = document.getElementById('economia_estimada').innerText;
-            const dataRelatorio = new Date().toLocaleDateString('pt-BR');
-
-            const conteudo = `
-🛡️ RELATÓRIO DE PERFORMANCE - IPSHIELD
--------------------------------------------
-Data de Emissão: ${dataRelatorio}
-ID do Site: ${siteUuid}
-
-RESUMO DO MONITORAMENTO:
-- Total de Visitas Analisadas: ${total}
-- Cliques Maliciosos Bloqueados: ${bloqueados}
-- Economia Estimada (CPC R$ 2,00): ${economia}
-
-CONCLUSÃO:
-O sistema de proteção IPShield evitou gastos desnecessários 
-com tráfego inválido e bots durante o período monitorado.
-
-Status: PROTEÇÃO TOTAL ATIVA
--------------------------------------------
-            `;
-
-            const blob = new Blob([conteudo.trim()], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = `Relatorio_IPShield_${dataRelatorio.replace(/\//g, '-')}.txt`;
-            link.click();
-            
-            alert("✅ Relatório gerado e baixado com sucesso!");
-        }
-
-        // Inicialização
-        loadDashboard();
-        setInterval(loadDashboard, 5000);
-    </script>
-</body>
-</html>
+    <div class="stats-grid">
+        <div class="stat-card"><h3>Total de Cliques</h3><p id="total-cliques">0</p></div>
+        <div class="stat-card"><h3>IPs Bloqueados</h3><p id="total
