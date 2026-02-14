@@ -3,43 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield - Dashboard de Proteção</title>
+    <title>IPShield - Dashboard de Controle</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --danger: #ef4444; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        :root { --primario: #0f172a; --card: #1e293b; --texto: #f1f5f9; --destaque: #38bdf8; --perigo: #f43f5e; --sucesso: #10b981; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--primario); color: var(--texto); margin: 0; padding: 20px; }
         .container { max-width: 1200px; margin: auto; }
         
-        /* Header e Cards */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #334155; }
-        .stat-card h3 { margin: 0; font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; }
-        .stat-card p { margin: 10px 0 0; font-size: 1.8rem; font-weight: bold; color: var(--accent); }
+        /* Layout Superior */
+        .topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #334155; transition: 0.3s; }
+        .card:hover { border-color: var(--destaque); }
+        .card h3 { margin: 0; font-size: 0.85rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .card p { margin: 10px 0 0; font-size: 2rem; font-weight: bold; color: var(--destaque); }
 
-        /* Filtros */
-        .filter-bar { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; border: 1px solid #334155; }
-        .filter-bar input { background: var(--bg); border: 1px solid #334155; color: white; padding: 10px; border-radius: 6px; flex: 1; min-width: 150px; }
+        /* Filtros e Busca */
+        .filtros { display: flex; gap: 10px; margin-bottom: 20px; }
+        .filtros input { background: var(--card); border: 1px solid #334155; color: white; padding: 12px; border-radius: 8px; flex: 1; outline: none; }
+        .filtros input:focus { border-color: var(--destaque); }
 
-        /* Tabela */
-        .table-container { background: var(--card); border-radius: 12px; overflow-x: auto; border: 1px solid #334155; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 15px; border-bottom: 1px solid #334155; font-size: 0.9rem; }
-        th { background: #334155; color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
-        tr:hover { background: rgba(56, 189, 248, 0.05); }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-        .badge-geo { background: rgba(56, 189, 248, 0.2); color: var(--accent); }
+        /* Tabela Estilizada */
+        .tabela-bg { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #334155; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #1e293b; color: #94a3b8; padding: 15px; text-align: left; font-size: 0.75rem; text-transform: uppercase; border-bottom: 2px solid #334155; }
+        td { padding: 15px; border-bottom: 1px solid #334155; font-size: 0.85rem; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: rgba(56, 189, 248, 0.03); }
+
+        /* Badges */
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.7rem; }
+        .badge-geo { background: rgba(56, 189, 248, 0.15); color: var(--destaque); }
+        .badge-risco { background: rgba(244, 63, 94, 0.15); color: var(--perigo); }
+        .badge-ok { background: rgba(16, 185, 129, 0.15); color: var(--sucesso); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
+    <div class="topo">
         <h1>🛡️ IPShield Dashboard</h1>
-        <div id="status-conexao" style="font-size: 0.8rem; color: #2ecc71;">● Sistema Ativo</div>
+        <div id="conexao" style="color: var(--sucesso); font-size: 0.9rem;">● Monitoramento Ativo</div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card"><h3>Total de Cliques</h3><p id="total-cliques">0</p></div>
-        <div class="stat-card"><h3>IPs Bloqueados</h3><p id="total
+    <div class="stats">
+        <div class="card"><h3>Total de Cliques</h3><p id="c-total">0</p></div>
+        <div class="card"><h3>Clicks Suspeitos</h3><p id="c-risco" style="color: var(--perigo);">0</p></div>
+        <div class="card"><h3>Principal Cidade</h3><p id="c-cidade" style="font-size: 1.2rem;">-</p></div>
+        <div class="card"><h3>Campanha Top</h3><p id="c-campanha" style="font-size: 1.2rem;">-</p></div>
+    </div>
+
+    <div class="filtros">
