@@ -3,41 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS - Proteção Profissional</title>
+    <title>IPShield OS - Gestão de Clientes</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --sidebar: #111827; --bg: #0b0f19; --accent: #3b82f6; --text: #f3f4f6; --border: #1f2937; --danger: #ef4444; --success: #10b981; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Sidebar */
         .sidebar { width: 240px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; }
         .logo { font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
-        .nav-item { padding: 12px; border-radius: 8px; color: #9ca3af; cursor: pointer; margin-bottom: 5px; border: none; background: none; width: 100%; text-align: left; font-size: 0.9rem; transition: 0.3s; }
-        .nav-item:hover { background: #1f2937; color: white; }
+        .nav-item { padding: 12px; border-radius: 8px; color: #9ca3af; cursor: pointer; margin-bottom: 5px; border: none; background: none; width: 100%; text-align: left; font-size: 0.9rem; }
         .nav-item.active { background: var(--accent); color: white; }
 
-        /* Main Content */
         .main { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: var(--sidebar); padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); }
-        .site-selector { background: #1f2937; color: white; border: 1px solid var(--border); padding: 10px; border-radius: 6px; outline: none; min-width: 250px; cursor: pointer; }
+        .site-selector { background: #1f2937; color: white; border: 1px solid var(--border); padding: 10px; border-radius: 6px; outline: none; min-width: 280px; }
 
-        /* Cards e Tabelas */
         .card { background: var(--sidebar); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
         .table-box { background: var(--sidebar); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { background: #182235; color: #9ca3af; padding: 15px; text-align: left; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+        th { background: #182235; color: #9ca3af; padding: 15px; text-align: left; }
         td { padding: 15px; border-bottom: 1px solid var(--border); }
         
-        /* Badges e Botões */
-        .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); padding: 5px 10px; border-radius: 6px; font-weight: 700; font-size: 0.75rem; }
-        .badge-root { background: rgba(59, 130, 246, 0.15); color: var(--accent); padding: 5px 10px; border-radius: 6px; font-weight: 600; font-family: monospace; }
-        .btn-copy { background: var(--danger); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .btn-copy:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+        .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); padding: 5px 10px; border-radius: 6px; font-weight: 700; }
+        .btn-primary { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; }
 
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
@@ -53,47 +45,129 @@
     <main class="main">
         <div class="top-bar">
             <div>
-                <span style="color: #9ca3af; font-size: 0.75rem; font-weight: 600;">MONITORANDO AGORA:</span><br>
-                <select id="global-site-selector" class="site-selector" onchange="changeClient(this.value)"></select>
+                <span style="color: #9ca3af; font-size: 0.75rem;">SELECIONAR CLIENTE:</span><br>
+                <select id="global-site-selector" class="site-selector" onchange="changeClient(this.value)">
+                    <option value="">Carregando sites...</option>
+                </select>
             </div>
-            <div id="status-live" style="color: var(--success); font-size: 0.85rem; font-weight: 600;">● Live Data Ativo</div>
+            <div id="status-live" style="color: var(--success); font-size: 0.85rem;">● Sistema Online</div>
         </div>
 
         <section id="tab-geral" class="tab-content active">
             <div class="table-box">
                 <table>
-                    <thead><tr><th>Hora</th><th>IP do Visitante</th><th>Cidade</th><th>País</th><th>Risco</th></tr></thead>
-                    <tbody id="table-main"></tbody>
+                    <thead><tr><th>Hora</th><th>IP</th><th>Cidade</th><th>Risco</th></tr></thead>
+                    <tbody id="table-main">
+                        <tr><td colspan="4" style="text-align:center; padding:40px; color:#6b7280;">Nenhum clique registrado para este site.</td></tr>
+                    </tbody>
                 </table>
             </div>
         </section>
 
         <section id="tab-bloqueios" class="tab-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <div>
-                    <h2 style="margin:0;">🚫 Bloqueio de Raiz (Sub-redes)</h2>
-                    <p style="color: #9ca3af; margin-top: 5px;">Bloqueie a rede inteira do concorrente para evitar troca de IP.</p>
-                </div>
-                <button class="btn-copy" onclick="copyBlacklist()">📋 Copiar Raízes para Google Ads</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>🚫 IPs para Negativar</h2>
+                <button class="btn-primary" style="width:auto;" onclick="copyBlacklist()">📋 Copiar Raízes (CIDR)</button>
             </div>
             <div class="table-box">
                 <table>
-                    <thead><tr><th>IP Original</th><th>Raiz para Bloqueio (CIDR)</th><th>Nível de Ameaça</th><th>Localização</th></tr></thead>
+                    <thead><tr><th>IP Original</th><th>Raiz (Classe C)</th><th>Nível de Risco</th></tr></thead>
                     <tbody id="table-blacklist"></tbody>
                 </table>
             </div>
         </section>
 
         <section id="tab-sites" class="tab-content">
-            <div class="card" style="max-width: 500px;">
-                <h3>Cadastrar Novo Cliente</h3>
-                <input type="text" id="new-domain" placeholder="Ex: www.advocacia.com.br" style="width: 100%; padding: 12px; background: #1f2937; border: 1px solid var(--border); color: white; border-radius: 8px; margin-bottom: 15px;">
-                <button onclick="addSite()" style="width: 100%; padding: 12px; background: var(--accent); border: none; color: white; border-radius: 8px; font-weight: 600; cursor: pointer;">Gerar Script de Proteção</button>
+            <div class="card" style="max-width: 450px;">
+                <h3>Cadastrar Domínio</h3>
+                <input type="text" id="new-domain" placeholder="Ex: proteclic.com.br" style="width: 100%; padding: 12px; background: #1f2937; border: 1px solid var(--border); color: white; border-radius: 8px; margin-bottom: 10px;">
+                <button class="btn-primary" onclick="addSite()">Salvar Site e Gerar Script</button>
+            </div>
+            <div class="table-box">
+                <table>
+                    <thead><tr><th>Domínio Ativo</th><th>ID de Monitoramento</th></tr></thead>
+                    <tbody id="list-all-sites"></tbody>
+                </table>
             </div>
         </section>
 
         <section id="tab-int" class="tab-content">
             <h2>⚙️ Script de Instalação</h2>
             <div class="card">
-                <p>Otimizado para o site selecionado. Cole no <b>&lt;head&gt;</b>:</p>
-                <pre id="install-code" style="background: #000; padding: 20px; color: var
+                <pre id="install-code" style="background: #000; padding: 20px; color: var(--success); border-radius: 8px; font-size: 0.85rem; overflow-x: auto;"></pre>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
+        const supabaseKey = 'sb_publishable_A5R5oMe2Xxks-tMfWcVFnA_yscoQYW9';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        let currentBlacklist = [];
+
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        async function init() {
+            const { data: sites, error } = await supabaseClient.from('sites').select('*');
+            const selector = document.getElementById('global-site-selector');
+            const listTable = document.getElementById('list-all-sites');
+
+            if (sites && sites.length > 0) {
+                selector.innerHTML = sites.map(s => `<option value="${s.site_id}">${s.domain}</option>`).join('');
+                listTable.innerHTML = sites.map(s => `<tr><td>${s.domain}</td><td style="font-family:monospace; font-size:11px;">${s.site_id}</td></tr>`).join('');
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const currentId = urlParams.get('site_id') || sites[0].site_id;
+                selector.value = currentId;
+                
+                updateInstallScript(currentId);
+                loadData(currentId);
+            } else {
+                selector.innerHTML = '<option value="">Nenhum site cadastrado</option>';
+                listTable.innerHTML = '<tr><td colspan="2" style="text-align:center;">Vazio</td></tr>';
+            }
+        }
+
+        async function loadData(id) {
+            const { data } = await supabaseClient.from('visits').select('*').eq('site_id', id).order('timestamp', { ascending: false });
+            if (data && data.length > 0) {
+                document.getElementById('table-main').innerHTML = data.map(v => `
+                    <tr><td>${new Date(v.timestamp).toLocaleTimeString()}</td><td>${v.ip}</td><td>${v.cidade}</td><td>${v.risk_score}%</td></tr>
+                `).join('');
+
+                const suspects = data.filter(v => v.risk_score >= 80);
+                currentBlacklist = [...new Set(suspects.map(v => v.ip.split('.').slice(0,3).join('.') + '.0/24'))];
+                
+                document.getElementById('table-blacklist').innerHTML = suspects.map(v => `
+                    <tr><td>${v.ip}</td><td><b style="color:#60a5fa">${v.ip.split('.').slice(0,3).join('.')}.0/24</b></td><td><span class="badge-danger">${v.risk_score}%</span></td></tr>
+                `).join('');
+            }
+        }
+
+        async function addSite() {
+            const dom = document.getElementById('new-domain').value;
+            if(!dom) return alert("Digite o domínio");
+            const newId = crypto.randomUUID();
+            const { error } = await supabaseClient.from('sites').insert([{ domain: dom, site_id: newId }]);
+            if(!error) window.location.href = '?site_id=' + newId;
+        }
+
+        function updateInstallScript(id) {
+            document.getElementById('install-code').innerText = `<script src="https://ipshield-saas.vercel.app/pixel.js?id=${id}"><\/script>`;
+        }
+
+        function changeClient(val) { window.location.href = '?site_id=' + val; }
+        function copyBlacklist() {
+            navigator.clipboard.writeText(currentBlacklist.join('\n'));
+            alert("Raízes copiadas!");
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
