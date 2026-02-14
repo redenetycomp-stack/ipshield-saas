@@ -3,94 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Admin</title>
+    <title>IPShield OS | Intelligence</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; display: flex; }
-        .sidebar { width: 260px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 25px; z-index: 100; }
-        .main-content { flex: 1; margin-left: 260px; padding: 40px; width: calc(100% - 260px); }
-        .nav-link { padding: 12px 15px; border-radius: 10px; color: #666; cursor: pointer; margin-bottom: 5px; font-weight: 600; display: block; transition: 0.2s; }
-        .nav-link.active, .nav-link:hover { background: #111; color: #00ffa3; }
-        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 20px; padding: 25px; }
+        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; display: flex; overflow-x: hidden; }
+        
+        /* Sidebar Estilizada conforme imagem */
+        .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
+        .nav-link { padding: 14px 18px; border-radius: 12px; color: #666; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .nav-link.active { background: #111; color: #00ffa3; }
+        .nav-link:hover { color: #fff; }
+
+        /* Layout Principal */
+        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; width: calc(100% - 280px); }
+        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 30px; }
         .hidden { display: none !important; }
-        pre { background: #000; padding: 15px; border-radius: 12px; border: 1px solid #222; color: #00ffa3; font-size: 11px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; color: #555; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #1a1a1a; }
-        td { padding: 15px; border-bottom: 1px solid #111; font-size: 13px; }
-        .accent-green { color: #00ffa3; }
+        
+        /* Tabela Visão Geral conforme imagem */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        th { text-align: left; padding: 12px 24px; color: #555; font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+        td { padding: 20px 24px; background: #0d0d0d; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
+        td:first-child { border-left: 1px solid #1a1a1a; border-radius: 16px 0 0 16px; }
+        td:last-child { border-right: 1px solid #1a1a1a; border-radius: 0 16px 16px 0; }
+        
+        .accent-text { color: #00ffa3; }
+        pre { background: #000; padding: 20px; border-radius: 16px; border: 1px solid #1a1a1a; color: #00ffa3; font-family: monospace; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="mb-10 px-2 text-xl font-extrabold italic">IPSHIELD <span class="accent-green">OS</span></div>
-        <nav>
+        <div class="mb-12 px-4 text-2xl font-extrabold tracking-tighter italic">
+            IPSHIELD <span class="accent-text">OS</span>
+        </div>
+        
+        <nav class="flex-1">
             <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Visão Geral</div>
             <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Bloqueio de Raiz</div>
+            <div onclick="navegar('automacao')" class="nav-link" id="btn-automacao">⚙️ Automação API</div>
+            <div onclick="navegar('sites')" class="nav-link" id="btn-sites">🌐 Meus Sites</div>
             <div onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">🚀 Instalação</div>
         </nav>
-        <div class="mt-auto p-4 bg-[#0f0f0f] rounded-xl border border-[#1a1a1a]">
-            <div class="text-[10px] text-gray-500 font-bold uppercase mb-1">Status</div>
-            <div class="text-xs font-bold text-emerald-400 flex items-center">● ONLINE</div>
+
+        <div class="mt-auto px-4 py-4 bg-[#0d0d0d] rounded-2xl border border-[#1a1a1a]">
+            <div class="text-xs font-bold flex items-center text-emerald-400">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 shadow-[0_0_8px_#10b981]"></span> PAINEL ATIVO
+            </div>
         </div>
     </aside>
 
     <main class="main-content">
         
         <section id="tela-dashboard">
-            <div class="flex justify-between items-center mb-10">
-                <h1 class="text-3xl font-bold">Dashboard</h1>
-                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-6 py-2 rounded-xl font-bold text-sm">PDF</button>
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h1 class="text-4xl font-extrabold mb-2 tracking-tight">Visão Geral</h1>
+                    <p class="text-gray-500 font-medium">Cliente: <span class="text-gray-300">proteclic.com.br</span></p>
+                </div>
+                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold hover:bg-gray-200 transition">Gerar PDF</button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
                 <div class="card">
-                    <p class="text-gray-500 text-xs font-bold uppercase">Bloqueios</p>
-                    <p id="total-bloqueios" class="text-5xl font-extrabold mt-2">0</p>
+                    <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Acessos Bloqueados</div>
+                    <div id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</div>
                 </div>
-                <div class="card border-l-4 border-emerald-500">
-                    <p class="text-gray-500 text-xs font-bold uppercase">Economia</p>
-                    <p id="economia-gerada" class="text-5xl font-extrabold mt-2 accent-green">R$ 0,00</p>
+                <div class="card border-l-4 border-[#00ffa3]">
+                    <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Economia Estimada</div>
+                    <div id="economia-gerada" class="text-6xl font-extrabold tracking-tighter accent-text">R$ 0,00</div>
                 </div>
             </div>
 
-            <div class="card !p-0 overflow-hidden">
+            <div class="overflow-x-auto">
                 <table>
                     <thead>
                         <tr>
+                            <th>Hora</th>
                             <th>IP Address</th>
                             <th>Cidade</th>
                             <th>Campanha</th>
                             <th>Palavra-Chave</th>
-                            <th style="text-align:right">Data/Hora</th>
+                            <th style="text-align:right">Risco</th>
                         </tr>
                     </thead>
-                    <tbody id="tabela-logs"></tbody>
+                    <tbody id="tabela-logs">
+                        </tbody>
                 </table>
             </div>
         </section>
 
         <section id="tela-raiz" class="hidden">
-            <h1 class="text-3xl font-bold mb-8">Bloqueio de Raiz</h1>
-            <div class="card">
-                <h3 class="font-bold mb-4">Banir Novo IP</h3>
-                <div class="flex gap-4">
-                    <input type="text" id="ip-ban" placeholder="0.0.0.0" class="flex-1 bg-black border border-zinc-800 p-4 rounded-xl outline-none focus:border-emerald-500 text-emerald-400">
-                    <button onclick="alert('IP Banido na Raiz!')" class="bg-emerald-500 text-black font-bold px-8 rounded-xl">BANIR</button>
+            <h1 class="text-4xl font-extrabold mb-8">Bloqueio de Raiz</h1>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="card lg:col-span-2">
+                    <h3 class="text-xl font-bold mb-4">Banimento de Infraestrutura</h3>
+                    <p class="text-gray-400 mb-6 text-sm">Insira o IP para bloqueio permanente na raiz do servidor.</p>
+                    <div class="flex gap-4">
+                        <input type="text" id="ip-ban-input" placeholder="Digite o IP..." class="flex-1 bg-black border border-zinc-800 p-4 rounded-xl outline-none focus:border-emerald-500 font-mono">
+                        <button onclick="alert('IP enviado para o Bloqueio de Raiz')" class="bg-emerald-500 text-black font-bold px-8 rounded-xl">BANIR</button>
+                    </div>
                 </div>
-                <div class="mt-10 p-4 bg-zinc-900/30 rounded-xl border border-zinc-800">
-                    <p class="text-sm italic text-gray-500">O motor IPSheild está em standby para a API do Google Ads.</p>
+                <div class="card bg-[#0a0a0a]">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase mb-4">Status do Motor</h4>
+                    <p class="text-sm text-gray-400 leading-relaxed italic border-l-2 border-emerald-500 pl-4">
+                        "O IPSheild system está em standby, pronto para bloquear tráfego suspeito identificado pela API do Google Ads."
+                    </p>
                 </div>
             </div>
         </section>
 
-        <section id="tela-instalacao" class="hidden">
-            <h1 class="text-3xl font-bold mb-8">Instalação</h1>
+        <section id="tela-automacao" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8">Automação API</h1>
             <div class="card">
-                <p class="text-gray-400 mb-4">Pixel de Rastreamento:</p>
+                <p class="text-gray-400">Integração com Google Ads API em modo Standby.</p>
+            </div>
+        </section>
+
+        <section id="tela-instalacao" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8">Instalação</h1>
+            <div class="card">
+                <p class="text-gray-400 mb-4 font-bold uppercase text-xs tracking-widest">Código do Pixel</p>
                 <pre>&lt;script src="https://ipshield-saas.vercel.app/pixel.js?id=proteclic.com.br"&gt;&lt;/script&gt;</pre>
             </div>
         </section>
@@ -109,20 +144,24 @@
             document.getElementById('btn-' + tela).classList.add('active');
         }
 
-        async function carregar() {
+        async function carregarDados() {
             const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false });
             if (error) return;
 
             document.getElementById('total-bloqueios').innerText = data.length;
             document.getElementById('economia-gerada').innerText = `R$ ${(data.length * 2.50).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            document.getElementById('tabela-logs').innerHTML = data.map(v => `
+            const tbody = document.getElementById('tabela-logs');
+            tbody.innerHTML = data.map(v => `
                 <tr>
-                    <td class="font-mono text-gray-300">${v.ip}</td>
-                    <td class="text-gray-500">${v.city || 'São Paulo'}</td>
-                    <td class="text-gray-500">${v.campaign || 'Google Ads'}</td>
-                    <td class="text-gray-400 italic">"${v.keyword || '-'}"</td>
-                    <td style="text-align:right" class="text-gray-600 text-xs">${new Date(v.created_at).toLocaleTimeString()}</td>
+                    <td class="text-gray-500 font-bold text-xs">${new Date(v.created_at).toLocaleTimeString()}</td>
+                    <td class="font-mono text-gray-300 font-bold">${v.ip}</td>
+                    <td class="text-gray-400 text-sm font-semibold">${v.city || 'São Paulo'}</td>
+                    <td class="text-gray-500 text-xs">${v.campaign || 'Google Ads'}</td>
+                    <td class="text-gray-500 text-xs italic">"${v.keyword || '-'}"</td>
+                    <td style="text-align:right">
+                        <span class="text-red-500 font-extrabold text-xs">${v.risk_score || '100'}%</span>
+                    </td>
                 </tr>
             `).join('');
         }
@@ -131,11 +170,12 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.text("Relatorio IPShield", 10, 10);
-            doc.save('relatorio.pdf');
+            doc.save('relatorio-ipshield.pdf');
         }
 
-        carregar();
-        setInterval(carregar, 10000);
+        // Inicia
+        carregarDados();
+        setInterval(carregarDados, 10000);
     </script>
 </body>
 </html>
