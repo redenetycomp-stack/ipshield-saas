@@ -3,147 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS - Dashboard de Proteção</title>
+    <title>IPShield OS - Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0f0f0f; color: #e5e5e5; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        body { background-color: #0a0a0a; color: #e5e5e5; font-family: 'Inter', sans-serif; }
+        .sidebar { width: 260px; background: #111; border-right: 1px solid #222; height: 100vh; position: fixed; }
+        .main-content { margin-left: 260px; padding: 40px; }
+        .nav-item { padding: 12px 20px; color: #888; display: flex; align-items: center; transition: 0.3s; cursor: pointer; }
+        .nav-item:hover, .nav-item.active { background: #1a1a1a; color: #00ffa3; }
+        .glass { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); }
         .accent-green { color: #00ffa3; }
-        .bg-accent-green { background-color: #00ffa3; }
     </style>
 </head>
-<body class="p-6">
+<body>
 
-    <div class="flex justify-between items-center mb-8">
+    <div class="sidebar flex flex-col justify-between">
         <div>
-            <h1 class="text-2xl font-bold">IPShield <span class="accent-green">OS</span></h1>
-            <p class="text-gray-400 text-sm">Monitoramento em Tempo Real - proteclic.com.br</p>
+            <div class="p-6">
+                <h1 class="text-xl font-bold italic">IPShield <span class="accent-green text-xs">OS</span></h1>
+            </div>
+            <nav class="mt-4">
+                <div class="nav-item active"><i class="fas fa-chart-line mr-3"></i> Dashboard</div>
+                <div class="nav-item"><i class="fas fa-shield-alt mr-3"></i> Bloqueio de Raiz</div>
+                <div class="nav-item"><i class="fas fa-robot mr-3"></i> Automação API</div>
+                <div class="nav-item"><i class="fas fa-code mr-3"></i> Instalação</div>
+            </nav>
         </div>
-        <div id="status-badge" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-800 text-gray-400">
-            CONECTANDO...
+        <div class="p-6 border-t border-zinc-800">
+            <div id="status-badge" class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Conectando...</div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="glass p-6 rounded-xl">
-            <p class="text-gray-400 text-sm">Bloqueios Totais</p>
-            <h2 id="total-bloqueios" class="text-3xl font-bold mt-2">0</h2>
-        </div>
-        <div class="glass p-6 rounded-xl border-l-4 border-green-500">
-            <p class="text-gray-400 text-sm">Economia Estimada</p>
-            <h2 id="economia-gerada" class="text-3xl font-bold mt-2 accent-green">R$ 0,00</h2>
-        </div>
-        <div class="glass p-6 rounded-xl">
-            <button onclick="gerarRelatorioPDF()" class="w-full h-full bg-white text-black font-bold py-2 rounded-lg hover:bg-gray-200 transition">
-                📥 Baixar Relatório PDF
+    <div class="main-content">
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-3xl font-bold">Visão Geral</h2>
+                <p class="text-zinc-500">Cliente: proteclic.com.br</p>
+            </div>
+            <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm hover:bg-zinc-200 transition">
+                Exportar PDF
             </button>
-        </div>
-    </div>
+        </header>
 
-    <div class="glass p-6 rounded-xl mb-8">
-        <h3 class="font-bold mb-4 flex items-center">
-            <span class="mr-2">🚀</span> Instalar no Site do Cliente
-        </h3>
-        <div class="bg-black p-4 rounded-lg relative">
-            <pre id="codigo-pixel" class="text-green-400 text-xs overflow-x-auto">
-&lt;script src="https://xirrtonafivrphrzufbq.supabase.co/functions/v1/pixel?id=proteclic.com.br" async&gt;&lt;/script&gt;</pre>
-            <button onclick="copiarCodigo()" class="absolute top-2 right-2 bg-zinc-800 text-white text-xs px-3 py-1 rounded">Copiar</button>
-        </div>
-    </div>
-
-    <div class="glass rounded-xl overflow-hidden">
-        <table class="w-full text-left text-sm">
-            <thead class="bg-white/5 uppercase text-xs font-bold">
-                <tr>
-                    <th class="p-4">IP do Visitante</th>
-                    <th class="p-4">Risco</th>
-                    <th class="p-4">Status</th>
-                    <th class="p-4">Data/Hora</th>
-                </tr>
-            </thead>
-            <tbody id="tabela-logs">
-                </tbody>
-        </table>
-    </div>
-
-    <script>
-        // 1. Configuração do Supabase (Usando suas variáveis da Vercel)
-        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-        let visitasGlobais = [];
-
-        // 2. Função para carregar dados
-        async function carregarDados() {
-            const { data, error } = await _supabase
-                .from('visits')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error("Erro ao carregar:", error);
-                document.getElementById('status-badge').innerHTML = "ERRO DE CONEXÃO";
-                return;
-            }
-
-            visitasGlobais = data;
-            document.getElementById('status-badge').innerHTML = "● PAINEL ATIVO";
-            document.getElementById('status-badge').classList.add('text-green-400');
-
-            renderizarTabela(data);
-            atualizarCards(data);
-        }
-
-        // 3. Renderizar Tabela
-        function renderizarTabela(data) {
-            const tbody = document.getElementById('tabela-logs');
-            tbody.innerHTML = data.map(v => `
-                <tr class="border-t border-white/5">
-                    <td class="p-4 font-mono">${v.ip}</td>
-                    <td class="p-4">${v.risk_score}%</td>
-                    <td class="p-4"><span class="bg-red-500/20 text-red-500 px-2 py-1 rounded text-xs font-bold italic">BLOQUEADO</span></td>
-                    <td class="p-4 text-gray-500">${new Date(v.created_at || Date.now()).toLocaleString()}</td>
-                </tr>
-            `).join('');
-        }
-
-        // 4. Atualizar Cards de Economia (R$ 2,50 por clique)
-        function atualizarCards(data) {
-            const total = data.length;
-            const economia = total * 2.50;
-            document.getElementById('total-bloqueios').innerText = total;
-            document.getElementById('economia-gerada').innerText = `R$ ${economia.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        }
-
-        // 5. Gerar Relatório PDF
-        function gerarRelatorioPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFontSize(18);
-            doc.text("IPShield OS - Relatório de Bloqueios", 10, 20);
-            doc.setFontSize(10);
-            doc.text(`Cliente: proteclic.com.br | Data: ${new Date().toLocaleDateString()}`, 10, 30);
-            
-            let y = 40;
-            visitasGlobais.forEach(v => {
-                doc.text(`${v.ip} | Risco: ${v.risk_score}% | Status: BLOQUEADO`, 10, y);
-                y += 8;
-            });
-            doc.save('relatorio-ipshield.pdf');
-        }
-
-        function copiarCodigo() {
-            const code = document.getElementById('codigo-pixel').innerText;
-            navigator.clipboard.writeText(code);
-            alert('Pixel copiado!');
-        }
-
-        // Iniciar
-        carregarDados();
-        setInterval(carregarDados, 10000); // Atualiza a cada 10s
-    </script>
-</body>
-</html>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="glass p-8 rounded-3xl">
+                <p class="text-zinc-500 text-sm font-medium uppercase tracking-wider">Bloqueios Totais</p>
+                <h3 id="total-bloqueios" class="text-5xl font-bold mt-2">0</h3>
+            </div>
+            <div class="glass p-8 rounded-3xl border-l-2 border-emerald-500">
+                <p class="text-zinc-500 text-sm font-medium uppercase tracking-wider">Economia Estimada</p>
+                <h3 id="economia-gerada" class="text-5xl font-bold mt-2 accent-green">
