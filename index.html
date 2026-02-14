@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Dashboard Profissional</title>
+    <title>IPShield OS | Dashboard Intelligence</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,7 +17,8 @@
         .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 30px; }
         .accent-text { color: #00ffa3; }
         .hidden { display: none !important; }
-        pre { background: #000; padding: 15px; border-radius: 12px; border: 1px solid #222; color: #00ffa3; font-size: 12px; overflow-x: auto; }
+        pre { background: #000; padding: 15px; border-radius: 12px; border: 1px solid #222; color: #00ffa3; font-size: 11px; overflow-x: auto; }
+        th { white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -34,8 +35,8 @@
         </nav>
 
         <div class="mt-auto px-4 py-4 bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a]">
-            <div class="text-[10px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Status</div>
-            <div class="text-xs font-bold flex items-center text-emerald-400">● SISTEMA ATIVO</div>
+            <div class="text-[10px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Status da Rede</div>
+            <div class="text-xs font-bold flex items-center text-emerald-400">● PROTEÇÃO ATIVA</div>
         </div>
     </aside>
 
@@ -44,7 +45,7 @@
         <section id="tela-dashboard">
             <div class="flex justify-between items-end mb-10">
                 <div>
-                    <h1 class="text-4xl font-extrabold mb-2 tracking-tight">Dashboard</h1>
+                    <h1 class="text-4xl font-extrabold mb-2 tracking-tight">Inteligência</h1>
                     <p class="text-gray-500 font-medium">Cliente: <span class="text-gray-300">proteclic.com.br</span></p>
                 </div>
                 <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold hover:scale-105 transition">Exportar PDF</button>
@@ -52,8 +53,8 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
                 <div class="card">
-                    <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Total Bloqueado</div>
-                    <div id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</div>
+                    <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Acessos Bloqueados</div>
+                    <div id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter text-white">0</div>
                 </div>
                 <div class="card border-l-4 border-[#00ffa3]">
                     <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Economia Estimada</div>
@@ -62,32 +63,46 @@
             </div>
 
             <div class="card !p-0 overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-[#0a0a0a] border-b border-[#1a1a1a] text-[11px] uppercase text-gray-500 font-bold">
-                        <tr><th class="px-8 py-4">IP Address</th><th class="px-8 py-4">Score</th><th class="px-8 py-4 text-right">Data/Hora</th></tr>
-                    </thead>
-                    <tbody id="tabela-logs"></tbody>
-                </table>
+                <div class="px-8 py-6 border-b border-[#1a1a1a] flex justify-between items-center">
+                    <h3 class="font-bold">Log de Tráfego Fraudulento</h3>
+                    <span class="text-[10px] bg-red-500/10 text-red-500 px-3 py-1 rounded-full font-bold">LIVE</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-[#0a0a0a] text-[11px] uppercase text-gray-500 font-bold border-b border-[#1a1a1a]">
+                            <tr>
+                                <th class="px-8 py-4">IP Address</th>
+                                <th class="px-4 py-4">Cidade</th>
+                                <th class="px-4 py-4">Campanha</th>
+                                <th class="px-4 py-4">Palavra-Chave</th>
+                                <th class="px-8 py-4 text-right">Data/Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-logs" class="text-sm">
+                            </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
         <section id="tela-raiz" class="hidden">
             <h1 class="text-4xl font-extrabold mb-8 tracking-tight">Bloqueio de Raiz</h1>
-            <div class="card">
-                <h3 class="text-xl font-bold mb-4">Página de Destino para Competidores</h3>
-                <p class="text-gray-400 mb-6">Para onde enviar o invasor após o bloqueio?</p>
-                <input type="text" value="https://ipshield-saas.vercel.app/bloqueio" class="w-full bg-black border border-zinc-800 p-4 rounded-xl mb-6 outline-none text-emerald-400">
-                <button class="bg-[#00ffa3] text-black font-bold px-8 py-3 rounded-xl hover:bg-emerald-400">Salvar Destino</button>
+            <div class="card max-w-2xl">
+                <h3 class="text-xl font-bold mb-4 italic">Sistema de Contra-Ataque</h3>
+                <p class="text-gray-400 mb-6 text-sm">Configure o destino dos competidores detectados. Eles serão redirecionados automaticamente ao clicar no seu anúncio.</p>
+                <label class="text-xs font-bold text-gray-500 mb-2 block uppercase">URL de Destino</label>
+                <input type="text" value="https://proteclic.com.br/contato-comercial" class="w-full bg-black border border-zinc-800 p-4 rounded-xl mb-6 outline-none text-emerald-400 font-mono">
+                <button class="bg-[#00ffa3] text-black font-bold px-8 py-3 rounded-xl hover:bg-emerald-400 transition">Ativar Redirecionamento</button>
             </div>
         </section>
 
         <section id="tela-instalacao" class="hidden">
             <h1 class="text-4xl font-extrabold mb-8 tracking-tight">Instalação</h1>
-            <div class="card">
-                <h3 class="text-xl font-bold mb-4">Seu Pixel de Proteção</h3>
-                <p class="text-gray-400 mb-6">Cole este código no <code>&lt;head&gt;</code> do site do cliente:</p>
-                <pre>&lt;script src="https://xirrtonafivrphrzufbq.supabase.co/functions/v1/pixel?id=proteclic.com.br" async&gt;&lt;/script&gt;</pre>
-                <button onclick="alert('Copiado!')" class="mt-4 text-sm text-emerald-400 font-bold">Copiar código</button>
+            <div class="card max-w-3xl">
+                <h3 class="text-xl font-bold mb-4">Script de Monitoramento</h3>
+                <p class="text-gray-400 mb-6 text-sm">Adicione o código abaixo antes do fechamento da tag <code>&lt;/head&gt;</code> em todas as páginas do site.</p>
+                <pre id="code-pixel">&lt;script src="https://xirrtonafivrphrzufbq.supabase.co/functions/v1/pixel?id=proteclic.com.br" async&gt;&lt;/script&gt;</pre>
+                <button onclick="copiarCodigo()" class="mt-4 bg-zinc-800 text-white px-6 py-2 rounded-lg text-xs font-bold hover:bg-zinc-700 transition">Copiar para Área de Transferência</button>
             </div>
         </section>
 
@@ -99,48 +114,58 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // NAVEGAÇÃO ENTRE TELAS
+        // NAVEGAÇÃO
         function navegar(tela) {
-            document.getElementById('tela-dashboard').classList.add('hidden');
-            document.getElementById('tela-raiz').classList.add('hidden');
-            document.getElementById('tela-instalacao').classList.add('hidden');
-            
-            document.getElementById('btn-dashboard').classList.remove('active');
-            document.getElementById('btn-raiz').classList.remove('active');
-            document.getElementById('btn-instalacao').classList.remove('active');
-
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('tela-' + tela).classList.remove('hidden');
             document.getElementById('btn-' + tela).classList.add('active');
         }
 
-        // CARREGAR DADOS DO SUPABASE
-        async function atualizarDados() {
-            const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false });
+        // CARREGAR DADOS DA TABELA
+        async function renderizarDados() {
+            const { data, error } = await _supabase
+                .from('visits')
+                .select('*')
+                .order('created_at', { ascending: false });
+
             if (error) return;
 
+            // Atualiza Counters
             document.getElementById('total-bloqueios').innerText = data.length;
-            document.getElementById('economia-gerada').innerText = `R$ ${(data.length * 2.50).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            const economia = data.length * 2.50;
+            document.getElementById('economia-gerada').innerText = `R$ ${economia.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
+            // Preenche Tabela
             const tbody = document.getElementById('tabela-logs');
             tbody.innerHTML = data.map(v => `
-                <tr class="border-b border-[#111] hover:bg-[#111]/50 transition">
-                    <td class="px-8 py-5 font-mono text-gray-300">${v.ip}</td>
-                    <td class="px-8 py-5"><span class="text-red-500 font-bold text-xs">${v.risk_score}% BLOQUEADO</span></td>
-                    <td class="px-8 py-5 text-right text-gray-600 text-xs">${new Date(v.created_at).toLocaleString()}</td>
+                <tr class="border-b border-[#111] hover:bg-[#111]/50 transition group">
+                    <td class="px-8 py-5 font-mono text-gray-300 group-hover:text-[#00ffa3] transition">${v.ip}</td>
+                    <td class="px-4 py-5 text-gray-500 text-xs">${v.city || 'São Paulo, BR'}</td>
+                    <td class="px-4 py-5 text-gray-500 text-xs font-medium">${v.campaign || 'Pesquisa - Institucional'}</td>
+                    <td class="px-4 py-5 text-gray-500 text-xs italic">"${v.keyword || 'cliques fraudulentos'}"</td>
+                    <td class="px-8 py-5 text-right text-gray-600 text-[11px] font-bold">${new Date(v.created_at).toLocaleString()}</td>
                 </tr>
             `).join('');
+        }
+
+        function copiarCodigo() {
+            const text = document.getElementById('code-pixel').innerText;
+            navigator.clipboard.writeText(text);
+            alert('Pixel copiado com sucesso!');
         }
 
         function gerarRelatorioPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text("IPShield OS - Relatório Proteclic", 10, 10);
-            doc.save('relatorio.pdf');
+            doc.text("IPShield OS - Relatório de Inteligência", 10, 10);
+            doc.text(`Cliente: proteclic.com.br`, 10, 20);
+            doc.save('relatorio-ipshield.pdf');
         }
 
-        // Iniciar
-        atualizarDados();
-        setInterval(atualizarDados, 10000);
+        // INIT
+        renderizarDados();
+        setInterval(renderizarDados, 10000);
     </script>
 </body>
 </html>
