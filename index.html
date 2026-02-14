@@ -9,68 +9,89 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; display: flex; overflow-x: hidden; }
-        .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
-        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; width: calc(100% - 280px); }
+        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; display: flex; flex-direction: column; overflow-x: hidden; }
+        
+        /* Sidebar Desktop */
+        .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; transition: 0.3s; }
+        
+        /* Ajuste Main Content */
+        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; transition: 0.3s; }
+        
+        /* Mobile Navigation (Bottom Bar) */
+        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: #0a0a0a; border-top: 1px solid #1a1a1a; z-index: 1000; justify-content: space-around; padding: 10px 0; }
+        
+        /* Estilo Links */
         .nav-link { padding: 14px 18px; border-radius: 12px; color: #666; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .nav-link.active { background: #111; color: #00ffa3; }
-        .nav-link:hover { color: #fff; }
-        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 30px; }
-        .hidden { display: none !important; }
-        .accent-text { color: #00ffa3; }
         
-        /* Tabela Estilo Premium */
+        /* Tabela Premium */
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-        th { text-align: left; padding: 12px 20px; color: #444; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
-        td { padding: 16px 20px; background: #0d0d0d; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
+        th { text-align: left; padding: 12px 15px; color: #444; font-size: 10px; text-transform: uppercase; font-weight: 800; }
+        td { padding: 16px 15px; background: #0d0d0d; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; }
         td:first-child { border-left: 1px solid #1a1a1a; border-radius: 12px 0 0 12px; }
         td:last-child { border-right: 1px solid #1a1a1a; border-radius: 0 12px 12px 0; }
-        
+
+        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
+        .accent-text { color: #00ffa3; }
         input { background: #000 !important; border: 1px solid #1a1a1a !important; color: #fff !important; }
-        input:focus { border-color: #00ffa3 !important; outline: none; }
+
+        /* Media Queries para Mobile */
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .mobile-nav { display: flex; }
+            .main-content { margin-left: 0; padding: 20px; padding-bottom: 100px; }
+            .hide-mobile { display: none; }
+            .text-6xl { font-size: 2.5rem; }
+            h1 { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="mb-12 px-4 text-2xl font-extrabold tracking-tighter italic text-white uppercase">
-            IPSHIELD <span class="accent-text">OS</span>
-        </div>
-        
+        <div class="mb-12 px-4 text-2xl font-extrabold italic uppercase">IPSHIELD <span class="accent-text">OS</span></div>
         <nav class="flex-1">
             <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Visão Geral</div>
-            <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Bloqueio de Raiz</div>
-            <div onclick="navegar('automacao')" class="nav-link" id="btn-automacao">⚙️ Automação API</div>
+            <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Bloqueio Raiz</div>
+            <div onclick="navegar('automacao')" class="nav-link" id="btn-automacao">⚙️ Automação</div>
             <div onclick="navegar('sites')" class="nav-link" id="btn-sites">🌐 Meus Sites</div>
             <div onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">🚀 Instalação</div>
         </nav>
-
         <div class="mt-auto px-4 py-4 bg-[#0d0d0d] rounded-2xl border border-[#1a1a1a]">
-            <div class="text-xs font-bold flex items-center text-emerald-400 uppercase tracking-tighter">
-                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> IPSHIELD Ativo
+            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-widest">Motor IPSheild</div>
+            <div class="text-xs font-bold flex items-center text-emerald-400">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> ONLINE
             </div>
         </div>
     </aside>
 
+    <nav class="mobile-nav">
+        <div onclick="navegar('dashboard')" class="text-xl">📊</div>
+        <div onclick="navegar('raiz')" class="text-xl">🚫</div>
+        <div onclick="navegar('automacao')" class="text-xl">⚙️</div>
+        <div onclick="navegar('sites')" class="text-xl">🌐</div>
+        <div onclick="navegar('instalacao')" class="text-xl">🚀</div>
+    </nav>
+
     <main class="main-content">
         
         <section id="tela-dashboard">
-            <div class="flex justify-between items-end mb-10">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                 <div>
-                    <h1 class="text-4xl font-extrabold mb-2 tracking-tight uppercase">Visão Geral</h1>
-                    <p class="text-gray-500 font-medium">Análise de tráfego em tempo real.</p>
+                    <h1 class="text-4xl font-extrabold uppercase">Visão Geral</h1>
+                    <p class="text-gray-500 text-sm">proteclic.com.br</p>
                 </div>
-                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold hover:bg-gray-200 transition">Exportar Log</button>
+                <button onclick="gerarRelatorioPDF()" class="w-full md:w-auto bg-white text-black px-6 py-2 rounded-xl font-bold text-sm">PDF Report</button>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div class="card">
-                    <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-4">Total Bloqueado</div>
-                    <div id="total-bloqueios" class="text-6xl font-extrabold">0</div>
+                    <div class="text-gray-500 text-[10px] font-bold uppercase mb-2">Bloqueios</div>
+                    <div id="total-bloqueios" class="text-5xl font-extrabold">0</div>
                 </div>
                 <div class="card border-l-4 border-[#00ffa3]">
-                    <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-4">Economia Estimada</div>
-                    <div id="economia-gerada" class="text-6xl font-extrabold accent-text">R$ 0,00</div>
+                    <div class="text-gray-500 text-[10px] font-bold uppercase mb-2">Economia</div>
+                    <div id="economia-gerada" class="text-5xl font-extrabold accent-text text-3xl">R$ 0,00</div>
                 </div>
             </div>
 
@@ -78,82 +99,56 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Data/Hora</th>
+                            <th>Data</th>
                             <th>IP Address</th>
-                            <th>Cidade</th>
-                            <th>Campanha</th>
-                            <th>Palavra-Chave</th>
+                            <th class="hide-mobile">Cidade</th>
+                            <th class="hide-mobile">Campanha</th>
                             <th style="text-align:right">Score</th>
                         </tr>
                     </thead>
-                    <tbody id="tabela-logs"></tbody>
+                    <tbody id="tabela-logs" class="text-sm"></tbody>
                 </table>
             </div>
         </section>
 
         <section id="tela-raiz" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Bloqueio de Raiz</h1>
-            <div class="card bg-red-950/5 border-red-900/20">
-                <h3 class="text-xl font-bold mb-4 text-red-500">Firewall de Infraestrutura</h3>
-                <p class="text-gray-400 mb-6 text-sm">Banir IPs permanentemente. Bloqueio realizado antes do carregamento do site.</p>
-                <div class="flex gap-4">
+            <h1 class="text-4xl font-extrabold mb-8 uppercase">Bloqueio Raiz</h1>
+            <div class="card border-red-900/20">
+                <h3 class="font-bold text-red-500 mb-4">Banir IP Permanente</h3>
+                <div class="flex flex-col md:flex-row gap-4">
                     <input type="text" id="ip-ban-input" placeholder="0.0.0.0" class="flex-1 p-4 rounded-xl font-mono">
-                    <button onclick="alert('IP Banido com Sucesso!')" class="bg-red-600 text-white font-bold px-10 rounded-xl hover:bg-red-700 uppercase text-xs">Banir IP</button>
+                    <button onclick="alert('Banimento em fila...')" class="bg-red-600 text-white font-bold py-4 px-8 rounded-xl uppercase text-xs">Banir</button>
                 </div>
             </div>
         </section>
 
         <section id="tela-automacao" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Automação API</h1>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card">
-                    <h3 class="text-xl font-bold mb-2">Google Ads Link</h3>
-                    <p class="text-gray-500 text-sm mb-6">Conecte sua conta para sincronizar IPs bloqueados automaticamente.</p>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">Customer ID (Google Ads)</label>
-                            <input type="text" placeholder="123-456-7890" class="w-full p-4 rounded-xl mt-1">
-                        </div>
-                        <button onclick="alert('Conectando ao Google Ads...')" class="w-full bg-[#00ffa3] text-black font-bold py-4 rounded-xl hover:bg-emerald-400 transition uppercase text-xs tracking-widest">Conectar Google Ads</button>
-                    </div>
-                </div>
-                <div class="card border-yellow-900/20 bg-yellow-900/5 flex items-center">
-                    <p class="text-xs text-yellow-600 italic font-medium leading-relaxed">
-                        ⚠️ Nota: A integração Google Ads requer o Test Token aprovado. O sistema IPSheild está em standby aguardando a liberação da API.
-                    </p>
-                </div>
+            <h1 class="text-4xl font-extrabold mb-8 uppercase">Automação</h1>
+            <div class="card">
+                <h3 class="font-bold mb-4">Google Ads Connection</h3>
+                <input type="text" placeholder="ID: 000-000-0000" class="w-full p-4 rounded-xl mb-4">
+                <button onclick="alert('Integrando...')" class="w-full bg-[#00ffa3] text-black font-bold py-4 rounded-xl uppercase text-xs">Conectar ID</button>
             </div>
         </section>
 
         <section id="tela-sites" class="hidden">
             <div class="flex justify-between items-center mb-8">
-                <h1 class="text-4xl font-extrabold uppercase tracking-tight">Meus Sites</h1>
-                <button onclick="abrirModalSite()" class="bg-white text-black px-6 py-3 rounded-2xl font-bold text-sm hover:scale-105 transition">+ Adicionar Domínio</button>
+                <h1 class="text-4xl font-extrabold uppercase">Meus Sites</h1>
+                <button onclick="abrirModalSite()" class="bg-white text-black px-4 py-2 rounded-xl font-bold text-xs">+ Add</button>
             </div>
-            
-            <div id="lista-sites" class="grid grid-cols-1 gap-4">
-                <div class="card flex justify-between items-center py-6">
-                    <div>
-                        <span class="text-xl font-bold">proteclic.com.br</span>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase mt-1 tracking-widest">Proteção Ativa</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_#10b981]"></span>
-                        <span class="text-xs font-bold text-emerald-500 uppercase">Verificado</span>
-                    </div>
-                </div>
+            <div id="lista-sites" class="card flex justify-between items-center">
+                <span class="font-bold">proteclic.com.br</span>
+                <span class="text-emerald-500 text-[10px] font-bold">ATIVO</span>
             </div>
         </section>
 
         <section id="tela-instalacao" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Instalação</h1>
-            <div class="card">
-                <h3 class="font-bold mb-4 uppercase text-xs text-gray-500 tracking-widest">Script Global</h3>
-                <div class="p-6 bg-black rounded-2xl border border-zinc-900 font-mono text-sm text-[#00ffa3] overflow-x-auto">
+            <h1 class="text-4xl font-extrabold mb-8 uppercase">Instalação</h1>
+            <div class="card overflow-hidden">
+                <p class="text-xs text-gray-500 mb-2 uppercase font-bold tracking-widest">Global Pixel</p>
+                <div class="bg-black p-4 rounded-xl text-[#00ffa3] font-mono text-[10px] break-all border border-zinc-900">
                     &lt;script src="https://xirrtonafivrphrzufbq.supabase.co/functions/v1/pixel?id=proteclic.com.br" async&gt;&lt;/script&gt;
                 </div>
-                <button onclick="alert('Copiado!')" class="mt-6 bg-zinc-800 text-white px-8 py-3 rounded-xl font-bold text-xs hover:bg-zinc-700">Copiar Código</button>
             </div>
         </section>
 
@@ -168,10 +163,12 @@
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('tela-' + tela).classList.remove('hidden');
-            document.getElementById('btn-' + tela).classList.add('active');
+            const btn = document.getElementById('btn-' + tela);
+            if(btn) btn.classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        async function updateDashboard() {
+        async function fetchRealtime() {
             const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false });
             if (error) return;
 
@@ -180,23 +177,22 @@
 
             document.getElementById('tabela-logs').innerHTML = data.map(v => `
                 <tr>
-                    <td class="text-gray-500 font-bold text-[10px] uppercase">${new Date(v.created_at).toLocaleString()}</td>
-                    <td class="font-mono text-white font-bold">${v.ip}</td>
-                    <td class="text-gray-400 text-sm">${v.city || 'Analisando...'}</td>
-                    <td class="text-gray-500 text-xs">${v.campaign || 'Busca Direta'}</td>
-                    <td class="text-gray-500 text-xs italic">"${v.keyword || '-'}"</td>
-                    <td style="text-align:right"><span class="text-red-500 font-bold text-xs">${v.risk_score || '100'}%</span></td>
+                    <td class="text-gray-500 text-[10px] font-bold">${new Date(v.created_at).toLocaleTimeString()}</td>
+                    <td class="font-mono text-white text-xs font-bold">${v.ip}</td>
+                    <td class="text-gray-400 text-xs hide-mobile">${v.city || '...'}</td>
+                    <td class="text-gray-500 text-xs hide-mobile">${v.campaign || '-'}</td>
+                    <td style="text-align:right" class="text-red-500 font-bold text-xs">${v.risk_score || '100'}%</td>
                 </tr>
             `).join('');
         }
 
         function abrirModalSite() {
-            const site = prompt("Digite o domínio do novo site (ex: meudominio.com):");
-            if(site) alert(`Domínio ${site} adicionado. Aguardando verificação do Pixel.`);
+            const d = prompt("Domínio:");
+            if(d) alert("Site cadastrado!");
         }
 
-        updateDashboard();
-        setInterval(updateDashboard, 8000);
+        fetchRealtime();
+        setInterval(fetchRealtime, 10000);
     </script>
 </body>
 </html>
