@@ -1,44 +1,50 @@
-// IPShield - Script Coletor v1.0 (Conexão Direta Supabase)
 (function() {
-    const CONFIG = {
-        SITE_ID: '3bb6f46e-a781-4afd-b9c4-3044b0873228', 
-        SUPABASE_URL: 'https://xirrtonafivrphrzufbq.supabase.co',
-        SUPABASE_KEY: 'sb_publishable_A5R5oMe2Xxks-tMfWcVFnA_yscoQYW9'
-    };
+    // Identifica o ID do cliente através do atributo 'data-site-id' na tag script
+    const currentScript = document.currentScript;
+    const siteId = currentScript.getAttribute('data-site-id');
 
-    async function capturarIPShield() {
+    if (!siteId) {
+        console.error("IPShield: ID do site não configurado.");
+        return;
+    }
+
+    // Configurações do seu Supabase
+    const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
+    const supabaseKey = 'sb_publishable_A5R5oMe2Xxks-tMfWcVFnA_yscoQYW9';
+
+    async function coletarDados() {
         try {
-            // Obtém o IP do visitante
+            // Busca o IP do visitante via serviço público
             const ipRes = await fetch('https://api.ipify.org?format=json');
-            const { ip } = await ipRes.json();
+            const ipData = await ipRes.json();
+            const userIp = ipData.ip;
 
-            // Monta o pacote de dados conforme sua tabela 'visits'
-            const payload = {
-                site_id: CONFIG.SITE_ID,
-                ip: ip,
-                device: navigator.platform,
-                user_agent: navigator.userAgent
-            };
+            // Lógica Básica de Risco (Exemplo: Se for um IP já conhecido ou padrão suspeito)
+            // Aqui você pode expandir para checar User-Agent ou frequência
+            const riskScore = 0; 
 
-            // Envia para o banco de dados
-            const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/visits`, {
+            // Envia para o seu banco de dados no Supabase
+            await fetch(`${supabaseUrl}/rest/v1/visits`, {
                 method: 'POST',
                 headers: {
-                    'apikey': CONFIG.SUPABASE_KEY,
-                    'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`,
+                    'apikey': supabaseKey,
+                    'Authorization': `Bearer ${supabaseKey}`,
                     'Content-Type': 'application/json',
                     'Prefer': 'return=minimal'
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    site_id: siteId,
+                    ip: userIp,
+                    user_agent: navigator.userAgent,
+                    risk_score: riskScore,
+                    timestamp: new Date().toISOString()
+                })
             });
 
-            if (response.ok) {
-                console.log('✅ IPShield: Tráfego monitorado com sucesso.');
-            }
         } catch (error) {
-            console.error('❌ IPShield: Falha na conexão.', error);
+            console.error("IPShield Error:", error);
         }
     }
 
-    window.addEventListener('load', capturarIPShield);
+    coletarDados();
 })();
