@@ -26,6 +26,29 @@
             <div class="card verde"><h3>Economia Real</h3><p id="economia_estimada">...</p></div>
         </div>
         <p class="status">ID do Site: 3bb6f46e-a781-4afd-b9c4-3044b0873228 | Atualizando a cada 5s</p>
+        <div style="text-align: center; margin-top: 40px;">
+    <button onclick="gerarRelatorio()" style="background: #1a1a1a; color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;">
+        📊 Baixar Relatório de Performance
+    </button>
+</div>
+
+<script>
+// A função de download que te passei antes vai aqui dentro das tags <script>
+function gerarRelatorio() {
+    const total = document.getElementById('total_cliques').innerText;
+    const bloqueados = document.getElementById('cliques_bloqueados').innerText;
+    const economia = document.getElementById('economia_estimada').innerText;
+    
+    alert("Gerando Relatório...\nTotal: " + total + "\nEconomia: " + economia);
+    
+    const conteudo = `RELATÓRIO IPSHIELD\nVisitas: ${total}\nBloqueios: ${bloqueados}\nEconomia: ${economia}`;
+    const blob = new Blob([conteudo], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `Relatorio_IPShield.txt`;
+    link.click();
+}
+</script>
     </div>
 
     <script>
