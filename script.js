@@ -1,50 +1,50 @@
 (function() {
-    // Identifica o ID do cliente através do atributo 'data-site-id' na tag script
     const currentScript = document.currentScript;
     const siteId = currentScript.getAttribute('data-site-id');
+    if (!siteId) return;
 
-    if (!siteId) {
-        console.error("IPShield: ID do site não configurado.");
-        return;
-    }
-
-    // Configurações do seu Supabase
-    const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
-    const supabaseKey = 'sb_publishable_A5R5oMe2Xxks-tMfWcVFnA_yscoQYW9';
-
-    async function coletarDados() {
+    async function capturarTudo() {
         try {
-            // Busca o IP do visitante via serviço público
-            const ipRes = await fetch('https://api.ipify.org?format=json');
-            const ipData = await ipRes.json();
-            const userIp = ipData.ip;
+            // 1. Geolocalização (IP, Cidade, País)
+            const geoRes = await fetch('http://ip-api.com/json/?fields=status,country,city,query');
+            const geoData = await geoRes.json();
 
-            // Lógica Básica de Risco (Exemplo: Se for um IP já conhecido ou padrão suspeito)
-            // Aqui você pode expandir para checar User-Agent ou frequência
-            const riskScore = 0; 
+            // 2. Extrair dados da URL (Campanha e Keywords)
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // 3. Identificar Navegador
+            const ua = navigator.userAgent;
+            let browser = "Outro";
+            if(ua.includes("Chrome")) browser = "Chrome";
+            else if(ua.includes("Firefox")) browser = "Firefox";
+            else if(ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
 
-            // Envia para o seu banco de dados no Supabase
-            await fetch(`${supabaseUrl}/rest/v1/visits`, {
+            const dados = {
+                site_id: siteId,
+                ip: geoData.query,
+                cidade: geoData.city,
+                pais: geoData.country,
+                navegador: browser,
+                campanha: urlParams.get('utm_campaign') || 'Direto/Orgânico',
+                palavras_chave: urlParams.get('utm_term') || urlParams.get('q') || 'Não informada',
+                user_agent: ua,
+                risk_score: 0, // Sua lógica de risco aqui
+                timestamp: new Date().toISOString()
+            };
+
+            // 4. Enviar para o Supabase
+            await fetch('https://xirrtonafivrphrzufbq.supabase.co/rest/v1/visits', {
                 method: 'POST',
                 headers: {
-                    'apikey': supabaseKey,
-                    'Authorization': `Bearer ${supabaseKey}`,
+                    'apikey': 'sb_publishable_A5R5oMe2Xxks-tMfWcVFnA_yscoQYW9',
+                    'Authorization': 'Bearer sb_publishable_A5R5oMe2Xxks-tMfWcVFnA_yscoQYW9',
                     'Content-Type': 'application/json',
                     'Prefer': 'return=minimal'
                 },
-                body: JSON.stringify({
-                    site_id: siteId,
-                    ip: userIp,
-                    user_agent: navigator.userAgent,
-                    risk_score: riskScore,
-                    timestamp: new Date().toISOString()
-                })
+                body: JSON.stringify(dados)
             });
 
-        } catch (error) {
-            console.error("IPShield Error:", error);
-        }
+        } catch (e) { console.error("IPShield Error:", e); }
     }
-
-    coletarDados();
+    capturarTudo();
 })();
