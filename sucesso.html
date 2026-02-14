@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Bem-vindo ao IPShield - Instalação</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f4f7f6; padding: 40px; text-align: center; }
+        .box { background: white; max-width: 700px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .step { text-align: left; background: #f9f9f9; padding: 15px; border-left: 5px solid #3498db; margin: 20px 0; }
+        code { background: #1a1a1a; color: #00ff00; padding: 15px; display: block; border-radius: 8px; font-family: monospace; overflow-x: auto; margin-top: 10px; }
+        .btn-dash { background: #3498db; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h1>✅ Pagamento Confirmado!</h1>
+        <p>Sua conta IPShield foi ativada com sucesso. Siga os passos abaixo para começar a proteger seu site.</p>
+
+        <div class="step">
+            <strong>Passo 1: Copie o seu Script de Coleta</strong>
+            <p>Cole este código dentro da tag <code>&lt;head&gt;</code> do seu site (ou via Google Tag Manager):</p>
+            <code id="scriptCode">
+                &lt;script src="https://ipshield-saas.vercel.app/script.js" data-site-id="CARREGANDO..."&gt;&lt;/script&gt;
+            </code>
+        </div>
+
+        <div class="step">
+            <strong>Passo 2: Configure o Google Ads</strong>
+            <p>Em seu painel, você terá acesso ao Script de Automação para bloquear os IPs automaticamente.</p>
+        </div>
+
+        <a href="#" id="linkDashboard" class="btn-dash">Ir para o meu Dashboard</a>
+    </div>
+
+    <script>
+        // Pega o site_id que o Mercado Pago devolveu na URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const siteId = urlParams.get('external_reference') || urlParams.get('site_id');
+
+        if (siteId) {
+            // Atualiza o código do script com o ID real do cliente
+            document.getElementById('scriptCode').innerText = `<script src="https://ipshield-saas.vercel.app/script.js" data-site-id="${siteId}"><\/script>`;
+            // Atualiza o link do botão do dashboard
+            document.getElementById('linkDashboard').href = `index.html?site_id=${siteId}`;
+        } else {
+            alert("ID não encontrado. Entre em contato com o suporte.");
+        }
+    </script>
+</body>
+</html>
