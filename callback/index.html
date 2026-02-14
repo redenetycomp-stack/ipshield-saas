@@ -2,60 +2,57 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Finalizando Conexão...</title>
+    <title>IPShield - Autenticando</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { background: #0b0f19; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .loader { border: 4px solid #1f2937; border-top: 4px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        .card { text-align: center; padding: 40px; background: #111827; border-radius: 15px; border: 1px solid #1f2937; max-width: 400px; }
+        .loader { border: 4px solid #1f2937; border-top: 4px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .card { text-align: center; padding: 30px; background: #111827; border-radius: 12px; border: 1px solid #1f2937; }
     </style>
 </head>
 <body>
     <div class="card">
-        <div class="loader" id="icon"></div>
+        <div id="status-icon" class="loader"></div>
         <h2 id="msg">Finalizando integração...</h2>
-        <p id="submsg">Não feche esta janela.</p>
+        <p id="submsg">Salvando suas chaves de acesso.</p>
     </div>
 
     <script>
-        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
-        const supabaseKey = 'sb_publishable_A5R5oMe2Xxks-tMfWcVFnA_yscoQYW9';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // Corrigido: Usando um nome único para evitar o erro de 'already declared'
+        const sbUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
+        const sbKey = 'sb_publishable_A5R5oMe2Xxks-tMfWcVFnA_yscoQYW9';
+        const sbClient = supabase.createClient(sbUrl, sbKey);
 
-        async function processCallback() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const authCode = urlParams.get('code');
+        async function saveToken() {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
 
-            if (authCode) {
-                try {
-                    // Aqui salvamos o código temporário no Supabase
-                    // Uma Edge Function vai detectar isso e trocar pelo Token real
-                    const { error } = await supabase
-                        .from('google_ads_config')
-                        .upsert({ 
-                            id: 1, 
-                            auth_code: authCode,
-                            updated_at: new Date()
-                        });
+            if (!code) {
+                document.getElementById('msg').innerText = "❌ Código expirado";
+                return;
+            }
 
-                    if (error) throw error;
+            try {
+                const { error } = await sbClient
+                    .from('google_ads_config')
+                    .insert([{ auth_code: code, updated_at: new Date() }]);
 
-                    document.getElementById('msg').innerText = "✅ Conectado com Sucesso!";
-                    document.getElementById('submsg').innerText = "Redirecionando para o painel...";
-                    
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 2000);
-
-                } catch (err) {
-                    document.getElementById('msg').innerText = "❌ Erro ao salvar";
-                    document.getElementById('submsg').innerText = err.message;
+                if (error) {
+                    console.error('Erro:', error);
+                    document.getElementById('msg').innerText = "❌ Erro no Banco";
+                    document.getElementById('submsg').innerText = "Verifique a tabela no Supabase.";
+                } else {
+                    document.getElementById('status-icon').style.display = 'none';
+                    document.getElementById('msg').innerText = "✅ Sucesso!";
+                    document.getElementById('submsg').innerText = "Conectado. Voltando ao painel...";
+                    setTimeout(() => { window.location.href = '../index.html'; }, 2000);
                 }
+            } catch (err) {
+                document.getElementById('msg').innerText = "❌ Erro Fatal";
             }
         }
-
-        processCallback();
+        saveToken();
     </script>
 </body>
 </html>
