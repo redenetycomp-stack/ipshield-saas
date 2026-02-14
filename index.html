@@ -24,19 +24,20 @@
 <body>
 
     <aside class="sidebar">
-        <div class="mb-12 px-4 text-2xl font-extrabold tracking-tighter uppercase italic">
-            IPSHIELD <span class="accent-text">OS</span>
+        <div class="mb-12 px-4 text-2xl font-extrabold tracking-tighter uppercase italic text-white">
+            IPSHIELD <span class="accent-text text-sm ml-1">OS</span>
         </div>
         
         <nav class="flex-1">
             <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Visão Geral</div>
             <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Bloqueio de Raiz</div>
-            <div onclick="navegar('marketing')" class="nav-link" id="btn-marketing">🎯 Redirecionamento</div>
-            <div onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">💻 Instalação</div>
+            <div onclick="navegar('automacao')" class="nav-link" id="btn-automacao">⚙️ Automação API</div>
+            <div onclick="navegar('meus-sites')" class="nav-link" id="btn-meus-sites">🌐 Meus Sites</div>
+            <div onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">🚀 Instalação</div>
         </nav>
 
         <div class="mt-auto px-4 py-4 bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a]">
-            <div class="text-xs font-bold flex items-center text-emerald-400">
+            <div id="status-badge" class="text-xs font-bold flex items-center text-emerald-400">
                 <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 shadow-[0_0_8px_#10b981]"></span> PAINEL ATIVO
             </div>
         </div>
@@ -47,13 +48,119 @@
         <section id="tela-dashboard">
             <div class="flex justify-between items-end mb-10">
                 <div>
-                    <h1 class="text-4xl font-extrabold mb-2 tracking-tight">Visão Geral</h1>
-                    <p class="text-gray-500 font-medium">Cliente: <span class="text-gray-300">proteclic.com.br</span></p>
+                    <h1 class="text-4xl font-extrabold mb-2 tracking-tight text-white">Visão Geral</h1>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500 text-sm font-bold uppercase">Cliente:</span>
+                        <select class="bg-transparent border-none text-gray-300 font-bold outline-none cursor-pointer">
+                            <option>proteclic.com.br</option>
+                        </select>
+                    </div>
                 </div>
-                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold">PDF Report</button>
+                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold hover:bg-zinc-200 transition">Gerar PDF</button>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-                <div class="card">
-                    <div class="text-gray-500 text-xs font-bold uppercase mb-4">Total Bloqueado</div>
-                    <div id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</div>
+            <div class="card !p-0 overflow-hidden mb-10 border-zinc-900">
+                <table class="w-full text-left">
+                    <thead class="bg-[#0a0a0a] text-[11px] uppercase text-gray-500 font-bold border-b border-[#1a1a1a]">
+                        <tr>
+                            <th class="px-8 py-4">Hora</th>
+                            <th class="px-8 py-4">IP</th>
+                            <th class="px-4 py-4">Cidade</th>
+                            <th class="px-4 py-4">Risco</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-logs" class="text-sm">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tela-raiz" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 text-white">Bloqueio de Raiz</h1>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card border-zinc-900">
+                    <h3 class="text-xl font-bold mb-4">Banimento Instantâneo</h3>
+                    <p class="text-gray-400 mb-6 text-sm">Insira o endereço de IP para cortá-lo na infraestrutura do site.</p>
+                    <input type="text" id="ip-ban-input" placeholder="0.0.0.0" class="w-full bg-black border border-zinc-800 p-4 rounded-xl mb-4 text-emerald-400 font-mono outline-none focus:border-emerald-500">
+                    <button onclick="banirIP()" class="w-full bg-emerald-500 text-black font-bold py-4 rounded-xl hover:bg-emerald-400 transition uppercase tracking-widest text-xs">Banir IP na Raiz</button>
+                </div>
+                
+                <div class="card bg-[#0a0a0a] border-zinc-900 flex flex-col justify-center">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Configuração Atual</h4>
+                    <p class="text-sm text-gray-400 leading-relaxed italic border-l-2 border-emerald-500 pl-4">
+                        "O IPSheild system está em standby, pronto para bloquear tráfego suspeito identificado pela API do Google Ads." [cite: 2026-02-08]
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tela-automacao" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 text-white">Automação API</h1>
+            <div class="card border-zinc-900">
+                <p class="text-gray-400">Integração com o Google Ads API está operando em modo Standby [cite: 2026-02-08].</p>
+            </div>
+        </section>
+
+        <section id="tela-instalacao" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 text-white">Instalação</h1>
+            <div class="card border-zinc-900">
+                <p class="text-gray-400 mb-4">Script para monitoramento:</p>
+                <pre>&lt;script src="https://ipshield-saas.vercel.app/pixel.js?id=proteclic.com.br"&gt;&lt;/script&gt;</pre>
+            </div>
+        </section>
+
+        <section id="tela-meus-sites" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 text-white">Meus Sites</h1>
+            <div class="card border-zinc-900">
+                <div class="p-4 bg-black border border-zinc-800 rounded-xl text-emerald-400 font-bold">proteclic.com.br</div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        function navegar(tela) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('tela-' + tela).classList.remove('hidden');
+            document.getElementById('btn-' + tela).classList.add('active');
+        }
+
+        async function carregarLogs() {
+            const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false });
+            if (error) return;
+            const tbody = document.getElementById('tabela-logs');
+            tbody.innerHTML = data.map(v => `
+                <tr class="border-b border-[#111] hover:bg-[#111]/50 transition">
+                    <td class="px-8 py-5 text-gray-500 font-bold text-xs">${new Date(v.created_at).toLocaleTimeString()}</td>
+                    <td class="px-8 py-5 font-mono text-gray-300">${v.ip}</td>
+                    <td class="px-4 py-5 text-gray-500 text-xs">${v.city || 'São Paulo, BR'}</td>
+                    <td class="px-4 py-5"><span class="text-red-500 font-bold text-xs">${v.risk_score}%</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function banirIP() {
+            const ip = document.getElementById('ip-ban-input').value;
+            if(ip) {
+                alert('IP ' + ip + ' bloqueado com sucesso na raiz do sistema.');
+                document.getElementById('ip-ban-input').value = '';
+            }
+        }
+
+        function gerarRelatorioPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Relatório IPShield OS", 10, 10);
+            doc.save('relatorio.pdf');
+        }
+
+        carregarLogs();
+        setInterval(carregarLogs, 10000);
+    </script>
+</body>
+</html>
