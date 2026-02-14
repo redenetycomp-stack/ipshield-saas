@@ -1,88 +1,146 @@
-<aside class="sidebar">
-    <div class="mb-12 px-4 text-2xl font-extrabold tracking-tighter">
-        IPSHIELD <span class="accent-text italic">OS</span>
-    </div>
-    
-    <nav class="flex-1">
-        <a href="javascript:void(0)" onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Dashboard</a>
-        <a href="javascript:void(0)" onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🎯 Bloqueio de Raiz</a>
-        <a href="javascript:void(0)" onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">💻 Instalação</a>
-    </nav>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPShield OS | Dashboard Profissional</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; display: flex; overflow-x: hidden; }
+        .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
+        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; width: calc(100% - 280px); }
+        .nav-link { padding: 14px 18px; border-radius: 12px; color: #666; text-decoration: none; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; transition: 0.2s; cursor: pointer; }
+        .nav-link.active, .nav-link:hover { background: #111; color: #00ffa3; }
+        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 30px; }
+        .accent-text { color: #00ffa3; }
+        .hidden { display: none !important; }
+        pre { background: #000; padding: 15px; border-radius: 12px; border: 1px solid #222; color: #00ffa3; font-size: 12px; overflow-x: auto; }
+    </style>
+</head>
+<body>
 
-    <div class="mt-auto px-4 py-4 bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a]">
-        <div id="status-text" class="text-xs font-bold flex items-center">
-            <span class="status-dot"></span> SISTEMA ATIVO
+    <aside class="sidebar">
+        <div class="mb-12 px-4 text-2xl font-extrabold tracking-tighter">
+            IPSHIELD <span class="accent-text italic">OS</span>
         </div>
-    </div>
-</aside>
-
-<main class="main-content">
-    
-    <section id="tela-dashboard">
-        <div class="flex justify-between items-end mb-10">
-            <div>
-                <h1 class="text-4xl font-extrabold mb-2 tracking-tight">Performance</h1>
-                <p class="text-gray-500 font-medium">Cliente: <span class="text-gray-300">proteclic.com.br</span></p>
-            </div>
-            <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold hover:scale-105 transition">Exportar PDF</button>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-            <div class="card">
-                <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Total Bloqueado</div>
-                <div id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</div>
-            </div>
-            <div class="card border-l-4 border-[#00ffa3]">
-                <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Economia Estimada</div>
-                <div id="economia-gerada" class="text-6xl font-extrabold tracking-tighter accent-text">R$ 0,00</div>
-            </div>
-        </div>
-
-        <div class="card overflow-hidden !p-0">
-            <table class="w-full text-left">
-                <thead class="text-[11px] uppercase tracking-widest text-gray-500 border-b border-[#1a1a1a]">
-                    <tr><th class="px-8 py-4">IP Address</th><th class="px-8 py-4">Status</th><th class="px-8 py-4 text-right">Data/Hora</th></tr>
-                </thead>
-                <tbody id="tabela-logs"></tbody>
-            </table>
-        </div>
-    </section>
-
-    <section id="tela-raiz" class="hidden">
-        <h1 class="text-4xl font-extrabold mb-6">Bloqueio de Raiz</h1>
-        <div class="card">
-            <h3 class="text-xl font-bold mb-4">Configurar Redirecionamento</h3>
-            <p class="text-gray-400 mb-6">Quando um competidor for detectado, para onde ele deve ser enviado?</p>
-            <input type="text" placeholder="https://google.com.br" class="w-full bg-black border border-zinc-800 p-4 rounded-xl mb-4 outline-none focus:border-[#00ffa3]">
-            <button class="bg-[#00ffa3] text-black font-bold px-6 py-3 rounded-xl">Salvar Configuração</button>
-        </div>
-    </section>
-
-    <section id="tela-instalacao" class="hidden">
-        <h1 class="text-4xl font-extrabold mb-6">Instalação</h1>
-        <div class="card">
-            <p class="mb-4 text-gray-400">Copie o Pixel e cole no <code>&lt;head&gt;</code> do site:</p>
-            <pre class="bg-black p-6 rounded-2xl text-green-400 text-xs"><code>&lt;script src="https://ipshield-saas.vercel.app/pixel.js?id=proteclic.com.br"&gt;&lt;/script&gt;</code></pre>
-        </div>
-    </section>
-
-</main>
-
-<script>
-    // Lógica de Navegação
-    function navegar(tela) {
-        // Esconde todas as seções
-        document.getElementById('tela-dashboard').classList.add('hidden');
-        document.getElementById('tela-raiz').classList.add('hidden');
-        document.getElementById('tela-instalacao').classList.add('hidden');
         
-        // Remove 'active' de todos os botões
-        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        <nav class="flex-1">
+            <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Dashboard</div>
+            <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🎯 Bloqueio de Raiz</div>
+            <div onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">💻 Instalação</div>
+        </nav>
 
-        // Mostra a tela selecionada
-        document.getElementById('tela-' + tela).classList.remove('hidden');
-        document.getElementById('btn-' + tela).classList.add('active');
-    }
+        <div class="mt-auto px-4 py-4 bg-[#0f0f0f] rounded-2xl border border-[#1a1a1a]">
+            <div class="text-[10px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Status</div>
+            <div class="text-xs font-bold flex items-center text-emerald-400">● SISTEMA ATIVO</div>
+        </div>
+    </aside>
 
-    // (Mantenha aqui a sua função atualizarInterface() do Supabase que já funciona)
-</script>
+    <main class="main-content">
+        
+        <section id="tela-dashboard">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h1 class="text-4xl font-extrabold mb-2 tracking-tight">Dashboard</h1>
+                    <p class="text-gray-500 font-medium">Cliente: <span class="text-gray-300">proteclic.com.br</span></p>
+                </div>
+                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold hover:scale-105 transition">Exportar PDF</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+                <div class="card">
+                    <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Total Bloqueado</div>
+                    <div id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</div>
+                </div>
+                <div class="card border-l-4 border-[#00ffa3]">
+                    <div class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Economia Estimada</div>
+                    <div id="economia-gerada" class="text-6xl font-extrabold tracking-tighter accent-text">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div class="card !p-0 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-[#0a0a0a] border-b border-[#1a1a1a] text-[11px] uppercase text-gray-500 font-bold">
+                        <tr><th class="px-8 py-4">IP Address</th><th class="px-8 py-4">Score</th><th class="px-8 py-4 text-right">Data/Hora</th></tr>
+                    </thead>
+                    <tbody id="tabela-logs"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tela-raiz" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 tracking-tight">Bloqueio de Raiz</h1>
+            <div class="card">
+                <h3 class="text-xl font-bold mb-4">Página de Destino para Competidores</h3>
+                <p class="text-gray-400 mb-6">Para onde enviar o invasor após o bloqueio?</p>
+                <input type="text" value="https://ipshield-saas.vercel.app/bloqueio" class="w-full bg-black border border-zinc-800 p-4 rounded-xl mb-6 outline-none text-emerald-400">
+                <button class="bg-[#00ffa3] text-black font-bold px-8 py-3 rounded-xl hover:bg-emerald-400">Salvar Destino</button>
+            </div>
+        </section>
+
+        <section id="tela-instalacao" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 tracking-tight">Instalação</h1>
+            <div class="card">
+                <h3 class="text-xl font-bold mb-4">Seu Pixel de Proteção</h3>
+                <p class="text-gray-400 mb-6">Cole este código no <code>&lt;head&gt;</code> do site do cliente:</p>
+                <pre>&lt;script src="https://xirrtonafivrphrzufbq.supabase.co/functions/v1/pixel?id=proteclic.com.br" async&gt;&lt;/script&gt;</pre>
+                <button onclick="alert('Copiado!')" class="mt-4 text-sm text-emerald-400 font-bold">Copiar código</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // CONFIGURAÇÃO SUPABASE
+        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // NAVEGAÇÃO ENTRE TELAS
+        function navegar(tela) {
+            document.getElementById('tela-dashboard').classList.add('hidden');
+            document.getElementById('tela-raiz').classList.add('hidden');
+            document.getElementById('tela-instalacao').classList.add('hidden');
+            
+            document.getElementById('btn-dashboard').classList.remove('active');
+            document.getElementById('btn-raiz').classList.remove('active');
+            document.getElementById('btn-instalacao').classList.remove('active');
+
+            document.getElementById('tela-' + tela).classList.remove('hidden');
+            document.getElementById('btn-' + tela).classList.add('active');
+        }
+
+        // CARREGAR DADOS DO SUPABASE
+        async function atualizarDados() {
+            const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false });
+            if (error) return;
+
+            document.getElementById('total-bloqueios').innerText = data.length;
+            document.getElementById('economia-gerada').innerText = `R$ ${(data.length * 2.50).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+            const tbody = document.getElementById('tabela-logs');
+            tbody.innerHTML = data.map(v => `
+                <tr class="border-b border-[#111] hover:bg-[#111]/50 transition">
+                    <td class="px-8 py-5 font-mono text-gray-300">${v.ip}</td>
+                    <td class="px-8 py-5"><span class="text-red-500 font-bold text-xs">${v.risk_score}% BLOQUEADO</span></td>
+                    <td class="px-8 py-5 text-right text-gray-600 text-xs">${new Date(v.created_at).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function gerarRelatorioPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("IPShield OS - Relatório Proteclic", 10, 10);
+            doc.save('relatorio.pdf');
+        }
+
+        // Iniciar
+        atualizarDados();
+        setInterval(atualizarDados, 10000);
+    </script>
+</body>
+</html>
