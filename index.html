@@ -3,46 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Client Integration v28</title>
+    <title>IPShield OS | Tracking Center v29</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding-bottom: 90px; }
-        
-        /* Sidebar Desktop */
         .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
         .nav-link { padding: 14px 18px; border-radius: 12px; color: #777; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px; }
         .nav-link.active { background: #111; color: #00ffa3; border: 1px solid #1a1a1a; }
-        
         .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; }
         .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
         .hidden { display: none !important; }
 
-        /* Menu Mobile Estilo App */
-        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0a; border-top: 1px solid #1a1a1a; padding: 12px; z-index: 200; justify-content: space-around; backdrop-filter: blur(10px); }
-        .mobile-link { color: #555; display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 800; text-transform: uppercase; gap: 4px; }
+        /* Menu Mobile */
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0a; border-top: 1px solid #1a1a1a; padding: 12px; z-index: 200; justify-content: space-around; }
+        .mobile-link { color: #555; display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 800; text-transform: uppercase; }
         .mobile-link.active { color: #00ffa3; }
 
-        /* Tabela Ultra-Larga Responsiva */
-        .table-container { width: 100%; overflow-x: auto; border-radius: 20px; border: 1px solid #1a1a1a; background: #0d0d0d; }
-        table { width: 100%; border-collapse: collapse; min-width: 1600px; }
-        thead th { position: sticky; top: 0; background: #111; z-index: 20; padding: 20px 16px; color: #444; font-size: 10px; font-weight: 800; text-align: left; border-bottom: 1px solid #1a1a1a; }
-        td { padding: 18px 16px; border-bottom: 1px solid #1a1a1a; white-space: nowrap; font-size: 12px; color: #ccc; }
+        /* Estilo do Bloco de Código */
+        .code-box { background: #000; border: 1px solid #1a1a1a; padding: 20px; border-radius: 16px; font-family: 'Courier New', monospace; font-size: 11px; color: #00ffa3; position: relative; overflow-x: auto; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: #1a1a1a; color: #fff; padding: 5px 10px; border-radius: 8px; font-size: 9px; cursor: pointer; }
 
-        /* Scrollbar Grossa para Fácil Arraste */
-        .table-container::-webkit-scrollbar { height: 12px; }
-        .table-container::-webkit-scrollbar-track { background: #050505; }
-        .table-container::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; border: 2px solid #050505; }
-
-        @media (max-width: 1024px) { 
-            .sidebar { display: none; } 
-            .main-content { margin-left: 0; padding: 20px; }
-            .mobile-nav { display: flex; }
-        }
-
-        .input-shield { background: #000; border: 1px solid #1a1a1a; padding: 16px; border-radius: 16px; width: 100%; color: #fff; outline: none; transition: 0.3s; }
-        .input-shield:focus { border-color: #00ffa3; box-shadow: 0 0 15px rgba(0, 255, 163, 0.1); }
+        @media (max-width: 1024px) { .sidebar { display: none; } .main-content { margin-left: 0; padding: 20px; } .mobile-nav { display: flex; } }
     </style>
 </head>
 <body>
@@ -50,169 +33,108 @@
     <aside class="sidebar">
         <div class="mb-12 px-4 text-2xl font-extrabold italic uppercase text-white">IPSHIELD <span class="text-[#00ffa3]">OS</span></div>
         <nav class="flex-1">
-            <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Visão Geral</div>
-            <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Bloqueio Raiz</div>
-            <div onclick="navegar('estorno')" class="nav-link" id="btn-estorno">💰 Menu Estorno</div>
+            <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Dashboard</div>
+            <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Firewall</div>
+            <div onclick="navegar('estorno')" class="nav-link" id="btn-estorno">💰 Estorno</div>
             <div onclick="navegar('onboarding')" class="nav-link" id="btn-onboarding">🚀 Conectar Conta</div>
         </nav>
     </aside>
 
     <nav class="mobile-nav">
-        <div onclick="navegar('dashboard')" class="mobile-link active" id="m-btn-dashboard"><span>📊</span><span>Geral</span></div>
-        <div onclick="navegar('raiz')" class="mobile-link" id="m-btn-raiz"><span>🚫</span><span>Raiz</span></div>
-        <div onclick="navegar('estorno')" class="mobile-link" id="m-btn-estorno"><span>💰</span><span>Estorno</span></div>
+        <div onclick="navegar('dashboard')" class="mobile-link active" id="m-btn-dashboard"><span>📊</span><span>Dashboard</span></div>
+        <div onclick="navegar('raiz')" class="mobile-link" id="m-btn-raiz"><span>🚫</span><span>Firewall</span></div>
         <div onclick="navegar('onboarding')" class="mobile-link" id="m-btn-onboarding"><span>🚀</span><span>Setup</span></div>
     </nav>
 
     <main class="main-content">
         
-        <section id="tela-dashboard">
-            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Logs de Auditoria</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                <div class="card"><p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Cliques Bloqueados</p><p id="total-bloqueios" class="text-6xl font-extrabold">0</p></div>
-                <div class="card border-emerald-500/20"><p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Crédito Protegido</p><p id="economia-gerada" class="text-6xl font-extrabold text-[#00ffa3]">R$ 0,00</p></div>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Timestamp</th><th>Status</th><th>IP Address</th><th>País</th><th>Cidade</th><th>Campanha Ads</th><th>Device ID</th><th style="text-align:right">Risco IA</th></tr></thead>
-                    <tbody id="tabela-logs"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="tela-raiz" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase">Firewall Raiz</h1>
-            <div class="card border-amber-500/20 bg-amber-500/5 mb-8 flex justify-between items-center">
-                <div><p class="text-zinc-500 text-[10px] font-bold">REDE SUSPEITA DETECTADA</p><span id="suggested-root" class="font-mono text-2xl font-black">...</span></div>
-                <button onclick="confirmarBloqueio()" class="bg-[#00ffa3] text-black font-black px-10 py-4 rounded-2xl text-xs uppercase shadow-lg shadow-emerald-500/20">Banir Rede Inteira</button>
-            </div>
-            <div class="table-container border-red-900/10">
-                <table>
-                    <thead><tr><th class="px-4">IP Raiz Ativo</th><th>Tipo</th><th>Expiração</th><th style="text-align:right" class="px-4">Ação</th></tr></thead>
-                    <tbody id="tabela-firewall-ativa"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="tela-estorno" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase italic">Central de Reembolso</h1>
-            <div class="card border-emerald-500/20 mb-8">
-                <h2 class="font-black mb-4 uppercase">Recuperar Investimento</h2>
-                <p class="text-xs text-zinc-500 mb-8 leading-relaxed">Gere o relatório consolidado de cliques inválidos e anexe ao formulário do Google para solicitar crédito.</p>
-                <div class="flex gap-4">
-                    <button onclick="alert('Relatório CSV preparado para download!')" class="bg-[#00ffa3] text-black font-bold py-4 px-8 rounded-xl text-[10px]">EXPORTAR PROVAS (.CSV)</button>
-                    <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="bg-white text-black font-bold py-4 px-8 rounded-xl text-[10px] flex items-center">ABRIR FORMULÁRIO GOOGLE</a>
-                </div>
-            </div>
-        </section>
-
         <section id="tela-onboarding" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase">Conectar Cliente</h1>
+            <h1 class="text-4xl font-extrabold mb-8 uppercase italic">Configuração de Cliente</h1>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="card border-zinc-800">
-                    <div class="flex items-center gap-3 mb-6">
-                        <span class="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center font-bold text-[10px]">01</span>
-                        <h2 class="font-black uppercase text-sm">Configuração de Domínio</h2>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-zinc-500 uppercase block mb-2">URL do Site (ex: site.com.br)</label>
-                            <input type="text" placeholder="meu-site-protegido.com" class="input-shield">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="space-y-6">
+                    <div class="card border-zinc-800">
+                        <h2 class="font-black mb-4 uppercase text-xs text-zinc-400">1. Domínio & Google ID</h2>
+                        <div class="space-y-4">
+                            <input type="text" id="input-domain" placeholder="exemplo.com.br" class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-sm outline-none focus:border-emerald-500">
+                            <input type="text" id="input-cid" placeholder="ID da Conta Ads (000-000-0000)" class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-sm outline-none focus:border-emerald-500">
+                            <button onclick="gerarSnippet()" class="w-full bg-[#00ffa3] text-black font-black py-4 rounded-xl text-xs uppercase">Gerar Script de Proteção</button>
                         </div>
-                        <button class="w-full bg-zinc-800 py-4 rounded-xl font-black text-[10px] uppercase hover:bg-emerald-600 transition">Adicionar Domínio à Proteção</button>
                     </div>
                 </div>
 
-                <div class="card border-emerald-500/10">
-                    <div class="flex items-center gap-3 mb-6">
-                        <span class="w-8 h-8 bg-emerald-500/20 text-[#00ffa3] rounded-full flex items-center justify-center font-bold text-[10px]">02</span>
-                        <h2 class="font-black uppercase text-sm">Vinculação Google Ads</h2>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-zinc-500 uppercase block mb-2">ID da Conta do Cliente (CID)</label>
-                            <input type="text" placeholder="000-000-0000" class="input-shield font-mono">
+                <div id="snippet-area" class="hidden">
+                    <div class="card border-emerald-500/20 bg-emerald-500/5">
+                        <h2 class="font-black mb-2 uppercase text-xs text-emerald-500">2. Código de Rastreamento</h2>
+                        <p class="text-[10px] text-zinc-500 mb-4 uppercase">Copie e cole este código dentro da tag <span class="text-white">&lt;head&gt;</span> do seu site.</p>
+                        
+                        <div class="code-box">
+                            <div class="copy-btn" onclick="copiarCodigo()">Copiar</div>
+                            <pre id="code-content">
+&lt;!-- IPShield Tracking --&gt;
+&lt;script&gt;
+(function(i,p,s,h,l,d){
+  i.ips=i.ips||function(){(i.ips.q=i.ips.q||[]).push(arguments)};
+  l=p.createElement(s);d=p.getElementsByTagName(s)[0];
+  l.async=1;l.src=h;d.parentNode.insertBefore(l,d);
+})(window,document,'script','https://cdn.ipshield.com.br/v1/track.js');
+ips('init', 'KEY-TEMP-001');
+&lt;/script&gt;
+                            </pre>
                         </div>
-                        <p class="text-[10px] text-zinc-500 italic">Isso enviará um convite de acesso da nossa MCC para a conta do cliente automaticamente.</p>
-                        <button onclick="alert('Convite de vinculação enviado para o ID informado!')" class="w-full bg-[#00ffa3] text-black py-4 rounded-xl font-black text-[10px] uppercase shadow-lg shadow-emerald-500/10">Enviar Convite de Vinculação</button>
+                        <p class="mt-4 text-[9px] text-zinc-600 italic">* Este código monitora cliques fraudulentos e bloqueia IPs em tempo real via MCC.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-8 card border-zinc-900 bg-zinc-900/20">
-                <h3 class="text-[10px] font-bold text-zinc-600 uppercase mb-4 tracking-widest">Contas em Processo de Vinculação</h3>
-                <div class="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-zinc-800">
-                    <div class="flex items-center gap-4">
-                        <div class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
-                        <span class="text-xs font-bold text-zinc-300">ID: 455-231-9088</span>
-                        <span class="text-[10px] text-zinc-600">Aguardando aceite do cliente...</span>
-                    </div>
-                    <button class="text-[9px] font-black text-red-500 uppercase">Cancelar</button>
+            <div class="card border-zinc-800">
+                <h3 class="text-xs font-black uppercase text-zinc-500 mb-4">Status da Integração</h3>
+                <div class="flex items-center gap-4 p-4 bg-black rounded-2xl border border-zinc-900">
+                    <div class="w-3 h-3 bg-zinc-700 rounded-full"></div>
+                    <span class="text-xs font-bold text-zinc-500">Aguardando vinculação do ID e instalação do Script...</span>
                 </div>
             </div>
         </section>
+
+        <section id="tela-dashboard">
+            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Logs em Tempo Real</h1>
+            <div class="card border-zinc-800 mb-8">
+                <div class="flex gap-10">
+                    <div><p class="text-zinc-500 text-[10px] font-bold uppercase">Bloqueios</p><p id="total-bloqueios" class="text-5xl font-black">1.540</p></div>
+                    <div><p class="text-zinc-500 text-[10px] font-bold uppercase">Economia</p><p class="text-5xl font-black text-[#00ffa3]">R$ 3.850,00</p></div>
+                </div>
+            </div>
+            </section>
 
     </main>
 
     <script>
-        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
         function navegar(tela) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.nav-link, .mobile-link').forEach(l => l.classList.remove('active'));
-            
             document.getElementById('tela-' + tela).classList.remove('hidden');
             if(document.getElementById('btn-' + tela)) document.getElementById('btn-' + tela).classList.add('active');
             if(document.getElementById('m-btn-' + tela)) document.getElementById('m-btn-' + tela).classList.add('active');
-            
-            if(tela === 'raiz') carregarRaizes();
             window.scrollTo(0,0);
         }
 
-        async function carregarDados() {
-            const { data } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(35);
-            if (!data) return;
-            document.getElementById('total-bloqueios').innerText = data.length + 1540;
-            document.getElementById('economia-gerada').innerText = `R$ ${( (data.length + 1540) * 2.85).toLocaleString('pt-BR')}`;
-            document.getElementById('tabela-logs').innerHTML = data.map(v => `
-                <tr>
-                    <td class="text-zinc-500 font-bold">${new Date(v.created_at).toLocaleString('pt-BR')}</td>
-                    <td><span class="bg-red-500/10 text-red-500 text-[9px] font-black p-1 px-3 rounded-lg border border-red-500/20">BLOCK</span></td>
-                    <td class="font-mono text-white font-black">${v.ip}</td>
-                    <td class="text-zinc-400 font-bold">${v.country_code || 'BR'}</td>
-                    <td class="text-zinc-500">${v.city || 'São Paulo'}</td>
-                    <td class="text-emerald-500 font-black">${v.campaign || 'Google Search'}</td>
-                    <td class="text-zinc-600 font-mono text-[10px]">${v.device || 'FNG-889'}</td>
-                    <td style="text-align:right" class="text-red-500 font-black">100% FRAUDE</td>
-                </tr>
-            `).join('');
+        function gerarSnippet() {
+            const domain = document.getElementById('input-domain').value;
+            const cid = document.getElementById('input-cid').value;
+            if(!domain || !cid) { alert('Preencha o domínio e o ID!'); return; }
+            
+            // Simulação de geração de Key baseada no domínio
+            const key = "IPS_" + btoa(domain).substring(0,8).toUpperCase();
+            document.getElementById('code-content').innerText = `\n<script>\n(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'ips.start':\nnew Date().getTime(),event:'ips.js'});var f=d.getElementsByTagName(s)[0],\nj=d.createElement(s),dl=l!='ips'?'&l='+l:'';j.async=true;j.src=\n'https://api.ipshield.com.br/track.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n})(window,document,'script','ipsDataLayer','${key}');\n<\/script>`;
+            
+            document.getElementById('snippet-area').classList.remove('hidden');
         }
 
-        async function carregarRaizes() {
-            const { data } = await _supabase.from('root_analysis').select('*');
-            if(data && data.length > 0) document.getElementById('suggested-root').innerText = data[0].ip_root + '.*';
+        function copiarCodigo() {
+            const code = document.getElementById('code-content').innerText;
+            navigator.clipboard.writeText(code);
+            alert('Código copiado para a área de transferência!');
         }
-
-        function confirmarBloqueio() {
-            const root = document.getElementById('suggested-root').innerText;
-            const tbody = document.getElementById('tabela-firewall-ativa');
-            tbody.insertAdjacentHTML('afterbegin', `
-                <tr class="bg-red-500/5">
-                    <td class="font-mono text-white px-4 py-5 font-black text-lg">${root}</td>
-                    <td class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Network Cluster</td>
-                    <td class="text-amber-500 text-[10px] font-black uppercase italic">Permanente</td>
-                    <td style="text-align:right" class="px-4">
-                        <button onclick="this.closest('tr').remove()" class="bg-[#00ffa3] text-black px-6 py-2 rounded-xl text-[10px] font-black uppercase shadow-lg">Liberar Acesso</button>
-                    </td>
-                </tr>
-            `);
-        }
-
-        carregarDados();
-        setInterval(carregarDados, 20000);
     </script>
 </body>
 </html>
