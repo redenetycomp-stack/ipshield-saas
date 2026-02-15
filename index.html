@@ -1,46 +1,82 @@
-<div id="total-bloqueios">0</div>
-<div id="economia-gerada">R$ 0,00</div>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPShield OS | Dashboard Profissional</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding-bottom: 90px; }
+        .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
+        .nav-link { padding: 14px 18px; border-radius: 12px; color: #777; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .nav-link.active { background: #111; color: #00ffa3; border: 1px solid #1a1a1a; }
+        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; }
+        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
+        .hidden { display: none !important; }
+        
+        /* Menu Mobile */
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0a; border-top: 1px solid #1a1a1a; padding: 12px; z-index: 200; justify-content: space-around; }
+        @media (max-width: 1024px) { .sidebar { display: none; } .main-content { margin-left: 0; padding: 20px; } .mobile-nav { display: flex; } }
+        
+        /* Tabela */
+        .table-container { width: 100%; overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { text-align: left; padding: 15px; color: #444; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #1a1a1a; }
+        td { padding: 15px; font-size: 12px; border-bottom: 1px solid #0f0f0f; }
+    </style>
+</head>
+<body>
 
-<table id="tabela-logs">
-    </table>
+    <aside class="sidebar">
+        <div class="mb-12 px-4 text-2xl font-extrabold italic text-white uppercase">IPSHIELD <span class="text-[#00ffa3]">OS</span></div>
+        <nav>
+            <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Dashboard</div>
+            <div onclick="navegar('onboarding')" class="nav-link" id="btn-onboarding">🚀 Conectar Conta</div>
+        </nav>
+    </aside>
 
-<script>
-  // Insira aqui as configurações do Supabase (URL e Key)
-  
-  async function carregarDados() { 
-      try { 
-          const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(35); 
-          
-          if (error) throw error; 
+    <main class="main-content">
+        <section id="tela-dashboard">
+            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Visão Geral</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <div class="card">
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Bloqueios Totais</p>
+                    <p id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</p>
+                </div>
+                <div class="card border-emerald-500/20">
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Economia Estimada</p>
+                    <p id="economia-gerada" class="text-6xl font-extrabold text-[#00ffa3] tracking-tighter">R$ 0,00</p>
+                </div>
+            </div>
 
-          const total = data ? data.length : 0; 
-          const economia = total * 2.85; // Foco em mostrar o ROI 
+            <div class="card">
+                <h3 class="text-xs font-bold uppercase text-zinc-500 mb-4">Ataques Detectados em Tempo Real</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Status</th>
+                                <th>IP</th>
+                                <th>Cidade</th>
+                                <th>Campanha</th>
+                                <th style="text-align:right">Risco</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-logs">
+                            <tr><td colspan="6" class="text-center py-10 text-zinc-600">Carregando dados do servidor...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-          document.getElementById('total-bloqueios').innerText = total.toLocaleString('pt-BR'); 
-          document.getElementById('economia-gerada').innerText = `R$ ${economia.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`; 
-
-          // Se o banco estiver vazio, mostra mensagem amigável [cite: 4]
-          if (total === 0) { 
-              document.getElementById('tabela-logs').innerHTML = '<tr><td>Aguardando primeiro clique...</td></tr>'; 
-              return; 
-          } 
-
-          // Preenche a tabela conforme o Fluxo de Dados Inteligente [cite: 20]
-          document.getElementById('tabela-logs').innerHTML = data.map(v => `
-              <tr>
-                  <td>${new Date(v.created_at).toLocaleString('pt-BR')}</td>
-                  <td>BLOCK</td>
-                  <td>${v.ip || '---'}</td>
-                  <td>${v.country_code || 'BR'}</td>
-                  <td>${v.campaign || 'Ads'}</td>
-                  <td>RISCO ALTO</td>
-              </tr>`).join(''); 
-      } catch (err) { 
-          console.error("Erro de conexão:", err); 
-          document.getElementById('tabela-logs').innerHTML = 'Erro de conexão com o banco.'; 
-      } 
-  }
-
-  // Chama a função para o dashboard atualizar [cite: 20]
-  carregarDados();
-</script>
+        <section id="tela-onboarding" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 uppercase">Setup do Cliente</h1>
+            <div class="card border-emerald-500/20 bg-emerald-500/5">
+                <h2 class="font-black mb-2 text-[#00ffa3]">SCRIPT DE PROTEÇÃO</h2>
+                <p class="text-xs text-zinc-400 mb-4">Copie e cole este código no &lt;head&gt; do seu site para ativar a Camada Dupla.</p>
+                <div style="background:#000; padding:20px; border-radius:1
