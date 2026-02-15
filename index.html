@@ -15,6 +15,11 @@
         .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; }
         .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
         .hidden { display: none !important; }
+        
+        /* Estilo da Tabela Original */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding-bottom: 20px; color: #444; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 18px 0; border-top: 1px solid #111; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -30,54 +35,75 @@
     </aside>
 
     <main class="main-content">
+        
         <section id="tela-dashboard">
-            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Logs em Tempo Real</h1>
+            <h1 class="text-4xl font-extrabold uppercase mb-8 italic tracking-tighter">Logs em Tempo Real</h1>
             
             <div class="card mb-8">
-                <div class="flex gap-10">
+                <div class="flex gap-12">
                     <div>
-                        <p class="text-zinc-500 text-[10px] font-bold uppercase">Bloqueios</p>
-                        <p id="total-bloqueios" class="text-5xl font-black">0</p>
+                        <p class="text-zinc-600 text-[10px] font-black uppercase tracking-widest mb-1">Bloqueios</p>
+                        <p id="total-bloqueios" class="text-6xl font-black">0</p>
                     </div>
                     <div>
-                        <p class="text-zinc-500 text-[10px] font-bold uppercase">Economia</p>
-                        <p id="economia-gerada" class="text-5xl font-black text-[#00ffa3]">R$ 0,00</p>
+                        <p class="text-zinc-600 text-[10px] font-black uppercase tracking-widest mb-1">Economia</p>
+                        <p id="economia-gerada" class="text-6xl font-black text-[#00ffa3]">R$ 0,00</p>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <table class="w-full text-left">
+                <table>
                     <thead>
-                        <tr class="text-[10px] uppercase text-zinc-600 border-b border-zinc-800">
-                            <th class="pb-4">Data/Hora</th>
-                            <th class="pb-4">Status</th>
-                            <th class="pb-4">IP</th>
-                            <th class="pb-4">Campanha</th>
-                            <th class="pb-4 text-right">Risco</th>
+                        <tr>
+                            <th>Data / Hora</th>
+                            <th>Status</th>
+                            <th>Endereço IP</th>
+                            <th>Campanha</th>
+                            <th style="text-align:right">Nível de Risco</th>
                         </tr>
                     </thead>
-                    <tbody id="tabela-logs" class="text-sm">
+                    <tbody id="tabela-logs">
                         </tbody>
                 </table>
             </div>
         </section>
 
-        <section id="tela-raiz" class="hidden"><h1 class="text-4xl font-extrabold uppercase mb-8 italic">Firewall</h1><div class="card text-zinc-500">Configurações de bloqueio de IP Raiz.</div></section>
-        <section id="tela-estorno" class="hidden"><h1 class="text-4xl font-extrabold uppercase mb-8 italic">Relatório de Estorno</h1><div class="card text-zinc-500">Dados para solicitar reembolso ao Google.</div></section>
-        
-        <section id="tela-onboarding" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase italic">Conectar Conta</h1>
-            <div class="card bg-emerald-500/5 border-emerald-500/20">
-                <p class="text-emerald-500 font-bold mb-4">Código de Rastreamento</p>
-                <code class="block bg-black p-4 rounded text-[#00ffa3] text-xs">
-                    &lt;script src="https://xirrtonafivrphrzufbq.supabase.co/storage/v1/object/public/scripts/track.js"&gt;&lt;/script&gt;
-                </code>
+        <section id="tela-raiz" class="hidden">
+            <h1 class="text-4xl font-extrabold uppercase mb-8 italic tracking-tighter">Firewall</h1>
+            <div class="card">
+                <p class="text-zinc-500 font-bold uppercase text-xs mb-4">Configurações de Bloqueio de IP Raiz</p>
+                <div class="p-8 border border-dashed border-zinc-800 rounded-2xl text-center text-zinc-700 font-bold">
+                    Módulo de Proteção de Rede Ativado. IPs suspeitos estão sendo filtrados automaticamente.
+                </div>
             </div>
         </section>
+
+        <section id="tela-estorno" class="hidden">
+            <h1 class="text-4xl font-extrabold uppercase mb-8 italic tracking-tighter">Relatório de Estorno</h1>
+            <div class="card">
+                <p class="text-zinc-500 font-bold uppercase text-xs mb-4">Dados para Solicitação de Reembolso</p>
+                <div class="p-8 border border-dashed border-zinc-800 rounded-2xl text-center text-zinc-700 font-bold">
+                    Nenhum relatório pronto para exportação. Aguardando acúmulo de cliques inválidos.
+                </div>
+            </div>
+        </section>
+
+        <section id="tela-onboarding" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 uppercase italic tracking-tighter">Conectar Conta</h1>
+            <div class="card bg-emerald-500/5 border-emerald-500/20">
+                <h2 class="text-emerald-500 font-black text-xs uppercase mb-4">Código de Rastreamento Único</h2>
+                <p class="text-zinc-400 text-sm mb-6">Instale o script abaixo no cabeçalho (&lt;head&gt;) do seu site para ativar a proteção.</p>
+                <div class="bg-black p-6 rounded-2xl border border-zinc-800 font-mono text-[#00ffa3] text-xs break-all">
+                    &lt;script src="https://xirrtonafivrphrzufbq.supabase.co/storage/v1/object/public/scripts/track.js"&gt;&lt;/script&gt;
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <script>
+        // CONEXÃO SUPABASE
         const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -100,17 +126,21 @@
 
                 if (total > 0) {
                     document.getElementById('tabela-logs').innerHTML = data.map(v => `
-                        <tr class="border-t border-zinc-900">
-                            <td class="py-4 text-zinc-500">${new Date(v.created_at).toLocaleTimeString('pt-BR')}</td>
-                            <td><span class="text-[#00ffa3] text-[9px] font-black border border-[#00ffa3]/20 px-2 py-1 rounded">ATIVO</span></td>
-                            <td class="font-mono text-white">${v.ip || '---'}</td>
-                            <td class="text-zinc-400">${v.campaign || 'Ads'}</td>
-                            <td class="text-right text-red-600 font-black italic">ALTO RISCO</td>
-                        </tr>`).join('');
+                        <tr>
+                            <td class="text-zinc-500 font-bold">${new Date(v.created_at).toLocaleTimeString('pt-BR')}</td>
+                            <td><span class="text-[#00ffa3] text-[9px] font-black border border-[#00ffa3]/30 px-3 py-1 rounded-full bg-[#00ffa3]/5 uppercase">Ativo</span></td>
+                            <td class="font-mono text-zinc-200 font-bold">${v.ip || '0.0.0.0'}</td>
+                            <td class="text-zinc-400 font-semibold">${v.campaign || 'Google Ads'}</td>
+                            <td style="text-align:right" class="text-red-600 font-black italic text-[10px]">RISCO CRÍTICO</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    document.getElementById('tabela-logs').innerHTML = '<tr><td colspan="5" class="py-20 text-center text-zinc-800 font-black uppercase text-[10px] tracking-widest text-zinc-700">Aguardando Captura de Tráfego...</td></tr>';
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error("Erro na atualização:", err); }
         }
 
+        // Início e Atualização Automática
         carregarDados();
         setInterval(carregarDados, 5000);
     </script>
