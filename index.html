@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Dashboard</title>
+    <title>IPShield OS | Sistema de Proteção</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
@@ -15,9 +15,7 @@
         .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; }
         .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
         .hidden { display: none !important; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding-bottom: 20px; color: #444; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        td { padding: 18px 0; border-top: 1px solid #111; font-size: 13px; }
+        .stat-label { color: #444; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -39,29 +37,28 @@
             <div class="card mb-8">
                 <div class="flex gap-12">
                     <div>
-                        <p class="text-zinc-600 text-[10px] font-black uppercase tracking-widest mb-1">Bloqueios</p>
+                        <p class="stat-label mb-1">Bloqueios</p>
                         <p id="total-bloqueios" class="text-6xl font-black">0</p>
                     </div>
                     <div>
-                        <p class="text-zinc-600 text-[10px] font-black uppercase tracking-widest mb-1">Economia</p>
+                        <p class="stat-label mb-1 text-[#00ffa3]">Economia</p>
                         <p id="economia-gerada" class="text-6xl font-black text-[#00ffa3]">R$ 0,00</p>
                     </div>
                 </div>
             </div>
             <div class="card">
-                <table>
+                <table class="w-full text-left">
                     <thead>
-                        <tr>
-                            <th>Data / Hora</th>
-                            <th>Status</th>
-                            <th>Endereço IP</th>
-                            <th>Campanha</th>
-                            <th style="text-align:right">Nível de Risco</th>
+                        <tr class="text-[10px] uppercase text-zinc-600 border-b border-zinc-800">
+                            <th class="pb-4">Data / Hora</th>
+                            <th class="pb-4">Status</th>
+                            <th class="pb-4 font-bold">Endereço IP</th>
+                            <th class="pb-4">Campanha</th>
+                            <th class="pb-4 text-right">Risco</th>
                         </tr>
                     </thead>
-                    <tbody id="tabela-logs">
-                        <tr><td colspan="5" class="py-20 text-center text-zinc-800 font-black uppercase text-[10px] tracking-widest">Aguardando Tráfego...</td></tr>
-                    </tbody>
+                    <tbody id="tabela-logs" class="text-sm">
+                        </tbody>
                 </table>
             </div>
         </section>
@@ -69,14 +66,14 @@
         <section id="tela-raiz" class="hidden">
             <h1 class="text-4xl font-extrabold uppercase mb-8 italic tracking-tighter">Firewall</h1>
             <div class="card">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-[#00ffa3] font-black text-xs uppercase">Proteção de Rede IPSheild</h2>
-                    <span class="bg-emerald-500/10 text-emerald-500 text-[9px] px-2 py-1 rounded border border-emerald-500/20">STANDBY</span>
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-white font-extrabold text-sm uppercase tracking-widest">Proteção de Rede IPSheild</h2>
+                    <span class="bg-emerald-500/10 text-emerald-500 text-[10px] px-3 py-1 rounded-full font-black border border-emerald-500/20">STANDBY</span>
                 </div>
-                <p class="text-zinc-400 text-sm mb-4">O sistema IPSheild está monitorando os parâmetros de rede para identificar acessos via Proxy, VPN ou Datacenters.</p>
-                <div class="bg-black/40 p-6 rounded-2xl border border-zinc-800/50">
-                    <p class="text-zinc-500 text-xs font-bold uppercase mb-2">Status do Escaneamento:</p>
-                    <div class="text-[#00ffa3] font-mono text-xs">Módulo Raiz Operacional - Filtragem Ativa</div>
+                <p class="text-zinc-400 text-sm leading-relaxed mb-6">O sistema IPSheild está em modo de espera, monitorando parâmetros de rede para identificar acessos via Proxy, VPN ou Datacenters de alta latência.</p>
+                <div class="bg-black/60 p-6 rounded-2xl border border-zinc-800/50 font-mono">
+                    <div class="text-[#00ffa3] text-xs">Módulo Raiz: Operacional</div>
+                    <div class="text-zinc-600 text-[10px] mt-2 italic">Aguardando gatilho de tráfego em massa para ativação forçada...</div>
                 </div>
             </div>
         </section>
@@ -84,40 +81,41 @@
         <section id="tela-estorno" class="hidden">
             <h1 class="text-4xl font-extrabold uppercase mb-8 italic tracking-tighter">Estorno</h1>
             <div class="card">
-                <h2 class="text-zinc-500 font-black text-xs uppercase mb-6">Relatório de Cliques Inválidos para o Google Ads</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <div class="bg-black/20 p-4 rounded-xl border border-zinc-900">
-                        <p class="text-zinc-600 text-[9px] font-bold uppercase">Cliques Recuperáveis</p>
-                        <p class="text-2xl font-black">0</p>
+                <h2 class="text-zinc-500 font-bold text-[10px] uppercase mb-8 tracking-widest">Relatório para Google Ads</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                        <p class="text-zinc-600 text-[9px] font-black uppercase mb-1">Cliques Recuperáveis</p>
+                        <p class="text-3xl font-black">0</p>
                     </div>
-                    <div class="bg-black/20 p-4 rounded-xl border border-zinc-900">
-                        <p class="text-zinc-600 text-[9px] font-bold uppercase">Valor Estimado</p>
-                        <p class="text-2xl font-black text-[#00ffa3]">R$ 0,00</p>
+                    <div class="bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                        <p class="text-zinc-600 text-[9px] font-black uppercase mb-1">Valor Estimado</p>
+                        <p class="text-3xl font-black text-[#00ffa3]">R$ 0,00</p>
                     </div>
-                    <div class="bg-black/20 p-4 rounded-xl border border-zinc-900">
-                        <p class="text-zinc-600 text-[9px] font-bold uppercase">Status G-Ads</p>
-                        <p class="text-2xl font-black text-zinc-500">Sync...</p>
+                    <div class="bg-zinc-900/30 p-6 rounded-2xl border border-zinc-800">
+                        <p class="text-zinc-600 text-[9px] font-black uppercase mb-1">Status G-Ads</p>
+                        <p class="text-3xl font-black text-zinc-700 italic">Sync...</p>
                     </div>
                 </div>
-                <div class="p-10 border border-dashed border-zinc-800 rounded-3xl text-center">
-                    <p class="text-zinc-600 font-bold text-sm">Os relatórios de estorno são gerados após 24h de monitoramento para garantir a precisão dos dados enviados ao Google.</p>
+                <div class="p-12 border-2 border-dashed border-zinc-900 rounded-[40px] text-center">
+                    <p class="text-zinc-500 font-medium text-sm">Os relatórios de estorno são processados a cada 24 horas para garantir a precisão dos dados antes do envio ao suporte do Google Ads.</p>
                 </div>
             </div>
         </section>
 
         <section id="tela-onboarding" class="hidden">
             <h1 class="text-4xl font-extrabold mb-8 uppercase italic tracking-tighter">Conectar Conta</h1>
-            <div class="card bg-emerald-500/5 border-emerald-500/20">
-                <h2 class="text-emerald-500 font-black text-xs uppercase mb-4">Script de Ativação</h2>
-                <p class="text-zinc-400 text-sm mb-6">Insira este script no &lt;head&gt; do seu site. Ele é invisível para concorrentes.</p>
+            <div class="card border-[#00ffa3]/20 bg-[#00ffa3]/5">
+                <p class="text-[#00ffa3] font-black text-xs uppercase mb-4 tracking-tighter">Script de Ativação Automática</p>
                 <div class="bg-black p-6 rounded-2xl border border-zinc-800 font-mono text-[#00ffa3] text-xs break-all">
                     &lt;script src="https://xirrtonafivrphrzufbq.supabase.co/storage/v1/object/public/scripts/track.js"&gt;&lt;/script&gt;
                 </div>
             </div>
         </section>
+
     </main>
 
     <script>
+        // Lógica de Conexão (Invisível ao Usuário)
         const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -138,13 +136,15 @@
                 document.getElementById('economia-gerada').innerText = `R$ ${(total * 2.50).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
                 if (total > 0) {
                     document.getElementById('tabela-logs').innerHTML = data.map(v => `
-                        <tr>
-                            <td class="text-zinc-500 font-bold">${new Date(v.created_at).toLocaleTimeString('pt-BR')}</td>
-                            <td><span class="text-[#00ffa3] text-[9px] font-black border border-[#00ffa3]/30 px-3 py-1 rounded-full bg-[#00ffa3]/5 uppercase italic">Ativo</span></td>
-                            <td class="font-mono text-zinc-200 font-bold">${v.ip || '0.0.0.0'}</td>
-                            <td class="text-zinc-400 font-semibold">${v.campaign || 'Google Ads'}</td>
-                            <td style="text-align:right" class="text-red-600 font-black italic text-[10px]">RISCO CRÍTICO</td>
+                        <tr class="border-t border-zinc-900">
+                            <td class="py-5 text-zinc-500 font-bold">${new Date(v.created_at).toLocaleTimeString('pt-BR')}</td>
+                            <td><span class="text-[#00ffa3] text-[9px] font-black border border-[#00ffa3]/20 px-3 py-1 rounded-full uppercase">Ativo</span></td>
+                            <td class="font-mono text-zinc-200">${v.ip || '0.0.0.0'}</td>
+                            <td class="text-zinc-500 italic">${v.campaign || 'Ads'}</td>
+                            <td class="text-right text-red-600 font-black italic text-[10px]">RISCO ALTO</td>
                         </tr>`).join('');
+                } else {
+                    document.getElementById('tabela-logs').innerHTML = '<tr><td colspan="5" class="py-20 text-center text-zinc-800 font-black uppercase text-[10px]">Aguardando Invasores...</td></tr>';
                 }
             } catch (err) { console.error(err); }
         }
