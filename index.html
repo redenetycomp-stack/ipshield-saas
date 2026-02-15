@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Global Intelligence</title>
+    <title>IPShield OS | Global Shield</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,10 +15,8 @@
         .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: #0a0a0a; border-top: 1px solid #1a1a1a; z-index: 1000; justify-content: space-around; padding: 15px 0; }
         .nav-link { padding: 14px 18px; border-radius: 12px; color: #666; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .nav-link.active { background: #111; color: #00ffa3; }
-        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
-        .accent-text { color: #00ffa3; }
         
-        /* Tabela Otimizada com Coluna País */
+        /* Tabela Otimizada */
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
         th { text-align: left; padding: 12px 15px; color: #444; font-size: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
         td { padding: 16px 15px; background: #0d0d0d; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -26,6 +24,9 @@
         td:last-child { border-right: 1px solid #1a1a1a; border-radius: 0 12px 12px 0; }
 
         .status-badge { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 4px 10px; border-radius: 8px; font-size: 9px; font-weight: 800; }
+        
+        /* Estilo da Bandeira */
+        .flag-icon { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; border: 1px solid #333; }
 
         @media (max-width: 1024px) {
             .sidebar { display: none; }
@@ -38,7 +39,7 @@
 <body>
 
     <aside class="sidebar">
-        <div class="mb-12 px-4 text-2xl font-extrabold italic uppercase tracking-tighter">IPSHIELD <span class="accent-text">OS</span></div>
+        <div class="mb-12 px-4 text-2xl font-extrabold italic uppercase tracking-tighter text-white">IPSHIELD <span class="accent-text">OS</span></div>
         <nav class="flex-1">
             <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Visão Geral</div>
             <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Bloqueio Raiz</div>
@@ -47,9 +48,9 @@
             <div onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">🚀 Instalação</div>
         </nav>
         <div class="mt-auto px-4 py-4 bg-[#0d0d0d] rounded-2xl border border-[#1a1a1a]">
-            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-widest">Status da Proteção</div>
+            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-widest">Global Defense</div>
             <div class="text-xs font-bold flex items-center text-emerald-400">
-                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> FULL MONITORING
+                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> PROTEÇÃO ATIVA
             </div>
         </div>
     </aside>
@@ -67,30 +68,31 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                 <div>
                     <h1 class="text-4xl font-extrabold uppercase tracking-tight">Visão Geral</h1>
-                    <p class="text-gray-500 text-sm">proteclic.com.br</p>
+                    <p class="text-gray-500 text-sm">Traffic Security Intelligence</p>
                 </div>
-                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold text-xs">GERAR PDF</button>
+                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold text-xs hover:bg-gray-200 transition">GERAR RELATÓRIO</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                 <div class="card">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Bloqueios Totais</p>
-                    <p id="total-bloqueios" class="text-6xl font-extrabold">0</p>
+                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Invasores Bloqueados</p>
+                    <p id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</p>
                 </div>
                 <div class="card border-l-4 border-emerald-500">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Prejuízo Evitado</p>
-                    <p id="economia-gerada" class="text-6xl font-extrabold accent-text">R$ 0,00</p>
+                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Economia Estimada</p>
+                    <p id="economia-gerada" class="text-6xl font-extrabold accent-text tracking-tighter">R$ 0,00</p>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
-                <table style="min-width: 1200px;">
+                <table style="min-width: 1250px;">
                     <thead>
                         <tr>
-                            <th width="100">Hora</th>
+                            <th width="90">Hora</th>
                             <th width="100">Status</th>
                             <th width="130">IP Address</th>
-                            <th width="100">País</th> <th width="140">Cidade</th>
+                            <th width="60">País</th>
+                            <th width="140">Cidade</th>
                             <th width="140">Campanha</th>
                             <th width="140">Keyword</th>
                             <th width="110">Device ID</th>
@@ -102,7 +104,21 @@
             </div>
         </section>
 
-        </main>
+        <section id="tela-raiz" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Bloqueio Raiz</h1>
+            <div class="card border-red-900/20 bg-red-950/5">
+                <h3 class="font-bold text-red-500 mb-4 uppercase text-sm">Banir IP de Infraestrutura</h3>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input type="text" id="ip-ban-input" placeholder="0.0.0.0" class="flex-1 p-4 rounded-xl font-mono text-center">
+                    <button onclick="alert('IP enviado para a Edge de bloqueio.')" class="bg-red-600 text-white font-bold py-4 px-10 rounded-xl uppercase text-xs">EXECUTAR BAN</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="tela-automacao" class="hidden">...</section>
+        <section id="tela-sites" class="hidden">...</section>
+        <section id="tela-instalacao" class="hidden">...</section>
+    </main>
 
     <script>
         const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
@@ -125,23 +141,34 @@
             document.getElementById('economia-gerada').innerText = `R$ ${(data.length * 2.50).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
             const tbody = document.getElementById('tabela-logs');
-            tbody.innerHTML = data.map(v => `
+            tbody.innerHTML = data.map(v => {
+                const country = v.country_code ? v.country_code.toLowerCase() : 'br';
+                // Usando a API de bandeiras para gerar o círculo perfeito
+                const flagUrl = `https://flagcdn.com/w40/${country}.png`;
+                
+                return `
                 <tr>
                     <td class="text-gray-600 text-[10px] font-bold">${new Date(v.created_at).toLocaleTimeString()}</td>
                     <td><span class="status-badge">Bloqueado</span></td>
                     <td class="font-mono text-white text-xs font-bold">${v.ip}</td>
-                    <td class="text-gray-400 font-bold text-[11px] uppercase">${v.country_code || 'BR'}</td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <img src="${flagUrl}" class="flag-icon" title="${v.country_code || 'BR'}" onerror="this.src='https://flagcdn.com/w40/un.png'">
+                            <span class="text-[9px] font-bold text-gray-500">${v.country_code || 'BR'}</span>
+                        </div>
+                    </td>
                     <td class="text-gray-500 text-xs">${v.city || 'São Paulo'}</td>
                     <td class="text-gray-400 text-xs">${v.campaign || 'Google Ads'}</td>
                     <td class="text-gray-500 text-xs italic">"${v.keyword || '-'}"</td>
                     <td class="text-emerald-400 font-mono text-[10px] font-bold">${v.device_id || 'ID-OFF'}</td>
                     <td style="text-align:right" class="text-red-500 font-bold text-xs">100%</td>
                 </tr>
-            `).join('');
+                `;
+            }).join('');
         }
 
         carregarDados();
-        setInterval(carregarDados, 10000);
+        setInterval(carregarDados, 8000);
     </script>
 </body>
 </html>
