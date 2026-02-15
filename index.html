@@ -1,42 +1,46 @@
-async function carregarDados() {
-    try {
-        const { data, error } = await _supabase
-            .from('visits')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(35);
+<div id="total-bloqueios">0</div>
+<div id="economia-gerada">R$ 0,00</div>
 
-        if (error) throw error;
+<table id="tabela-logs">
+    </table>
 
-        // Se não houver dados ainda, mostra 0 em vez de travar a tela
-        const total = data ? data.length : 0;
-        const economia = total * 2.85; // Ticket médio de economia por bloqueio
+<script>
+async function carregarDados() { 
+    try { 
+        const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(35); 
+        
+        if (error) throw error; 
 
-        document.getElementById('total-bloqueios').innerText = total.toLocaleString('pt-BR');
-        document.getElementById('economia-gerada').innerText = `R$ ${economia.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+        const total = data ? data.length : 0; 
+        const economia = total * 2.85; 
 
-        if (total === 0) {
-            document.getElementById('tabela-logs').innerHTML = `
-                <tr><td colspan="8" class="text-center py-20 text-zinc-600 uppercase font-bold text-[10px] tracking-widest">
-                    Aguardando primeiro clique monitorado...
-                </td></tr>`;
-            return;
-        }
+        // Atualiza os números nos cartões da imagem 1
+        document.getElementById('total-bloqueios').innerText = total.toLocaleString('pt-BR'); 
+        document.getElementById('economia-gerada').innerText = `R$ ${economia.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`; 
 
+        if (total === 0) { 
+            document.getElementById('tabela-logs').innerHTML = '<tr><td colspan="8">Aguardando primeiro clique monitorado...</td></tr>'; 
+            return; 
+        } 
+
+        // Renderiza a tabela de logs
         document.getElementById('tabela-logs').innerHTML = data.map(v => `
             <tr>
-                <td class="text-zinc-500 font-bold">${new Date(v.created_at).toLocaleString('pt-BR')}</td>
-                <td><span class="bg-red-500/10 text-red-500 text-[9px] font-black p-1 px-3 rounded-lg border border-red-500/20">BLOCK</span></td>
-                <td class="font-mono text-white font-black">${v.ip || '---'}</td>
-                <td class="text-zinc-400 font-bold">${v.country_code || 'BR'}</td>
-                <td class="text-zinc-500">${v.city || 'São Paulo'}</td>
-                <td class="text-emerald-500 font-black">${v.campaign || 'Google Ads'}</td>
-                <td class="text-zinc-600 font-mono text-[10px]">${v.user_agent ? v.user_agent.substring(0, 15) + '...' : 'Device-ID'}</td>
-                <td style="text-align:right" class="text-red-500 font-black">RISCO ALTO</td>
-            </tr>
-        `).join('');
-    } catch (err) {
-        console.error("Erro ao carregar dashboard:", err);
-        document.getElementById('tabela-logs').innerHTML = `<tr><td colspan="8" class="text-center text-red-500 py-10">Erro de conexão com o banco de dados.</td></tr>`;
-    }
+                <td>${new Date(v.created_at).toLocaleString('pt-BR')}</td>
+                <td>BLOCK</td>
+                <td>${v.ip || '---'}</td>
+                <td>${v.country_code || 'BR'}</td>
+                <td>${v.city || 'São Paulo'}</td>
+                <td>${v.campaign || 'Google Ads'}</td>
+                <td>${v.user_agent ? v.user_agent.substring(0, 15) : 'Device-ID'}</td>
+                <td>RISCO ALTO</td>
+            </tr>`).join(''); 
+    } catch (err) { 
+        console.error("Erro:", err); 
+        document.getElementById('tabela-logs').innerHTML = 'Erro de conexão com o banco.'; 
+    } 
 }
+
+// Executa a função ao carregar a página
+carregarDados();
+</script>
