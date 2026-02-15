@@ -3,56 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Elite Edition</title>
+    <title>IPShield OS | Elite Master v25</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
         
-        /* Layout Estrutural */
         .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
-        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; padding-bottom: 100px; }
+        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; }
         
-        /* Navegação */
         .nav-link { padding: 14px 18px; border-radius: 12px; color: #666; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .nav-link.active { background: #111; color: #00ffa3; border: 1px solid #1a1a1a; }
         
-        /* Cards */
         .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
         .hidden { display: none !important; }
 
-        /* TABELAS COM CABEÇALHO FIXO */
-        .table-wrapper { 
-            position: relative; 
-            max-height: 70vh; 
-            overflow: auto; 
-            border-radius: 12px;
+        /* TABELA E SCROLLBAR */
+        .table-container { 
+            width: 100%; 
+            overflow-x: auto; 
+            border-radius: 16px; 
             border: 1px solid #1a1a1a;
+            background: #0d0d0d;
         }
+
+        table { width: 100%; border-collapse: collapse; }
         
-        table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-        
-        /* Sticky Header */
+        /* Cabeçalho Fixo */
         thead th { 
             position: sticky; 
             top: 0; 
-            background: #0a0a0a; 
-            z-index: 10; 
-            padding: 15px;
-            color: #444; 
+            background: #111; 
+            z-index: 20; 
+            padding: 16px;
+            color: #555; 
             font-size: 10px; 
             text-transform: uppercase; 
             font-weight: 800;
-            border-bottom: 1px solid #1a1a1a;
+            text-align: left;
+            border-bottom: 2px solid #1a1a1a;
+            white-space: nowrap;
         }
 
-        td { padding: 16px 15px; background: #0d0d0d; border-bottom: 1px solid #1a1a1a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        td { padding: 16px; border-bottom: 1px solid #1a1a1a; white-space: nowrap; font-size: 13px; }
         
-        /* Scrollbar Personalizada e Fixa */
-        .table-wrapper::-webkit-scrollbar { width: 10px; height: 10px; }
-        .table-wrapper::-webkit-scrollbar-track { background: #050505; }
-        .table-wrapper::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; border: 2px solid #050505; }
+        /* Estilo da Barra de Rolagem */
+        .table-container::-webkit-scrollbar { height: 10px; }
+        .table-container::-webkit-scrollbar-track { background: #050505; }
+        .table-container::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
         .status-badge { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 4px 10px; border-radius: 8px; font-size: 9px; font-weight: 800; }
         
@@ -75,24 +74,24 @@
     <main class="main-content">
         
         <section id="tela-dashboard">
-            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Auditoria em Tempo Real</h1>
+            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Logs de Proteção</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                <div class="card"><p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Total Bloqueado</p><p id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</p></div>
-                <div class="card border-emerald-500/20"><p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Economia Gerada</p><p id="economia-gerada" class="text-6xl font-extrabold text-[#00ffa3] tracking-tighter">R$ 0,00</p></div>
+                <div class="card"><p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Bloqueios</p><p id="total-bloqueios" class="text-6xl font-extrabold text-white">0</p></div>
+                <div class="card border-emerald-500/20"><p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Economia</p><p id="economia-gerada" class="text-6xl font-extrabold text-[#00ffa3]">R$ 0,00</p></div>
             </div>
             
-            <div class="table-wrapper">
-                <table style="min-width: 1500px;">
+            <div class="table-container">
+                <table>
                     <thead>
                         <tr>
-                            <th width="180">Data & Hora</th>
-                            <th width="120">Status</th>
-                            <th width="180">IP Address</th>
-                            <th width="100">País</th>
-                            <th width="180">Cidade</th>
-                            <th width="220">Campanha</th>
-                            <th width="220">Dispositivo</th>
-                            <th width="120" style="text-align:right">Risco</th>
+                            <th>Data & Hora</th>
+                            <th>Status</th>
+                            <th>IP Address</th>
+                            <th>País</th>
+                            <th>Cidade</th>
+                            <th>Campanha Ads</th>
+                            <th>Dispositivo (ID)</th>
+                            <th style="text-align:right">Risco</th>
                         </tr>
                     </thead>
                     <tbody id="tabela-logs" class="text-sm"></tbody>
@@ -101,31 +100,31 @@
         </section>
 
         <section id="tela-raiz" class="hidden">
-            <h1 class="text-4xl font-extrabold uppercase mb-8">Gestão de Redes</h1>
-            <div class="card border-amber-500/20 bg-amber-500/5 mb-8">
-                <p class="text-gray-400 text-sm mb-6">Sugestão de Firewall para a rede: <span class="text-white font-bold font-mono" id="suggested-root">...</span></p>
+            <h1 class="text-4xl font-extrabold uppercase mb-8">Firewall de Redes</h1>
+            <div class="card border-amber-500/20 bg-amber-500/5 mb-10">
+                <p class="text-gray-400 text-sm mb-6">Sugestão Automática: <span class="text-white font-bold font-mono" id="suggested-root">Analisando...</span></p>
                 <div class="flex flex-wrap gap-4">
-                    <select id="ban-duration" class="bg-black border border-zinc-800 text-gray-300 text-[10px] font-bold py-3 px-4 rounded-xl">
-                        <option value="24h">POR 24 HORAS</option>
-                        <option value="7d">POR 7 DIAS</option>
+                    <select id="ban-duration" class="bg-black border border-zinc-800 text-gray-300 text-xs font-bold py-3 px-6 rounded-xl outline-none">
+                        <option value="24h">BLOQUEAR 24h</option>
+                        <option value="7d">BLOQUEAR 7 DIAS</option>
                         <option value="perm">PERMANENTE</option>
                     </select>
-                    <button onclick="confirmarBloqueio()" class="bg-white text-black font-black py-3 px-8 rounded-xl text-[10px] uppercase">Banir Agora</button>
+                    <button onclick="confirmarBloqueio()" class="bg-white text-black font-black py-3 px-8 rounded-xl text-xs uppercase hover:bg-amber-500 transition">Aplicar Bloqueio</button>
                 </div>
             </div>
 
             <h3 class="text-[10px] font-black uppercase text-zinc-500 mb-4 tracking-widest">Clusters Identificados</h3>
-            <div class="table-wrapper mb-10">
-                <table class="w-full">
-                    <thead><tr><th>Rede</th><th>Cliques</th><th>Devices</th><th>Nível</th><th style="text-align:right">Ação</th></tr></thead>
+            <div class="table-container mb-12">
+                <table>
+                    <thead><tr><th>Rede (Raiz)</th><th>Cliques Acumulados</th><th>Aparelhos Únicos</th><th>Risco</th><th style="text-align:right">Ação</th></tr></thead>
                     <tbody id="tabela-raizes" class="text-sm"></tbody>
                 </table>
             </div>
 
-            <h3 class="text-[10px] font-black uppercase text-red-500 mb-4 tracking-widest">Firewall Ativo (Regras)</h3>
-            <div class="card border-red-900/10 p-0 overflow-hidden">
-                <table class="w-full">
-                    <thead class="bg-zinc-900/50"><tr><th class="px-4">Alvo</th><th>Expiração</th><th style="text-align:right" class="px-4">Gerenciar</th></tr></thead>
+            <h3 class="text-[10px] font-black uppercase text-red-500 mb-4 tracking-widest">Firewall Ativo (Bloqueios Atuais)</h3>
+            <div class="table-container border-red-900/20">
+                <table id="firewall-table">
+                    <thead><tr class="bg-red-500/5"><th class="text-red-500/70">Rede Alvo</th><th class="text-red-500/70">Duração</th><th style="text-align:right" class="text-red-500/70">Ação Manual</th></tr></thead>
                     <tbody id="tabela-firewall-ativa" class="text-sm">
                         </tbody>
                 </table>
@@ -133,22 +132,32 @@
         </section>
 
         <section id="tela-estorno" class="hidden">
-            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Central de Reembolso</h1>
+            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Menu Estorno</h1>
+            
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
                 <div class="card border-emerald-500/20">
-                    <h2 class="font-black uppercase mb-4">Exportar Provas</h2>
-                    <p class="text-xs text-gray-500 mb-6 italic">Gere o arquivo CSV com os IDs de clique fraudulentos para anexar ao suporte do Google.</p>
-                    <button onclick="alert('Relatório gerado!')" class="bg-[#00ffa3] text-black font-black py-4 px-8 rounded-xl text-[10px] uppercase">Baixar Relatório (.CSV)</button>
+                    <h2 class="font-black uppercase mb-4 text-[#00ffa3]">Passo 1: Gerar Provas</h2>
+                    <p class="text-xs text-gray-400 mb-6 leading-relaxed">O relatório consolida GCLIDs e IPs que violaram as políticas de clique. Use este arquivo no formulário de contestação.</p>
+                    <button onclick="alert('Relatório CSV preparado!')" class="bg-zinc-800 text-white font-black py-4 px-8 rounded-xl text-[10px] uppercase hover:bg-emerald-600 transition">Baixar Planilha de Provas</button>
                 </div>
-                <div class="card border-zinc-800">
-                    <h2 class="font-black uppercase mb-4">Formulários</h2>
-                    <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="block w-full text-center bg-white text-black font-bold py-4 rounded-xl text-[10px] uppercase">Abrir Contestação Google</a>
+                <div class="card border-white/10">
+                    <h2 class="font-black uppercase mb-4">Passo 2: Abrir Chamado</h2>
+                    <p class="text-xs text-gray-400 mb-6">Link direto para o formulário oficial de qualidade de cliques do Google Ads.</p>
+                    <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="block w-full text-center bg-white text-black font-black py-4 rounded-xl text-[10px] uppercase">Acessar Formulário Google</a>
                 </div>
+            </div>
+
+            <h3 class="text-[10px] font-black uppercase text-zinc-500 mb-4 tracking-widest">Amostra de IPs para Reembolso</h3>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>IP Fraudulento</th><th>Data da Fraude</th><th>Campanha</th><th>Motivo do Bloqueio</th><th style="text-align:right">Status</th></tr></thead>
+                    <tbody id="tabela-estorno-provas" class="text-sm"></tbody>
+                </table>
             </div>
         </section>
 
-        <section id="tela-automacao" class="hidden"><h1 class="text-4xl font-extrabold uppercase mb-8">Automação</h1><div class="card">Configurações de API...</div></section>
-        <section id="tela-sites" class="hidden"><h1 class="text-4xl font-extrabold uppercase mb-8">Meus Sites</h1><div class="card">proteclic.com.br</div></section>
+        <section id="tela-automacao" class="hidden"><h1 class="text-4xl font-extrabold mb-8">Automação</h1><div class="card text-zinc-500 italic uppercase font-bold text-xs">Sincronizando com scripts do Google Ads...</div></section>
+        <section id="tela-sites" class="hidden"><h1 class="text-4xl font-extrabold mb-8">Domínios</h1><div class="card text-emerald-500 font-bold">proteclic.com.br (Ativo)</div></section>
 
     </main>
 
@@ -163,6 +172,7 @@
             document.getElementById('tela-' + tela).classList.remove('hidden');
             document.getElementById('btn-' + tela).classList.add('active');
             if(tela === 'raiz') carregarRaizes();
+            if(tela === 'estorno') carregarEstornoProvas();
             window.scrollTo(0,0);
         }
 
@@ -175,12 +185,12 @@
             document.getElementById('tabela-logs').innerHTML = data.map(v => `
                 <tr>
                     <td class="text-gray-500 font-bold">${new Date(v.created_at).toLocaleString('pt-BR')}</td>
-                    <td><span class="status-badge">Bloqueado</span></td>
+                    <td><span class="status-badge">BLOQUEADO</span></td>
                     <td class="font-mono text-white font-bold">${v.ip}</td>
                     <td class="text-gray-400 font-bold">${v.country_code || 'BR'}</td>
                     <td class="text-gray-400">${v.city || 'São Paulo'}</td>
-                    <td class="text-emerald-500 font-bold">${v.campaign || 'Google Search'}</td>
-                    <td class="text-gray-500 font-mono text-[10px]">${v.device || 'ID-UNKNOWN'}</td>
+                    <td class="text-emerald-500 font-bold italic">${v.campaign || 'Google Search'}</td>
+                    <td class="text-gray-500 font-mono text-xs">${v.device || 'N/A'}</td>
                     <td style="text-align:right" class="text-red-500 font-black">100% FRAUDE</td>
                 </tr>
             `).join('');
@@ -192,12 +202,12 @@
             if(!data) return;
             document.getElementById('suggested-root').innerText = data[0].ip_root + '.*';
             tbody.innerHTML = data.map(r => `
-                <tr class="hover:bg-white/5">
+                <tr class="hover:bg-white/5 transition">
                     <td class="font-mono text-white font-bold">${r.ip_root}.*</td>
-                    <td class="text-gray-400">${r.total_clicks}</td>
+                    <td class="text-gray-400 font-bold">${r.total_clicks} Cliques</td>
                     <td class="text-gray-400">${r.unique_devices}</td>
-                    <td><span class="text-red-500 font-black uppercase text-[10px]">${r.risk_level}</span></td>
-                    <td style="text-align:right"><button onclick="confirmarBloqueio('${r.ip_root}.*')" class="bg-zinc-800 px-3 py-1 rounded text-[9px] font-bold uppercase">Banir</button></td>
+                    <td><span class="text-red-500 font-black text-[10px] uppercase">${r.risk_level}</span></td>
+                    <td style="text-align:right"><button onclick="confirmarBloqueio('${r.ip_root}.*')" class="bg-red-600/20 text-red-500 border border-red-500/30 px-4 py-1 rounded-lg text-[10px] font-black uppercase hover:bg-red-500 hover:text-white transition">Banir</button></td>
                 </tr>
             `).join('');
         }
@@ -207,14 +217,28 @@
             const tempo = document.getElementById('ban-duration').value;
             const tbody = document.getElementById('tabela-firewall-ativa');
             tbody.insertAdjacentHTML('afterbegin', `
-                <tr class="hover:bg-red-500/5 transition">
-                    <td class="font-mono text-white py-4 font-bold px-4">${raiz}</td>
-                    <td class="text-amber-500 text-[10px] font-bold uppercase italic">${tempo}</td>
+                <tr class="bg-red-500/5">
+                    <td class="font-mono text-white font-bold px-4 py-5">${raiz}</td>
+                    <td class="text-amber-500 text-[10px] font-black uppercase italic">${tempo}</td>
                     <td style="text-align:right" class="px-4">
-                        <button onclick="this.closest('tr').remove()" class="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-4 py-1 rounded-lg text-[9px] font-black hover:bg-emerald-500 hover:text-black transition-all">LIBERAR AGORA</button>
+                        <button onclick="this.closest('tr').remove()" class="bg-emerald-500 text-black px-6 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-emerald-400 transition-all">Liberar Raiz</button>
                     </td>
                 </tr>
             `);
+        }
+
+        async function carregarEstornoProvas() {
+            const { data } = await _supabase.from('visits').select('*').limit(15);
+            if(!data) return;
+            document.getElementById('tabela-estorno-provas').innerHTML = data.map(v => `
+                <tr>
+                    <td class="font-mono text-white font-bold">${v.ip}</td>
+                    <td class="text-gray-500">${new Date(v.created_at).toLocaleDateString()}</td>
+                    <td class="text-gray-400 italic">${v.campaign || 'Busca Direta'}</td>
+                    <td class="text-red-500 font-bold text-[10px] uppercase">Clique de Robô</td>
+                    <td style="text-align:right" class="text-emerald-500 font-black">Auditado</td>
+                </tr>
+            `).join('');
         }
 
         carregarDados();
