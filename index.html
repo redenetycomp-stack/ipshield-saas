@@ -1,150 +1,81 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Intelligence Center</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; overflow-x: hidden; }
-        .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
-        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; }
-        .nav-link { padding: 14px 18px; border-radius: 12px; color: #666; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .nav-link.active { background: #111; color: #00ffa3; }
-        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
-        .accent-text { color: #00ffa3; }
-        .hidden { display: none !important; }
-        
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
-        th { text-align: left; padding: 12px 15px; color: #444; font-size: 10px; text-transform: uppercase; font-weight: 800; }
-        td { padding: 16px 15px; background: #0d0d0d; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        td:first-child { border-left: 1px solid #1a1a1a; border-radius: 12px 0 0 12px; }
-        td:last-child { border-right: 1px solid #1a1a1a; border-radius: 0 12px 12px 0; }
-        
-        .status-badge { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 4px 10px; border-radius: 8px; font-size: 9px; font-weight: 800; }
-        .risk-tag { padding: 4px 10px; border-radius: 6px; font-size: 9px; font-weight: 900; text-transform: uppercase; }
-        .risk-Crítico { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
-        .risk-Médio { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        .risk-Baixo { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+<section id="tela-raiz" class="hidden">
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-4xl font-extrabold uppercase tracking-tight">Gestão de Firewall</h1>
+            <p class="text-gray-500 text-sm italic">Controle de bloqueios temporários e permanentes</p>
+        </div>
+    </div>
 
-        @media (max-width: 1024px) { .sidebar { display: none; } .main-content { margin-left: 0; padding: 20px; } }
-    </style>
-</head>
-<body>
-
-    <aside class="sidebar">
-        <div class="mb-12 px-4 text-2xl font-extrabold italic uppercase tracking-tighter">IPSHIELD <span class="accent-text">OS</span></div>
-        <nav class="flex-1">
-            <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Visão Geral</div>
-            <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Bloqueio Raiz</div>
-            <div onclick="navegar('automacao')" class="nav-link" id="btn-automacao">⚙️ Automação</div>
-            <div onclick="navegar('sites')" class="nav-link" id="btn-sites">🌐 Meus Sites</div>
-        </nav>
-    </aside>
-
-    <main class="main-content">
-        
-        <section id="tela-dashboard">
-            <h1 class="text-4xl font-extrabold uppercase mb-8">Intelligence Center</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                <div class="card"><p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Bloqueios Detectados</p><p id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</p></div>
-                <div class="card border-l-4 border-emerald-500"><p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Economia Gerada</p><p id="economia-gerada" class="text-6xl font-extrabold text-emerald-400 tracking-tighter">R$ 0,00</p></div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+        <div class="card border-amber-500/20 bg-amber-500/5 lg:col-span-2">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-amber-500 text-black px-2 py-1 rounded font-black text-[9px]">AÇÃO RECOMENDADA</span>
             </div>
+            <p class="text-gray-400 text-sm mb-6">A raiz <span class="text-white font-bold" id="suggested-root">...</span> deve ser isolada?</p>
+            
+            <div class="flex flex-wrap items-center gap-4">
+                <select id="ban-duration" class="bg-black border border-zinc-800 text-gray-300 text-[10px] font-bold py-3 px-4 rounded-xl outline-none focus:border-amber-500 transition">
+                    <option value="24h">BLOQUEAR POR 24 HORAS</option>
+                    <option value="7d">BLOQUEAR POR 7 DIAS</option>
+                    <option value="30d">BLOQUEAR POR 30 DIAS</option>
+                    <option value="perm">BLOQUEIO PERMANENTE</option>
+                </select>
+                
+                <button onclick="executarBloqueioRaiz()" class="bg-white text-black font-black py-3 px-8 rounded-xl text-[10px] uppercase hover:bg-amber-500 transition">Aplicar Restrição</button>
+            </div>
+        </div>
+
+        <div class="card border-zinc-800 flex flex-col justify-center text-center">
+            <p class="text-zinc-500 text-[10px] font-bold uppercase mb-1">Regras Ativas</p>
+            <p class="text-4xl font-black text-white" id="count-active-rules">0</p>
+        </div>
+    </div>
+
+    <div class="mb-10">
+        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-zinc-600">Análise de Tráfego por Rede</h3>
+        <div class="card">
             <div class="overflow-x-auto">
-                <table style="min-width: 1000px;">
-                    <thead><tr><th width="150">Data/Hora</th><th width="100">Status</th><th width="150">IP Address</th><th>Dispositivo</th><th style="text-align:right">Ameaça</th></tr></thead>
-                    <tbody id="tabela-logs" class="text-sm"></tbody>
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th>Rede (Raiz)</th>
+                            <th>Cliques</th>
+                            <th>Aparelhos</th>
+                            <th>Risco</th>
+                            <th style="text-align:right">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-raizes" class="text-sm"></tbody>
                 </table>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <section id="tela-raiz" class="hidden">
-            <h1 class="text-4xl font-extrabold uppercase mb-8">Análise de Raízes</h1>
-            
-            <div class="card border-amber-500/20 bg-amber-500/5 mb-8" id="card-sugestao">
-                <div class="flex items-center gap-3 mb-4">
-                    <span class="bg-amber-500 text-black px-2 py-1 rounded font-black text-[9px]">ALERTA DE CLUSTER</span>
-                </div>
-                <p class="text-gray-400 text-sm mb-6 leading-relaxed">Detectamos atividade incomum na rede <span class="text-white font-bold" id="suggested-root">...</span>. Bloquear essa raiz pode evitar dezenas de cliques fraudulentos originados do mesmo local.</p>
-                <button onclick="alert('Regra de Firewall enviada!')" class="bg-white text-black font-black py-3 px-8 rounded-xl text-[10px] uppercase">Bloquear Raiz Inteira</button>
+    <div>
+        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] mb-4 text-red-500">Firewall: IPs/Raízes Bloqueados</h3>
+        <div class="card border-red-900/10">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-zinc-600">
+                            <th>Alvo</th>
+                            <th>Tipo</th>
+                            <th>Expira em</th>
+                            <th style="text-align:right">Gerenciar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-firewall-ativa" class="text-sm">
+                        <tr class="hover:bg-red-500/5 transition">
+                            <td class="font-mono text-white py-4 text-xs font-bold">177.158.210.*</td>
+                            <td class="text-zinc-500 text-[10px] font-bold uppercase">Raiz Completa</td>
+                            <td class="text-amber-500 text-[10px] font-bold uppercase">23h 42m</td>
+                            <td style="text-align:right">
+                                <button onclick="alert('Raiz Liberada!')" class="text-[9px] font-black text-emerald-500 border border-emerald-500/20 px-3 py-1 rounded hover:bg-emerald-500 hover:text-black transition">LIBERAR AGORA</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
-            <div class="card">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead><tr><th>Rede (Raiz)</th><th>Cliques</th><th>Devices Únicos</th><th>Risco</th><th style="text-align:right">Ação</th></tr></thead>
-                        <tbody id="tabela-raizes" class="text-sm"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <section id="tela-automacao" class="hidden"><h1 class="text-4xl font-extrabold uppercase mb-8">Configurações</h1><div class="card text-gray-500">Aguardando Aprovação de Token Google Ads...</div></section>
-        <section id="tela-sites" class="hidden"><h1 class="text-4xl font-extrabold uppercase mb-8">Domínios</h1><div class="card text-emerald-500">proteclic.com.br (Ativo)</div></section>
-
-    </main>
-
-    <script>
-        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-        function navegar(tela) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('tela-' + tela).classList.remove('hidden');
-            document.getElementById('btn-' + tela).classList.add('active');
-            if(tela === 'raiz') carregarRaizes();
-        }
-
-        async function carregarDados() {
-            const { data } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(25);
-            if (!data) return;
-            
-            document.getElementById('total-bloqueios').innerText = data.length + 120;
-            document.getElementById('economia-gerada').innerText = `R$ ${( (data.length + 120) * 2.5).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            
-            document.getElementById('tabela-logs').innerHTML = data.map(v => `
-                <tr>
-                    <td class="text-gray-600 text-[10px] font-bold">${new Date(v.created_at).toLocaleString('pt-BR')}</td>
-                    <td><span class="status-badge">Bloqueado</span></td>
-                    <td class="font-mono text-white text-xs font-bold">${v.ip}</td>
-                    <td class="text-gray-500 text-[10px] font-mono">${v.device || 'ID-OFF'}</td>
-                    <td style="text-align:right" class="text-red-500 font-bold">100%</td>
-                </tr>
-            `).join('');
-        }
-
-        async function carregarRaizes() {
-            const { data, error } = await _supabase.from('root_analysis').select('*');
-            const tbody = document.getElementById('tabela-raizes');
-            
-            if(error || !data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-600 py-10">Nenhum cluster detectado ainda.</td></tr>';
-                return;
-            }
-
-            document.getElementById('suggested-root').innerText = data[0].ip_root + '.*';
-
-            tbody.innerHTML = data.map(r => `
-                <tr class="hover:bg-white/5 transition">
-                    <td class="font-mono text-white font-bold">${r.ip_root}.*</td>
-                    <td class="text-gray-400 font-bold">${r.total_clicks}</td>
-                    <td class="text-gray-500">${r.unique_devices}</td>
-                    <td><span class="risk-tag risk-${r.risk_level}">${r.risk_level}</span></td>
-                    <td style="text-align:right">
-                        <button onclick="alert('Ação em massa concluída para a rede ${r.ip_root}')" class="bg-zinc-800 hover:bg-red-600 text-white px-4 py-1 rounded text-[9px] font-bold transition uppercase">Banir</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        carregarDados();
-        setInterval(() => {
-            if(!document.getElementById('tela-dashboard').classList.contains('hidden')) carregarDados();
-        }, 10000);
-    </script>
-</body>
-</html>
+        </div>
+    </div>
+</section>
