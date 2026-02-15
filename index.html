@@ -3,80 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Dashboard Profissional</title>
-    
+    <title>IPShield OS | Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    
     <style>
-        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding-bottom: 90px; }
+        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
         .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
         .nav-link { padding: 14px 18px; border-radius: 12px; color: #777; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px; }
         .nav-link.active { background: #111; color: #00ffa3; border: 1px solid #1a1a1a; }
         .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; }
         .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
         .hidden { display: none !important; }
-        @media (max-width: 1024px) { .sidebar { display: none; } .main-content { margin-left: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
         <div class="mb-12 px-4 text-2xl font-extrabold italic text-white uppercase">IPSHIELD <span class="text-[#00ffa3]">OS</span></div>
-        <nav>
+        <nav class="flex-1">
             <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Dashboard</div>
+            <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Firewall</div>
+            <div onclick="navegar('estorno')" class="nav-link" id="btn-estorno">💰 Estorno</div>
             <div onclick="navegar('onboarding')" class="nav-link" id="btn-onboarding">🚀 Conectar Conta</div>
         </nav>
     </aside>
 
     <main class="main-content">
         <section id="tela-dashboard">
-            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Visão Geral</h1>
+            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Logs em Tempo Real</h1>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                <div class="card">
-                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2 text-zinc-400">Bloqueios Totais</p>
-                    <p id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</p>
-                </div>
-                <div class="card border-emerald-500/20">
-                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2 text-zinc-400">Economia Estimada</p>
-                    <p id="economia-gerada" class="text-6xl font-extrabold text-[#00ffa3] tracking-tighter">R$ 0,00</p>
+            <div class="card mb-8">
+                <div class="flex gap-10">
+                    <div>
+                        <p class="text-zinc-500 text-[10px] font-bold uppercase">Bloqueios</p>
+                        <p id="total-bloqueios" class="text-5xl font-black">0</p>
+                    </div>
+                    <div>
+                        <p class="text-zinc-500 text-[10px] font-bold uppercase">Economia</p>
+                        <p id="economia-gerada" class="text-5xl font-black text-[#00ffa3]">R$ 0,00</p>
+                    </div>
                 </div>
             </div>
 
             <div class="card">
-                <h3 class="text-xs font-bold uppercase text-zinc-500 mb-4">Ataques Detectados em Tempo Real</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="text-[10px] uppercase text-zinc-600 border-bottom border-zinc-800">
-                                <th class="pb-4">Data/Hora</th>
-                                <th class="pb-4">Status</th>
-                                <th class="pb-4">IP</th>
-                                <th class="pb-4">Campanha</th>
-                                <th class="pb-4 text-right">Risco</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-logs" class="text-sm">
-                            <tr><td colspan="5" class="py-10 text-center text-zinc-600">Conectando ao banco de dados profissional...</td></tr>
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-[10px] uppercase text-zinc-600 border-b border-zinc-800">
+                            <th class="pb-4">Data/Hora</th>
+                            <th class="pb-4">Status</th>
+                            <th class="pb-4">IP</th>
+                            <th class="pb-4">Campanha</th>
+                            <th class="pb-4 text-right">Risco</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-logs" class="text-sm">
                         </tbody>
-                    </table>
-                </div>
+                </table>
             </div>
         </section>
 
+        <section id="tela-raiz" class="hidden"><h1 class="text-4xl font-extrabold uppercase mb-8 italic">Firewall</h1><div class="card text-zinc-500">Configurações de bloqueio de IP Raiz.</div></section>
+        <section id="tela-estorno" class="hidden"><h1 class="text-4xl font-extrabold uppercase mb-8 italic">Relatório de Estorno</h1><div class="card text-zinc-500">Dados para solicitar reembolso ao Google.</div></section>
+        
         <section id="tela-onboarding" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase italic">Configuração</h1>
+            <h1 class="text-4xl font-extrabold mb-8 uppercase italic">Conectar Conta</h1>
             <div class="card bg-emerald-500/5 border-emerald-500/20">
-                <p class="text-emerald-500 font-bold mb-4">Instalação em menos de 2 minutos</p>
-                <div class="bg-black p-6 rounded-xl font-mono text-emerald-400 text-xs border border-zinc-800">
+                <p class="text-emerald-500 font-bold mb-4">Código de Rastreamento</p>
+                <code class="block bg-black p-4 rounded text-[#00ffa3] text-xs">
                     &lt;script src="https://xirrtonafivrphrzufbq.supabase.co/storage/v1/object/public/scripts/track.js"&gt;&lt;/script&gt;
-                </div>
+                </code>
             </div>
         </section>
     </main>
 
     <script>
         const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzd
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        function navegar(tela) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('tela-' + tela).classList.remove('hidden');
+            document.getElementById('btn-' + tela).classList.add('active');
+        }
+
+        async function carregarDados() {
+            try {
+                const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(20);
+                if (error) return;
+
+                const total = data ? data.length : 0;
+                document.getElementById('total-bloqueios').innerText = total.toLocaleString('pt-BR');
+                document.getElementById('economia-gerada').innerText = `R$ ${(total * 2.50).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
+                if (total > 0) {
+                    document.getElementById('tabela-logs').innerHTML = data.map(v => `
+                        <tr class="border-t border-zinc-900">
+                            <td class="py-4 text-zinc-500">${new Date(v.created_at).toLocaleTimeString('pt-BR')}</td>
+                            <td><span class="text-[#00ffa3] text-[9px] font-black border border-[#00ffa3]/20 px-2 py-1 rounded">ATIVO</span></td>
+                            <td class="font-mono text-white">${v.ip || '---'}</td>
+                            <td class="text-zinc-400">${v.campaign || 'Ads'}</td>
+                            <td class="text-right text-red-600 font-black italic">ALTO RISCO</td>
+                        </tr>`).join('');
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        carregarDados();
+        setInterval(carregarDados, 5000);
+    </script>
+</body>
+</html>
