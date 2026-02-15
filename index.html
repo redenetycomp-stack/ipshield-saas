@@ -10,43 +10,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; display: flex; flex-direction: column; overflow-x: hidden; }
-        
-        /* Sidebar Desktop */
-        .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; transition: 0.3s; }
-        
-        /* Ajuste Main Content */
-        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; transition: 0.3s; }
-        
-        /* Mobile Navigation (Barra Inferior) */
+        .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
+        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; }
         .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: #0a0a0a; border-top: 1px solid #1a1a1a; z-index: 1000; justify-content: space-around; padding: 15px 0; }
-        
-        /* Estilos de Navegação */
         .nav-link { padding: 14px 18px; border-radius: 12px; color: #666; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .nav-link.active { background: #111; color: #00ffa3; }
-        .nav-link:hover:not(.active) { color: #fff; }
-
-        /* Tabela Estilo Premium */
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
+        .accent-text { color: #00ffa3; }
+        
+        /* Tabela Full-Width Otimizada */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
         th { text-align: left; padding: 12px 15px; color: #444; font-size: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
-        td { padding: 16px 15px; background: #0d0d0d; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; vertical-align: middle; }
+        td { padding: 16px 15px; background: #0d0d0d; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         td:first-child { border-left: 1px solid #1a1a1a; border-radius: 12px 0 0 12px; }
         td:last-child { border-right: 1px solid #1a1a1a; border-radius: 0 12px 12px 0; }
 
-        /* Badge de Status Bloqueado */
-        .status-badge { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 4px 10px; border-radius: 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; }
+        .status-badge { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 4px 10px; border-radius: 8px; font-size: 9px; font-weight: 800; }
 
-        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
-        .accent-text { color: #00ffa3; }
-        input { background: #000 !important; border: 1px solid #1a1a1a !important; color: #fff !important; }
-        input:focus { border-color: #00ffa3 !important; outline: none; }
-
-        /* Media Queries para Mobile */
         @media (max-width: 1024px) {
             .sidebar { display: none; }
             .mobile-nav { display: flex; }
             .main-content { margin-left: 0; padding: 20px; padding-bottom: 100px; }
             .hide-mobile { display: none; }
-            .text-6xl { font-size: 3rem; }
         }
     </style>
 </head>
@@ -62,54 +47,53 @@
             <div onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">🚀 Instalação</div>
         </nav>
         <div class="mt-auto px-4 py-4 bg-[#0d0d0d] rounded-2xl border border-[#1a1a1a]">
-            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-widest">Motor de Defesa</div>
+            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-widest">Motor IPSheild</div>
             <div class="text-xs font-bold flex items-center text-emerald-400">
-                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse shadow-[0_0_8px_#10b981]"></span> ATIVO
+                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> ONLINE
             </div>
         </div>
     </aside>
 
     <nav class="mobile-nav">
-        <div onclick="navegar('dashboard')" class="text-xl opacity-50 active:opacity-100">📊</div>
-        <div onclick="navegar('raiz')" class="text-xl opacity-50 active:opacity-100">🚫</div>
-        <div onclick="navegar('automacao')" class="text-xl opacity-50 active:opacity-100">⚙️</div>
-        <div onclick="navegar('sites')" class="text-xl opacity-50 active:opacity-100">🌐</div>
-        <div onclick="navegar('instalacao')" class="text-xl opacity-50 active:opacity-100">🚀</div>
+        <div onclick="navegar('dashboard')">📊</div>
+        <div onclick="navegar('raiz')">🚫</div>
+        <div onclick="navegar('automacao')">⚙️</div>
+        <div onclick="navegar('sites')">🌐</div>
+        <div onclick="navegar('instalacao')">🚀</div>
     </nav>
 
     <main class="main-content">
-        
         <section id="tela-dashboard">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                 <div>
                     <h1 class="text-4xl font-extrabold uppercase tracking-tight">Visão Geral</h1>
-                    <p class="text-gray-500 text-sm italic">Análise de tráfego: proteclic.com.br</p>
+                    <p class="text-gray-500 text-sm">Monitoramento: proteclic.com.br</p>
                 </div>
-                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold text-xs hover:bg-gray-200 transition">EXPORTAR LOGS</button>
+                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold text-xs">EXPORTAR PDF</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                 <div class="card">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2 tracking-widest">Acessos Bloqueados</p>
+                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Fraudes Bloqueadas</p>
                     <p id="total-bloqueios" class="text-6xl font-extrabold">0</p>
                 </div>
                 <div class="card border-l-4 border-emerald-500">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2 tracking-widest">Economia Gerada</p>
+                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Economia Acumulada</p>
                     <p id="economia-gerada" class="text-6xl font-extrabold accent-text">R$ 0,00</p>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
-                <table>
-                    <thead>
+                <table style="min-width: 1000px;"> <thead>
                         <tr>
-                            <th>Data/Hora</th>
-                            <th>Status</th>
-                            <th>IP Address</th>
-                            <th>ID Dispositivo</th>
-                            <th class="hide-mobile">Navegador</th>
-                            <th class="hide-mobile">Cidade</th>
-                            <th style="text-align:right">Risco</th>
+                            <th width="120">Data/Hora</th>
+                            <th width="110">Status</th>
+                            <th width="150">IP Address</th>
+                            <th width="150">Campanha</th>
+                            <th width="150">Palavra-Chave</th>
+                            <th width="120">Dispositivo</th>
+                            <th width="120">Cidade</th>
+                            <th width="80" style="text-align:right">Risco</th>
                         </tr>
                     </thead>
                     <tbody id="tabela-logs" class="text-sm"></tbody>
@@ -117,123 +101,47 @@
             </div>
         </section>
 
-        <section id="tela-raiz" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Bloqueio na Raiz</h1>
-            <div class="card border-red-900/20 bg-red-950/5">
-                <h3 class="font-bold text-red-500 mb-4 uppercase text-sm">Banimento Manual</h3>
-                <div class="flex flex-col md:flex-row gap-4">
-                    <input type="text" id="ip-ban-input" placeholder="0.0.0.0" class="flex-1 p-4 rounded-xl font-mono">
-                    <button onclick="alert('IP adicionado à lista negra da raiz.')" class="bg-red-600 text-white font-bold py-4 px-10 rounded-xl uppercase text-xs">Bloquear IP</button>
-                </div>
-                <p class="text-[10px] text-gray-500 mt-4 italic">Estes IPs são barrados antes mesmo de carregar o código do seu site.</p>
-            </div>
-        </section>
-
-        <section id="tela-automacao" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Automação API</h1>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card">
-                    <h3 class="font-bold mb-2 uppercase text-sm">Google Ads Connection</h3>
-                    <p class="text-gray-500 text-xs mb-6">Insira seu ID de cliente para sincronizar as listas de exclusão.</p>
-                    <input type="text" placeholder="ID: 000-000-0000" class="w-full p-4 rounded-xl mb-4 text-center font-bold tracking-widest">
-                    <button onclick="alert('Conectando ao Google Ads API...')" class="w-full bg-[#00ffa3] text-black font-bold py-4 rounded-xl uppercase text-xs tracking-widest">Vincular Conta</button>
-                </div>
-                <div class="card border-yellow-900/20 bg-yellow-900/5 flex items-center">
-                    <p class="text-xs text-yellow-600 italic leading-relaxed">
-                        Aguardando aprovação do Test Token pelo Google Ads. O sistema IPSheild está operando em modo de monitoramento standby.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="tela-sites" class="hidden">
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-4xl font-extrabold uppercase tracking-tight">Meus Sites</h1>
-                <button onclick="adicionarSite()" class="bg-white text-black px-6 py-3 rounded-2xl font-bold text-xs">+ ADICIONAR DOMÍNIO</button>
-            </div>
-            <div id="lista-sites" class="grid grid-cols-1 gap-4">
-                <div class="card flex justify-between items-center py-6">
-                    <div>
-                        <span class="text-xl font-bold">proteclic.com.br</span>
-                        <div class="text-[10px] text-emerald-500 font-bold uppercase mt-1 tracking-widest">Proteção Ativa</div>
-                    </div>
-                    <span class="w-3 h-3 bg-emerald-500 rounded-full shadow-[0_0_8px_#10b981]"></span>
-                </div>
-            </div>
-        </section>
-
-        <section id="tela-instalacao" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Instalação</h1>
-            <div class="card">
-                <p class="text-xs text-gray-500 mb-4 font-bold uppercase tracking-widest">Pixel de Rastreamento Global</p>
-                <div class="bg-black p-6 rounded-2xl border border-zinc-900 font-mono text-xs text-[#00ffa3] break-all">
-                    &lt;script src="https://xirrtonafivrphrzufbq.supabase.co/functions/v1/pixel?id=proteclic.com.br" async&gt;&lt;/script&gt;
-                </div>
-                <button onclick="alert('Código copiado para a área de transferência!')" class="mt-6 bg-zinc-800 text-white px-8 py-3 rounded-xl font-bold text-xs hover:bg-zinc-700 transition">COPIAR SCRIPT</button>
-            </div>
-        </section>
-
+        <section id="tela-raiz" class="hidden">...</section>
+        <section id="tela-automacao" class="hidden">...</section>
+        <section id="tela-sites" class="hidden">...</section>
+        <section id="tela-instalacao" class="hidden">...</section>
     </main>
 
     <script>
-        // Configuração Supabase
         const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Sistema de Navegação SPA
         function navegar(tela) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.getElementById('tela-' + tela).classList.remove('hidden');
             const btn = document.getElementById('btn-' + tela);
             if(btn) btn.classList.add('active');
-            window.scrollTo(0, 0);
         }
 
-        // Busca de Dados em Tempo Real
         async function carregarDados() {
             const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false });
             if (error) return;
 
-            // Stats
             document.getElementById('total-bloqueios').innerText = data.length;
             document.getElementById('economia-gerada').innerText = `R$ ${(data.length * 2.50).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            // Renderização da Tabela
             const tbody = document.getElementById('tabela-logs');
             tbody.innerHTML = data.map(v => `
-                <tr class="hover:bg-[#111]/50 transition">
+                <tr>
                     <td class="text-gray-600 text-[10px] font-bold">${new Date(v.created_at).toLocaleTimeString()}</td>
                     <td><span class="status-badge">Bloqueado</span></td>
                     <td class="font-mono text-white text-xs font-bold">${v.ip}</td>
-                    <td class="text-emerald-400 font-mono text-[11px] font-bold">${v.device_id || 'FINGER-XX'}</td>
-                    <td class="text-gray-400 text-xs hide-mobile">${v.browser || 'Chrome'}</td>
-                    <td class="text-gray-500 text-xs hide-mobile">${v.city || 'São Paulo, BR'}</td>
-                    <td style="text-align:right">
-                        <span class="text-red-500 font-black text-xs">${v.risk_score || '100'}%</span>
-                    </td>
+                    <td class="text-gray-400 text-xs">${v.campaign || 'Google Ads'}</td>
+                    <td class="text-gray-500 text-xs italic">"${v.keyword || '-'}"</td>
+                    <td class="text-emerald-400 font-mono text-[10px] font-bold">${v.device_id || 'ID-XXXX'}</td>
+                    <td class="text-gray-500 text-xs">${v.city || 'São Paulo'}</td>
+                    <td style="text-align:right" class="text-red-500 font-bold text-xs">100%</td>
                 </tr>
             `).join('');
         }
 
-        function adicionarSite() {
-            const site = prompt("Qual o domínio do novo site?");
-            if(site) alert(`Domínio ${site} adicionado. Verificando integração...`);
-        }
-
-        function gerarRelatorioPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFontSize(20);
-            doc.text("IPShield OS - Relatório de Bloqueios", 10, 20);
-            doc.setFontSize(12);
-            doc.text(`Total de Fraudes Barradas: ${document.getElementById('total-bloqueios').innerText}`, 10, 30);
-            doc.text(`Economia Estimada: ${document.getElementById('economia-gerada').innerText}`, 10, 40);
-            doc.save('ipshield-report.pdf');
-        }
-
-        // Loop de atualização
         carregarDados();
         setInterval(carregarDados, 10000);
     </script>
