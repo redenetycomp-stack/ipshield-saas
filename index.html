@@ -136,4 +136,106 @@
                     <h3 class="font-bold mb-2 uppercase text-sm">Google Ads Connection</h3>
                     <p class="text-gray-500 text-xs mb-6">Insira seu ID de cliente para sincronizar as listas de exclusão.</p>
                     <input type="text" placeholder="ID: 000-000-0000" class="w-full p-4 rounded-xl mb-4 text-center font-bold tracking-widest">
-                    <button onclick="alert('Conectando ao Google Ads API...')" class="w-full bg-[#00ffa3] text-black font-bold py-4 rounded-xl uppercase text-xs tracking-widest">Vincular Conta</
+                    <button onclick="alert('Conectando ao Google Ads API...')" class="w-full bg-[#00ffa3] text-black font-bold py-4 rounded-xl uppercase text-xs tracking-widest">Vincular Conta</button>
+                </div>
+                <div class="card border-yellow-900/20 bg-yellow-900/5 flex items-center">
+                    <p class="text-xs text-yellow-600 italic leading-relaxed">
+                        Aguardando aprovação do Test Token pelo Google Ads. O sistema IPSheild está operando em modo de monitoramento standby.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tela-sites" class="hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-4xl font-extrabold uppercase tracking-tight">Meus Sites</h1>
+                <button onclick="adicionarSite()" class="bg-white text-black px-6 py-3 rounded-2xl font-bold text-xs">+ ADICIONAR DOMÍNIO</button>
+            </div>
+            <div id="lista-sites" class="grid grid-cols-1 gap-4">
+                <div class="card flex justify-between items-center py-6">
+                    <div>
+                        <span class="text-xl font-bold">proteclic.com.br</span>
+                        <div class="text-[10px] text-emerald-500 font-bold uppercase mt-1 tracking-widest">Proteção Ativa</div>
+                    </div>
+                    <span class="w-3 h-3 bg-emerald-500 rounded-full shadow-[0_0_8px_#10b981]"></span>
+                </div>
+            </div>
+        </section>
+
+        <section id="tela-instalacao" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Instalação</h1>
+            <div class="card">
+                <p class="text-xs text-gray-500 mb-4 font-bold uppercase tracking-widest">Pixel de Rastreamento Global</p>
+                <div class="bg-black p-6 rounded-2xl border border-zinc-900 font-mono text-xs text-[#00ffa3] break-all">
+                    &lt;script src="https://xirrtonafivrphrzufbq.supabase.co/functions/v1/pixel?id=proteclic.com.br" async&gt;&lt;/script&gt;
+                </div>
+                <button onclick="alert('Código copiado para a área de transferência!')" class="mt-6 bg-zinc-800 text-white px-8 py-3 rounded-xl font-bold text-xs hover:bg-zinc-700 transition">COPIAR SCRIPT</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Configuração Supabase
+        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Sistema de Navegação SPA
+        function navegar(tela) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('tela-' + tela).classList.remove('hidden');
+            const btn = document.getElementById('btn-' + tela);
+            if(btn) btn.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Busca de Dados em Tempo Real
+        async function carregarDados() {
+            const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false });
+            if (error) return;
+
+            // Stats
+            document.getElementById('total-bloqueios').innerText = data.length;
+            document.getElementById('economia-gerada').innerText = `R$ ${(data.length * 2.50).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+            // Renderização da Tabela
+            const tbody = document.getElementById('tabela-logs');
+            tbody.innerHTML = data.map(v => `
+                <tr class="hover:bg-[#111]/50 transition">
+                    <td class="text-gray-600 text-[10px] font-bold">${new Date(v.created_at).toLocaleTimeString()}</td>
+                    <td><span class="status-badge">Bloqueado</span></td>
+                    <td class="font-mono text-white text-xs font-bold">${v.ip}</td>
+                    <td class="text-emerald-400 font-mono text-[11px] font-bold">${v.device_id || 'FINGER-XX'}</td>
+                    <td class="text-gray-400 text-xs hide-mobile">${v.browser || 'Chrome'}</td>
+                    <td class="text-gray-500 text-xs hide-mobile">${v.city || 'São Paulo, BR'}</td>
+                    <td style="text-align:right">
+                        <span class="text-red-500 font-black text-xs">${v.risk_score || '100'}%</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function adicionarSite() {
+            const site = prompt("Qual o domínio do novo site?");
+            if(site) alert(`Domínio ${site} adicionado. Verificando integração...`);
+        }
+
+        function gerarRelatorioPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(20);
+            doc.text("IPShield OS - Relatório de Bloqueios", 10, 20);
+            doc.setFontSize(12);
+            doc.text(`Total de Fraudes Barradas: ${document.getElementById('total-bloqueios').innerText}`, 10, 30);
+            doc.text(`Economia Estimada: ${document.getElementById('economia-gerada').innerText}`, 10, 40);
+            doc.save('ipshield-report.pdf');
+        }
+
+        // Loop de atualização
+        carregarDados();
+        setInterval(carregarDados, 10000);
+    </script>
+</body>
+</html>
