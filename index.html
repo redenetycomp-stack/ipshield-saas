@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Intelligence Center</title>
+    <title>IPShield OS | Global Intelligence</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +18,7 @@
         .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
         .accent-text { color: #00ffa3; }
         
-        /* Tabela Full-Width Otimizada */
+        /* Tabela Otimizada com Coluna País */
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
         th { text-align: left; padding: 12px 15px; color: #444; font-size: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
         td { padding: 16px 15px; background: #0d0d0d; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -47,9 +47,9 @@
             <div onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">🚀 Instalação</div>
         </nav>
         <div class="mt-auto px-4 py-4 bg-[#0d0d0d] rounded-2xl border border-[#1a1a1a]">
-            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-widest">Motor IPSheild</div>
+            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-widest">Status da Proteção</div>
             <div class="text-xs font-bold flex items-center text-emerald-400">
-                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> ONLINE
+                <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> FULL MONITORING
             </div>
         </div>
     </aside>
@@ -66,84 +66,4 @@
         <section id="tela-dashboard">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                 <div>
-                    <h1 class="text-4xl font-extrabold uppercase tracking-tight">Visão Geral</h1>
-                    <p class="text-gray-500 text-sm">Monitoramento: proteclic.com.br</p>
-                </div>
-                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold text-xs">EXPORTAR PDF</button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                <div class="card">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Fraudes Bloqueadas</p>
-                    <p id="total-bloqueios" class="text-6xl font-extrabold">0</p>
-                </div>
-                <div class="card border-l-4 border-emerald-500">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Economia Acumulada</p>
-                    <p id="economia-gerada" class="text-6xl font-extrabold accent-text">R$ 0,00</p>
-                </div>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table style="min-width: 1000px;"> <thead>
-                        <tr>
-                            <th width="120">Data/Hora</th>
-                            <th width="110">Status</th>
-                            <th width="150">IP Address</th>
-                            <th width="150">Campanha</th>
-                            <th width="150">Palavra-Chave</th>
-                            <th width="120">Dispositivo</th>
-                            <th width="120">Cidade</th>
-                            <th width="80" style="text-align:right">Risco</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-logs" class="text-sm"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="tela-raiz" class="hidden">...</section>
-        <section id="tela-automacao" class="hidden">...</section>
-        <section id="tela-sites" class="hidden">...</section>
-        <section id="tela-instalacao" class="hidden">...</section>
-    </main>
-
-    <script>
-        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-        function navegar(tela) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('tela-' + tela).classList.remove('hidden');
-            const btn = document.getElementById('btn-' + tela);
-            if(btn) btn.classList.add('active');
-        }
-
-        async function carregarDados() {
-            const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false });
-            if (error) return;
-
-            document.getElementById('total-bloqueios').innerText = data.length;
-            document.getElementById('economia-gerada').innerText = `R$ ${(data.length * 2.50).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-
-            const tbody = document.getElementById('tabela-logs');
-            tbody.innerHTML = data.map(v => `
-                <tr>
-                    <td class="text-gray-600 text-[10px] font-bold">${new Date(v.created_at).toLocaleTimeString()}</td>
-                    <td><span class="status-badge">Bloqueado</span></td>
-                    <td class="font-mono text-white text-xs font-bold">${v.ip}</td>
-                    <td class="text-gray-400 text-xs">${v.campaign || 'Google Ads'}</td>
-                    <td class="text-gray-500 text-xs italic">"${v.keyword || '-'}"</td>
-                    <td class="text-emerald-400 font-mono text-[10px] font-bold">${v.device_id || 'ID-XXXX'}</td>
-                    <td class="text-gray-500 text-xs">${v.city || 'São Paulo'}</td>
-                    <td style="text-align:right" class="text-red-500 font-bold text-xs">100%</td>
-                </tr>
-            `).join('');
-        }
-
-        carregarDados();
-        setInterval(carregarDados, 10000);
-    </script>
-</body>
-</html>
+                    <h1 class="text-
