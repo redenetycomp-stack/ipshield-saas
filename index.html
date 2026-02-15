@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Ultimate v27</title>
+    <title>IPShield OS | Client Integration v28</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding-bottom: 80px; }
+        body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding-bottom: 90px; }
         
         /* Sidebar Desktop */
         .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
@@ -19,26 +19,30 @@
         .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
         .hidden { display: none !important; }
 
-        /* Menu Mobile (Fixo Embaixo) */
-        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0a; border-top: 1px solid #1a1a1a; padding: 12px; z-index: 200; justify-content: space-around; }
-        .mobile-link { color: #555; display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        /* Menu Mobile Estilo App */
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0a; border-top: 1px solid #1a1a1a; padding: 12px; z-index: 200; justify-content: space-around; backdrop-filter: blur(10px); }
+        .mobile-link { color: #555; display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 800; text-transform: uppercase; gap: 4px; }
         .mobile-link.active { color: #00ffa3; }
 
-        /* Tabela Responsiva */
+        /* Tabela Ultra-Larga Responsiva */
         .table-container { width: 100%; overflow-x: auto; border-radius: 20px; border: 1px solid #1a1a1a; background: #0d0d0d; }
-        table { width: 100%; border-collapse: collapse; min-width: 1500px; }
-        thead th { position: sticky; top: 0; background: #111; z-index: 20; padding: 20px 16px; color: #444; font-size: 10px; font-weight: 800; text-align: left; }
-        td { padding: 18px 16px; border-bottom: 1px solid #1a1a1a; white-space: nowrap; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1600px; }
+        thead th { position: sticky; top: 0; background: #111; z-index: 20; padding: 20px 16px; color: #444; font-size: 10px; font-weight: 800; text-align: left; border-bottom: 1px solid #1a1a1a; }
+        td { padding: 18px 16px; border-bottom: 1px solid #1a1a1a; white-space: nowrap; font-size: 12px; color: #ccc; }
 
-        /* Scrollbar Grossa */
+        /* Scrollbar Grossa para Fácil Arraste */
         .table-container::-webkit-scrollbar { height: 12px; }
-        .table-container::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .table-container::-webkit-scrollbar-track { background: #050505; }
+        .table-container::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; border: 2px solid #050505; }
 
         @media (max-width: 1024px) { 
             .sidebar { display: none; } 
             .main-content { margin-left: 0; padding: 20px; }
             .mobile-nav { display: flex; }
         }
+
+        .input-shield { background: #000; border: 1px solid #1a1a1a; padding: 16px; border-radius: 16px; width: 100%; color: #fff; outline: none; transition: 0.3s; }
+        .input-shield:focus { border-color: #00ffa3; box-shadow: 0 0 15px rgba(0, 255, 163, 0.1); }
     </style>
 </head>
 <body>
@@ -49,97 +53,102 @@
             <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Visão Geral</div>
             <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Bloqueio Raiz</div>
             <div onclick="navegar('estorno')" class="nav-link" id="btn-estorno">💰 Menu Estorno</div>
-            <div onclick="navegar('automacao')" class="nav-link" id="btn-automacao">⚙️ Automação</div>
-            <div onclick="navegar('sites')" class="nav-link" id="btn-sites">🌐 Meus Sites</div>
+            <div onclick="navegar('onboarding')" class="nav-link" id="btn-onboarding">🚀 Conectar Conta</div>
         </nav>
     </aside>
 
     <nav class="mobile-nav">
-        <div onclick="navegar('dashboard')" class="mobile-link active" id="m-btn-dashboard"><span>📊</span><span>Dashboard</span></div>
+        <div onclick="navegar('dashboard')" class="mobile-link active" id="m-btn-dashboard"><span>📊</span><span>Geral</span></div>
         <div onclick="navegar('raiz')" class="mobile-link" id="m-btn-raiz"><span>🚫</span><span>Raiz</span></div>
         <div onclick="navegar('estorno')" class="mobile-link" id="m-btn-estorno"><span>💰</span><span>Estorno</span></div>
-        <div onclick="navegar('automacao')" class="mobile-link" id="m-btn-automacao"><span>⚙️</span><span>API</span></div>
-        <div onclick="navegar('sites')" class="mobile-link" id="m-btn-sites"><span>🌐</span><span>Sites</span></div>
+        <div onclick="navegar('onboarding')" class="mobile-link" id="m-btn-onboarding"><span>🚀</span><span>Setup</span></div>
     </nav>
 
     <main class="main-content">
         
         <section id="tela-dashboard">
-            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Auditores Online</h1>
+            <h1 class="text-4xl font-extrabold uppercase mb-8 italic">Logs de Auditoria</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                <div class="card"><p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Bloqueios</p><p id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</p></div>
-                <div class="card border-emerald-500/20"><p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Economia</p><p id="economia-gerada" class="text-6xl font-extrabold text-[#00ffa3] tracking-tighter">R$ 0,00</p></div>
+                <div class="card"><p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Cliques Bloqueados</p><p id="total-bloqueios" class="text-6xl font-extrabold">0</p></div>
+                <div class="card border-emerald-500/20"><p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Crédito Protegido</p><p id="economia-gerada" class="text-6xl font-extrabold text-[#00ffa3]">R$ 0,00</p></div>
             </div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Data/Hora</th><th>Status</th><th>IP</th><th>País</th><th>Cidade</th><th>Campanha</th><th>Device ID</th><th style="text-align:right">Risco</th></tr></thead>
+                    <thead><tr><th>Timestamp</th><th>Status</th><th>IP Address</th><th>País</th><th>Cidade</th><th>Campanha Ads</th><th>Device ID</th><th style="text-align:right">Risco IA</th></tr></thead>
                     <tbody id="tabela-logs"></tbody>
                 </table>
             </div>
         </section>
 
         <section id="tela-raiz" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase">Firewall</h1>
-            <div class="card border-amber-500/20 bg-amber-500/5 mb-8">
-                <div class="flex justify-between items-center flex-wrap gap-4">
-                    <div><p class="text-zinc-500 text-[10px] font-bold">SUGESTÃO DE BANIMENTO</p><span id="suggested-root" class="font-mono text-xl font-black">...</span></div>
-                    <button onclick="confirmarBloqueio()" class="bg-[#00ffa3] text-black font-black px-8 py-3 rounded-xl text-xs">APLICAR BAN</button>
-                </div>
+            <h1 class="text-4xl font-extrabold mb-8 uppercase">Firewall Raiz</h1>
+            <div class="card border-amber-500/20 bg-amber-500/5 mb-8 flex justify-between items-center">
+                <div><p class="text-zinc-500 text-[10px] font-bold">REDE SUSPEITA DETECTADA</p><span id="suggested-root" class="font-mono text-2xl font-black">...</span></div>
+                <button onclick="confirmarBloqueio()" class="bg-[#00ffa3] text-black font-black px-10 py-4 rounded-2xl text-xs uppercase shadow-lg shadow-emerald-500/20">Banir Rede Inteira</button>
             </div>
-            <h3 class="text-xs font-bold text-red-500 mb-4 uppercase">Regras de Bloqueio Ativas</h3>
             <div class="table-container border-red-900/10">
                 <table>
-                    <thead><tr><th class="px-4">Rede</th><th>Expiração</th><th style="text-align:right" class="px-4">Gerenciar</th></tr></thead>
+                    <thead><tr><th class="px-4">IP Raiz Ativo</th><th>Tipo</th><th>Expiração</th><th style="text-align:right" class="px-4">Ação</th></tr></thead>
                     <tbody id="tabela-firewall-ativa"></tbody>
                 </table>
             </div>
         </section>
 
         <section id="tela-estorno" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase italic">Estorno</h1>
-            <div class="card border-emerald-500/20 mb-10">
-                <h2 class="font-black mb-4 uppercase">Solicitar Reembolso Google</h2>
-                <p class="text-xs text-zinc-500 mb-6">Selecione o período e gere as provas para o Google Ads.</p>
+            <h1 class="text-4xl font-extrabold mb-8 uppercase italic">Central de Reembolso</h1>
+            <div class="card border-emerald-500/20 mb-8">
+                <h2 class="font-black mb-4 uppercase">Recuperar Investimento</h2>
+                <p class="text-xs text-zinc-500 mb-8 leading-relaxed">Gere o relatório consolidado de cliques inválidos e anexe ao formulário do Google para solicitar crédito.</p>
                 <div class="flex gap-4">
-                    <button onclick="alert('Relatório Gerado!')" class="bg-[#00ffa3] text-black font-bold py-4 px-8 rounded-xl text-[10px]">GERAR RELATÓRIO CSV</button>
-                    <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="bg-white text-black font-bold py-4 px-8 rounded-xl text-[10px]">ABRIR FORMULÁRIO</a>
+                    <button onclick="alert('Relatório CSV preparado para download!')" class="bg-[#00ffa3] text-black font-bold py-4 px-8 rounded-xl text-[10px]">EXPORTAR PROVAS (.CSV)</button>
+                    <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="bg-white text-black font-bold py-4 px-8 rounded-xl text-[10px] flex items-center">ABRIR FORMULÁRIO GOOGLE</a>
                 </div>
             </div>
         </section>
 
-        <section id="tela-automacao" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase">Automação</h1>
-            <div class="card border-zinc-800">
-                <div class="space-y-6">
-                    <div>
-                        <label class="text-[10px] font-bold text-zinc-500 uppercase block mb-2">Google Ads API Developer Token</label>
-                        <input type="password" value="XXXXXXXXXXXXXXX" class="w-full bg-black border border-zinc-800 p-4 rounded-xl font-mono text-sm text-emerald-500">
+        <section id="tela-onboarding" class="hidden">
+            <h1 class="text-4xl font-extrabold mb-8 uppercase">Conectar Cliente</h1>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card border-zinc-800">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center font-bold text-[10px]">01</span>
+                        <h2 class="font-black uppercase text-sm">Configuração de Domínio</h2>
                     </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-zinc-500 uppercase block mb-2">Frequência de Atualização (IPs)</label>
-                        <select class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-sm font-bold">
-                            <option>A cada 5 minutos (Recomendado)</option>
-                            <option>A cada 1 hora</option>
-                            <option>Em tempo real (Webhook)</option>
-                        </select>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-zinc-500 uppercase block mb-2">URL do Site (ex: site.com.br)</label>
+                            <input type="text" placeholder="meu-site-protegido.com" class="input-shield">
+                        </div>
+                        <button class="w-full bg-zinc-800 py-4 rounded-xl font-black text-[10px] uppercase hover:bg-emerald-600 transition">Adicionar Domínio à Proteção</button>
                     </div>
-                    <button class="w-full bg-zinc-800 py-4 rounded-xl font-black text-xs uppercase hover:bg-emerald-600 transition">Salvar Configurações</button>
+                </div>
+
+                <div class="card border-emerald-500/10">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="w-8 h-8 bg-emerald-500/20 text-[#00ffa3] rounded-full flex items-center justify-center font-bold text-[10px]">02</span>
+                        <h2 class="font-black uppercase text-sm">Vinculação Google Ads</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-zinc-500 uppercase block mb-2">ID da Conta do Cliente (CID)</label>
+                            <input type="text" placeholder="000-000-0000" class="input-shield font-mono">
+                        </div>
+                        <p class="text-[10px] text-zinc-500 italic">Isso enviará um convite de acesso da nossa MCC para a conta do cliente automaticamente.</p>
+                        <button onclick="alert('Convite de vinculação enviado para o ID informado!')" class="w-full bg-[#00ffa3] text-black py-4 rounded-xl font-black text-[10px] uppercase shadow-lg shadow-emerald-500/10">Enviar Convite de Vinculação</button>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <section id="tela-sites" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase">Meus Sites</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="card border-emerald-500/20 flex flex-col items-center text-center">
-                    <div class="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4 text-[#00ffa3]">🌐</div>
-                    <h3 class="font-black text-white">proteclic.com.br</h3>
-                    <p class="text-[10px] text-emerald-500 font-bold mb-4 uppercase tracking-tighter">Status: Ativo e Protegido</p>
-                    <button class="bg-zinc-800 px-6 py-2 rounded-lg text-[9px] font-bold uppercase">Configurar Script</button>
-                </div>
-                <div class="card border-dashed border-zinc-700 flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500 transition">
-                    <span class="text-2xl mb-2 text-zinc-600">+</span>
-                    <span class="text-[10px] font-bold text-zinc-600 uppercase">Adicionar Novo Site</span>
+            <div class="mt-8 card border-zinc-900 bg-zinc-900/20">
+                <h3 class="text-[10px] font-bold text-zinc-600 uppercase mb-4 tracking-widest">Contas em Processo de Vinculação</h3>
+                <div class="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-zinc-800">
+                    <div class="flex items-center gap-4">
+                        <div class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                        <span class="text-xs font-bold text-zinc-300">ID: 455-231-9088</span>
+                        <span class="text-[10px] text-zinc-600">Aguardando aceite do cliente...</span>
+                    </div>
+                    <button class="text-[9px] font-black text-red-500 uppercase">Cancelar</button>
                 </div>
             </div>
         </section>
@@ -154,36 +163,37 @@
         function navegar(tela) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.nav-link, .mobile-link').forEach(l => l.classList.remove('active'));
+            
             document.getElementById('tela-' + tela).classList.remove('hidden');
             if(document.getElementById('btn-' + tela)) document.getElementById('btn-' + tela).classList.add('active');
             if(document.getElementById('m-btn-' + tela)) document.getElementById('m-btn-' + tela).classList.add('active');
+            
             if(tela === 'raiz') carregarRaizes();
             window.scrollTo(0,0);
         }
 
         async function carregarDados() {
-            const { data } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(30);
+            const { data } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(35);
             if (!data) return;
             document.getElementById('total-bloqueios').innerText = data.length + 1540;
-            document.getElementById('economia-gerada').innerText = `R$ ${( (data.length + 1540) * 2.8).toLocaleString('pt-BR')}`;
+            document.getElementById('economia-gerada').innerText = `R$ ${( (data.length + 1540) * 2.85).toLocaleString('pt-BR')}`;
             document.getElementById('tabela-logs').innerHTML = data.map(v => `
                 <tr>
-                    <td class="text-zinc-500 font-bold">${new Date(v.created_at).toLocaleString()}</td>
-                    <td><span class="bg-red-500/10 text-red-500 text-[9px] font-black p-1 px-2 rounded">BAN</span></td>
-                    <td class="font-mono text-white font-bold">${v.ip}</td>
-                    <td class="text-zinc-400">${v.country_code || 'BR'}</td>
+                    <td class="text-zinc-500 font-bold">${new Date(v.created_at).toLocaleString('pt-BR')}</td>
+                    <td><span class="bg-red-500/10 text-red-500 text-[9px] font-black p-1 px-3 rounded-lg border border-red-500/20">BLOCK</span></td>
+                    <td class="font-mono text-white font-black">${v.ip}</td>
+                    <td class="text-zinc-400 font-bold">${v.country_code || 'BR'}</td>
                     <td class="text-zinc-500">${v.city || 'São Paulo'}</td>
-                    <td class="text-emerald-500 font-bold">${v.campaign || 'Ads Search'}</td>
-                    <td class="text-zinc-600 font-mono text-[10px]">${v.device || 'UID-440'}</td>
-                    <td style="text-align:right" class="text-red-500 font-black uppercase">Crítico</td>
+                    <td class="text-emerald-500 font-black">${v.campaign || 'Google Search'}</td>
+                    <td class="text-zinc-600 font-mono text-[10px]">${v.device || 'FNG-889'}</td>
+                    <td style="text-align:right" class="text-red-500 font-black">100% FRAUDE</td>
                 </tr>
             `).join('');
         }
 
         async function carregarRaizes() {
             const { data } = await _supabase.from('root_analysis').select('*');
-            if(!data) return;
-            document.getElementById('suggested-root').innerText = data[0].ip_root + '.*';
+            if(data && data.length > 0) document.getElementById('suggested-root').innerText = data[0].ip_root + '.*';
         }
 
         function confirmarBloqueio() {
@@ -191,10 +201,11 @@
             const tbody = document.getElementById('tabela-firewall-ativa');
             tbody.insertAdjacentHTML('afterbegin', `
                 <tr class="bg-red-500/5">
-                    <td class="font-mono text-white px-4 py-4 font-bold">${root}</td>
+                    <td class="font-mono text-white px-4 py-5 font-black text-lg">${root}</td>
+                    <td class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Network Cluster</td>
                     <td class="text-amber-500 text-[10px] font-black uppercase italic">Permanente</td>
                     <td style="text-align:right" class="px-4">
-                        <button onclick="this.closest('tr').remove()" class="bg-emerald-500 text-black px-6 py-2 rounded-xl text-[10px] font-black uppercase">Liberar Raiz</button>
+                        <button onclick="this.closest('tr').remove()" class="bg-[#00ffa3] text-black px-6 py-2 rounded-xl text-[10px] font-black uppercase shadow-lg">Liberar Acesso</button>
                     </td>
                 </tr>
             `);
