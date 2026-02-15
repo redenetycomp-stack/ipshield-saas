@@ -5,42 +5,42 @@
     </table>
 
 <script>
-async function carregarDados() { 
-    try { 
-        const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(35); 
-        
-        if (error) throw error; 
+  // Insira aqui as configurações do Supabase (URL e Key)
+  
+  async function carregarDados() { 
+      try { 
+          const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(35); 
+          
+          if (error) throw error; 
 
-        const total = data ? data.length : 0; 
-        const economia = total * 2.85; 
+          const total = data ? data.length : 0; 
+          const economia = total * 2.85; // Foco em mostrar o ROI 
 
-        // Atualiza os números nos cartões da imagem 1
-        document.getElementById('total-bloqueios').innerText = total.toLocaleString('pt-BR'); 
-        document.getElementById('economia-gerada').innerText = `R$ ${economia.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`; 
+          document.getElementById('total-bloqueios').innerText = total.toLocaleString('pt-BR'); 
+          document.getElementById('economia-gerada').innerText = `R$ ${economia.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`; 
 
-        if (total === 0) { 
-            document.getElementById('tabela-logs').innerHTML = '<tr><td colspan="8">Aguardando primeiro clique monitorado...</td></tr>'; 
-            return; 
-        } 
+          // Se o banco estiver vazio, mostra mensagem amigável [cite: 4]
+          if (total === 0) { 
+              document.getElementById('tabela-logs').innerHTML = '<tr><td>Aguardando primeiro clique...</td></tr>'; 
+              return; 
+          } 
 
-        // Renderiza a tabela de logs
-        document.getElementById('tabela-logs').innerHTML = data.map(v => `
-            <tr>
-                <td>${new Date(v.created_at).toLocaleString('pt-BR')}</td>
-                <td>BLOCK</td>
-                <td>${v.ip || '---'}</td>
-                <td>${v.country_code || 'BR'}</td>
-                <td>${v.city || 'São Paulo'}</td>
-                <td>${v.campaign || 'Google Ads'}</td>
-                <td>${v.user_agent ? v.user_agent.substring(0, 15) : 'Device-ID'}</td>
-                <td>RISCO ALTO</td>
-            </tr>`).join(''); 
-    } catch (err) { 
-        console.error("Erro:", err); 
-        document.getElementById('tabela-logs').innerHTML = 'Erro de conexão com o banco.'; 
-    } 
-}
+          // Preenche a tabela conforme o Fluxo de Dados Inteligente [cite: 20]
+          document.getElementById('tabela-logs').innerHTML = data.map(v => `
+              <tr>
+                  <td>${new Date(v.created_at).toLocaleString('pt-BR')}</td>
+                  <td>BLOCK</td>
+                  <td>${v.ip || '---'}</td>
+                  <td>${v.country_code || 'BR'}</td>
+                  <td>${v.campaign || 'Ads'}</td>
+                  <td>RISCO ALTO</td>
+              </tr>`).join(''); 
+      } catch (err) { 
+          console.error("Erro de conexão:", err); 
+          document.getElementById('tabela-logs').innerHTML = 'Erro de conexão com o banco.'; 
+      } 
+  }
 
-// Executa a função ao carregar a página
-carregarDados();
+  // Chama a função para o dashboard atualizar [cite: 20]
+  carregarDados();
 </script>
