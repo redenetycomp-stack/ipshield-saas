@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Global Shield</title>
+    <title>IPShield OS | Full Audit</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,6 +19,7 @@
         .accent-text { color: #00ffa3; }
         .hidden { display: none !important; }
         
+        /* Tabela Otimizada v13 */
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
         th { text-align: left; padding: 12px 15px; color: #444; font-size: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
         td { padding: 16px 15px; background: #0d0d0d; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -48,7 +49,7 @@
             <div onclick="navegar('instalacao')" class="nav-link" id="btn-instalacao">🚀 Instalação</div>
         </nav>
         <div class="mt-auto px-4 py-4 bg-[#0d0d0d] rounded-2xl border border-[#1a1a1a]">
-            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-widest">Global Defense</div>
+            <div class="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-widest">Defesa em Camadas</div>
             <div class="text-xs font-bold flex items-center text-emerald-400">
                 <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> ONLINE
             </div>
@@ -69,30 +70,29 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
                 <div>
                     <h1 class="text-4xl font-extrabold uppercase tracking-tight">Visão Geral</h1>
-                    <p class="text-gray-500 text-sm">Monitoramento Global: proteclic.com.br</p>
+                    <p class="text-gray-500 text-sm italic">proteclic.com.br</p>
                 </div>
-                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold text-xs hover:bg-gray-200 transition">EXPORTAR RELATÓRIO</button>
+                <button onclick="gerarRelatorioPDF()" class="bg-white text-black px-8 py-3 rounded-2xl font-bold text-xs hover:bg-gray-200 transition">EXPORTAR LOGS</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                 <div class="card">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Invasores Bloqueados</p>
+                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2 tracking-widest">Fraudes Barradas</p>
                     <p id="total-bloqueios" class="text-6xl font-extrabold tracking-tighter">0</p>
                 </div>
                 <div class="card border-l-4 border-emerald-500">
-                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2">Economia Acumulada</p>
+                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-2 tracking-widest">Investimento Salvo</p>
                     <p id="economia-gerada" class="text-6xl font-extrabold accent-text tracking-tighter">R$ 0,00</p>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
-                <table style="min-width: 1250px;">
+                <table style="min-width: 1350px;">
                     <thead>
                         <tr>
-                            <th width="90">Hora</th>
-                            <th width="100">Status</th>
+                            <th width="140">Data & Hora</th> <th width="100">Status</th>
                             <th width="130">IP Address</th>
-                            <th width="60">País</th>
+                            <th width="70">País</th>
                             <th width="140">Cidade</th>
                             <th width="140">Campanha</th>
                             <th width="140">Keyword</th>
@@ -106,98 +106,59 @@
         </section>
 
         <section id="tela-raiz" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Bloqueio na Raiz</h1>
-            <div class="card border-red-900/20 bg-red-950/5">
-                <h3 class="font-bold text-red-500 mb-2 uppercase text-sm">Banimento Estrutural</h3>
-                <p class="text-gray-500 text-xs mb-6 leading-relaxed">Banir o IP diretamente na borda do servidor (Edge). O invasor recebe erro 403 antes mesmo do site carregar.</p>
+             <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Bloqueio na Raiz</h1>
+             <div class="card bg-red-950/5 border-red-900/20">
+                <h3 class="font-bold text-red-500 mb-4 uppercase text-sm">Lista Negra de IP</h3>
                 <div class="flex flex-col md:flex-row gap-4">
-                    <input type="text" id="ip-ban-input" placeholder="0.0.0.0" class="flex-1 p-4 rounded-xl font-mono text-center bg-black border border-zinc-900 text-white">
-                    <button onclick="alert('IP banido na infraestrutura com sucesso!')" class="bg-red-600 text-white font-bold py-4 px-10 rounded-xl uppercase text-xs">EXECUTAR BAN</button>
+                    <input type="text" id="ip-ban-input" placeholder="0.0.0.0" class="flex-1 p-4 rounded-xl bg-black border border-zinc-900 text-center font-mono">
+                    <button onclick="alert('IP adicionado ao Firewall')" class="bg-red-600 text-white font-bold py-4 px-10 rounded-xl uppercase text-xs">Banir</button>
                 </div>
-            </div>
+             </div>
         </section>
 
         <section id="tela-automacao" class="hidden">
-            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Automação API</h1>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card">
-                    <h3 class="font-bold mb-2 uppercase text-sm">Google Ads Connection</h3>
-                    <p class="text-gray-500 text-xs mb-6 leading-relaxed">Conecte seu ID de Cliente (MCC ou Conta) para sincronização automática de listas de exclusão.</p>
-                    <input type="text" placeholder="ID: 000-000-0000" class="w-full p-4 rounded-xl mb-4 text-center font-bold tracking-widest bg-black border border-zinc-900 text-white">
-                    <button onclick="alert('Iniciando handshake com Google API...')" class="w-full bg-[#00ffa3] text-black font-bold py-4 rounded-xl uppercase text-xs tracking-widest">Vincular Agora</button>
-                </div>
-                <div class="card border-yellow-900/20 bg-yellow-900/5 flex items-center justify-center p-8">
-                    <p class="text-xs text-yellow-600 italic leading-relaxed text-center">
-                        ⚠️ <strong>Nota Técnica:</strong><br>Aguardando aprovação do "Test Token" pela Google Ads API. O sistema está em modo de monitoramento local até a liberação.
-                    </p>
-                </div>
+            <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Automação</h1>
+            <div class="card">
+                <h3 class="font-bold mb-2 uppercase text-sm">Google Ads API</h3>
+                <input type="text" placeholder="ID: 000-000-0000" class="w-full p-4 rounded-xl mb-4 bg-black border border-zinc-900 text-center font-bold tracking-widest">
+                <button onclick="alert('Conectando...')" class="w-full bg-[#00ffa3] text-black font-bold py-4 rounded-xl uppercase text-xs tracking-widest">Sincronizar Conta</button>
             </div>
         </section>
 
         <section id="tela-sites" class="hidden">
             <div class="flex justify-between items-center mb-8">
                 <h1 class="text-4xl font-extrabold uppercase tracking-tight">Meus Sites</h1>
-                <button onclick="adicionarSite()" class="bg-white text-black px-6 py-3 rounded-2xl font-bold text-xs">+ ADICIONAR DOMÍNIO</button>
+                <button onclick="adicionarSite()" class="bg-white text-black px-6 py-3 rounded-2xl font-bold text-xs">+ ADD SITE</button>
             </div>
-            <div id="lista-sites" class="grid grid-cols-1 gap-4">
-                <div class="card flex justify-between items-center py-6 hover:border-[#00ffa3]/30 transition">
-                    <div>
-                        <span class="text-xl font-bold">proteclic.com.br</span>
-                        <div class="text-[10px] text-emerald-500 font-bold uppercase mt-1 tracking-widest">Proteção Ativa</div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-xs text-gray-500">Pixel instalado</span>
-                        <span class="w-3 h-3 bg-emerald-500 rounded-full shadow-[0_0_8px_#10b981]"></span>
-                    </div>
-                </div>
+            <div class="card flex justify-between items-center py-6">
+                <span class="text-xl font-bold">proteclic.com.br</span>
+                <span class="w-3 h-3 bg-emerald-500 rounded-full shadow-[0_0_8px_#10b981]"></span>
             </div>
         </section>
 
         <section id="tela-instalacao" class="hidden">
             <h1 class="text-4xl font-extrabold mb-8 uppercase tracking-tight">Instalação</h1>
             <div class="card">
-                <p class="text-xs text-gray-500 mb-4 font-bold uppercase tracking-widest">Pixel de Defesa Global</p>
-                <div class="bg-black p-6 rounded-2xl border border-zinc-900 font-mono text-xs text-[#00ffa3] break-all leading-relaxed">
+                <div class="bg-black p-6 rounded-2xl border border-zinc-900 font-mono text-xs text-[#00ffa3] break-all">
                     &lt;script src="https://xirrtonafivrphrzufbq.supabase.co/functions/v1/pixel?id=proteclic.com.br" async&gt;&lt;/script&gt;
                 </div>
-                <button onclick="alert('Código copiado!')" class="mt-6 bg-zinc-800 text-white px-8 py-3 rounded-xl font-bold text-xs hover:bg-zinc-700 transition">COPIAR SCRIPT</button>
             </div>
         </section>
 
     </main>
 
     <script>
-        // Supabase Setup
         const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // FUNÇÃO DE NAVEGAÇÃO SPA (Agora funcionando em todos os botões)
         function navegar(tela) {
-            // Esconde todas as seções
-            document.querySelectorAll('main section').forEach(section => {
-                section.classList.add('hidden');
-            });
-            
-            // Remove 'active' de todos os links (Sidebar e Mobile)
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-
-            // Mostra a seção desejada
-            const sectionTarget = document.getElementById('tela-' + tela);
-            if(sectionTarget) {
-                sectionTarget.classList.remove('hidden');
-            }
-
-            // Ativa o link correspondente na sidebar
-            const linkTarget = document.getElementById('btn-' + tela);
-            if(linkTarget) {
-                linkTarget.classList.add('active');
-            }
-
-            // Scroll para o topo
-            window.scrollTo(0, 0);
+            document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('tela-' + tela).classList.remove('hidden');
+            const btn = document.getElementById('btn-' + tela);
+            if(btn) btn.classList.add('active');
+            window.scrollTo(0,0);
         }
 
         async function carregarDados() {
@@ -209,12 +170,21 @@
 
             const tbody = document.getElementById('tabela-logs');
             tbody.innerHTML = data.map(v => {
+                const dataObj = new Date(v.created_at);
+                const dataFormatada = dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+                const horaFormatada = dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+                
                 const country = v.country_code ? v.country_code.toLowerCase() : 'br';
                 const flagUrl = `https://flagcdn.com/w40/${country}.png`;
                 
                 return `
                 <tr>
-                    <td class="text-gray-600 text-[10px] font-bold">${new Date(v.created_at).toLocaleTimeString()}</td>
+                    <td>
+                        <div class="flex flex-col">
+                            <span class="text-white font-bold text-[11px]">${dataFormatada}</span>
+                            <span class="text-gray-600 text-[10px]">${horaFormatada}</span>
+                        </div>
+                    </td>
                     <td><span class="status-badge">Bloqueado</span></td>
                     <td class="font-mono text-white text-xs font-bold">${v.ip}</td>
                     <td>
@@ -234,15 +204,13 @@
         }
 
         function adicionarSite() {
-            const site = prompt("Domínio:");
-            if(site) alert(`Domínio ${site} adicionado.`);
+            const s = prompt("Domínio:");
+            if(s) alert("Site adicionado!");
         }
 
-        // Loop de atualização apenas se estiver no dashboard
         carregarDados();
         setInterval(() => {
-            const dash = document.getElementById('tela-dashboard');
-            if(!dash.classList.contains('hidden')) carregarDados();
+            if(!document.getElementById('tela-dashboard').classList.contains('hidden')) carregarDados();
         }, 8000);
     </script>
 </body>
