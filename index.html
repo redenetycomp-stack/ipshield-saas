@@ -8,21 +8,33 @@
     <style>
         :root { --primary: #1a2a3a; --secondary: #27ae60; --danger: #e74c3c; --light: #f4f7f9; --text: #2c3e50; }
         body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; color: var(--text); }
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .header { background: var(--primary); color: white; padding: 25px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; }
         .nav-tabs { display: flex; background: #2c3e50; padding: 0 20px; gap: 10px; }
         .tab-btn { background: none; border: none; color: #bdc3c7; padding: 15px 20px; cursor: pointer; font-weight: bold; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: white; border-bottom-color: var(--secondary); }
         .tab-content { display: none; background: white; padding: 25px; border-radius: 0 0 15px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .tab-content.active { display: block; }
+        
+        /* Dashboard */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
         .stat-card { background: var(--light); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #e0e6ed; }
         .stat-card h1 { margin: 10px 0; font-size: 32px; }
+
+        /* Barra de Filtros Restaurada */
+        .filter-bar { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: end; border: 1px solid #eee; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        .filter-group label { font-size: 11px; font-weight: bold; color: #7f8c8d; text-transform: uppercase; }
+        
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th { text-align: left; color: #95a5a6; font-size: 13px; padding: 12px; border-bottom: 2px solid #f4f7f9; }
-        td { padding: 12px; border-bottom: 1px solid #f4f7f9; font-size: 14px; }
-        .badge { background: var(--danger); color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; }
-        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-right: 5px; }
+        th { text-align: left; color: #95a5a6; font-size: 12px; padding: 12px; border-bottom: 2px solid #f4f7f9; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #f4f7f9; font-size: 13px; }
+        
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; color: white; }
+        .bg-fraude { background: var(--danger); }
+        .bg-limpo { background: var(--secondary); }
+        
+        input, select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
         button { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
@@ -35,52 +47,75 @@
     </div>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="openTab('dash')">RESUMO</button>
+        <button class="tab-btn active" onclick="openTab('dash')">RESUMO ANALÍTICO</button>
         <button class="tab-btn" onclick="openTab('clientes')">CLIENTES & REGRAS</button>
         <button class="tab-btn" onclick="openTab('extorno')">SOLICITAR ESTORNO</button>
-        <button class="tab-btn" onclick="openTab('raiz')">BLOQUEIO DE RAIZ</button>
     </div>
 
     <div id="dash" class="tab-content active">
         <div class="stats-grid">
-            <div class="stat-card"><div>ATAQUES BLOQUEADOS</div><h1 id="total-fraudes">0</h1></div>
-            <div class="stat-card"><div>ECONOMIA (R$ 5/clique)</div><h1 id="economia-total" style="color:var(--secondary)">R$ 0,00</h1></div>
-            <div class="stat-card"><div>GCLID CAPTURADOS</div><h1 id="total-extorno" style="color:var(--danger)">0</h1></div>
+            <div class="stat-card"><div>ALERTAS DE FRAUDE</div><h1 id="total-fraudes">0</h1></div>
+            <div class="stat-card"><div>ECONOMIA ESTIMADA</div><h1 id="economia-total" style="color:var(--secondary)">R$ 0,00</h1></div>
+            <div class="stat-card"><div>CLIQUES COM GCLID</div><h1 id="total-extorno" style="color:var(--danger)">0</h1></div>
         </div>
-        <h3>🕒 Últimas Atividades (Geral)</h3>
-        <table id="table-recent">
-            <thead><tr><th>IP</th><th>SITE</th><th>HORÁRIO</th><th>STATUS</th></tr></thead>
+
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label>Filtrar por Site</label>
+                <select id="f-site" onchange="carregarDados()"><option value="all">Todos os Sites</option></select>
+            </div>
+            <div class="filter-group">
+                <label>Diagnóstico</label>
+                <select id="f-diag" onchange="carregarDados()">
+                    <option value="FRAUDE">Apenas Fraude</option>
+                    <option value="all">Ver Tudo (Limpo + Fraude)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Dispositivo</label>
+                <select id="f-dev" onchange="carregarDados()">
+                    <option value="all">Todos</option>
+                    <option value="mobile">Mobile</option>
+                    <option value="desktop">Desktop</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <button onclick="carregarDados()" style="width: 100%;">APLICAR</button>
+            </div>
+        </div>
+
+        <h3>🕒 Relatório Detalhado de Visitas</h3>
+        <table id="table-main">
+            <thead>
+                <tr>
+                    <th>IP</th>
+                    <th>CIDADE/UF</th>
+                    <th>SITE</th>
+                    <th>DISPOSITIVO</th>
+                    <th>PÁGINA</th>
+                    <th>DATA/HORA</th>
+                    <th>DIAGNÓSTICO</th>
+                </tr>
+            </thead>
             <tbody></tbody>
         </table>
     </div>
 
     <div id="clientes" class="tab-content">
         <h3>➕ Configurar Novo Cliente</h3>
-        <div style="margin-bottom:30px">
-            <input type="text" id="new-site" placeholder="Site (ex: arteinox.com.br)">
-            <input type="text" id="new-ads-id" placeholder="ID Ads (000-000-0000)">
-            <button onclick="salvarCliente()">CADASTRAR</button>
-        </div>
-        <hr>
         <div id="lista-configuracoes"></div>
     </div>
 
     <div id="extorno" class="tab-content">
-        <h3>💰 Dados para Estorno</h3>
+        <h3>💰 Dados para Reivindicação (GCLID)</h3>
         <table id="table-extorno">
-            <thead><tr><th>DATA</th><th>IP</th><th>SITE</th><th>GCLID</th></tr></thead>
+            <thead><tr><th>DATA</th><th>IP</th><th>GCLID</th></tr></thead>
             <tbody></tbody>
         </table>
-    </div>
-
-    <div id="raiz" class="tab-content">
-        <h3>🚫 Bloqueio de Faixa (Raiz)</h3>
-        <p>A funcionalidade de Raiz será alimentada via banco de dados.</p>
     </div>
 </div>
 
 <script>
-    // CREDENCIAIS UNIFICADAS
     const SUPABASE_URL = 'https://xirrtonafivrphrzufbq.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -92,68 +127,60 @@
         event.currentTarget.classList.add('active');
     }
 
-    async function carregarTudo() {
-        console.log("Iniciando busca de dados...");
-        
-        // 1. Carregar Visitas (Fraude)
-        const { data: visitas, count, error: vError } = await _supabase
-            .from('visits')
-            .select('*', { count: 'exact' })
-            .eq('diagnostico', 'FRAUDE')
-            .order('created_at', { ascending: false });
+    async function carregarDados() {
+        const site = document.getElementById('f-site').value;
+        const diag = document.getElementById('f-diag').value;
+        const dev = document.getElementById('f-dev').value;
 
-        if (vError) {
-            console.error("Erro Visitas:", vError);
-            document.getElementById('sync-status').innerText = "ERRO DE CONEXÃO";
-        } else {
+        let query = _supabase.from('visits').select('*', { count: 'exact' });
+
+        if (site !== 'all') query = query.eq('site_id', site);
+        if (diag !== 'all') query = query.eq('diagnostico', diag);
+        if (dev !== 'all') query = query.eq('device', dev);
+
+        const { data, count, error } = await query.order('created_at', { ascending: false }).limit(50);
+
+        if (!error) {
             document.getElementById('sync-status').innerText = "SINCERIZADO";
             document.getElementById('sync-status').style.background = "#27ae60";
             
-            document.getElementById('total-fraudes').innerText = count || 0;
-            document.getElementById('economia-total').innerText = 'R$ ' + ((count || 0) * 5).toLocaleString('pt-BR');
+            // Dashboard (Apenas Fraude para o contador)
+            const fraudes = data.filter(v => v.diagnostico === 'FRAUDE').length;
+            document.getElementById('total-fraudes').innerText = count;
+            document.getElementById('economia-total').innerText = 'R$ ' + (count * 5).toLocaleString('pt-BR');
 
-            // Preencher Tabela Recente
-            document.querySelector('#table-recent tbody').innerHTML = (visitas || []).slice(0, 10).map(v => `
-                <tr><td>${v.ip}</td><td>${v.site_id}</td><td>${new Date(v.created_at).toLocaleString()}</td><td><span class="badge">BLOQUEADO</span></td></tr>
-            `).join('');
-
-            // Preencher Estornos (Filtra quem tem GCLID)
-            const comGclid = visitas.filter(v => v.gclid);
-            document.getElementById('total-extorno').innerText = comGclid.length;
-            document.querySelector('#table-extorno tbody').innerHTML = comGclid.map(v => `
-                <tr><td>${new Date(v.created_at).toLocaleDateString()}</td><td>${v.ip}</td><td>${v.site_id}</td><td style="font-size:10px">${v.gclid}</td></tr>
-            `).join('');
-        }
-
-        // 2. Carregar Configurações
-        const { data: configs } = await _supabase.from('ipshield_config').select('*');
-        if (configs) {
-            document.getElementById('lista-configuracoes').innerHTML = configs.map(c => `
-                <div style="display:flex; justify-content:space-between; padding:15px; background:#f4f7f9; margin-bottom:10px; border-radius:8px">
-                    <span><strong>${c.site_nome}</strong> <br><small>${c.google_ads_id}</small></span>
-                    <div>
-                        Cliques: <input type="number" value="${c.limite_cliques}" onchange="updateRegra('${c.site_nome}', 'limite_cliques', this.value)" style="width:40px">
-                        Dias: <input type="number" value="${c.dias_bloqueio}" onchange="updateRegra('${c.site_nome}', 'dias_bloqueio', this.value)" style="width:40px">
-                    </div>
-                </div>
+            // Tabela Principal com as colunas que você sentia falta
+            document.querySelector('#table-main tbody').innerHTML = data.map(v => `
+                <tr>
+                    <td style="font-family:monospace"><b>${v.ip}</b></td>
+                    <td>${v.city || 'Desconhecido'}/${v.region || '--'}</td>
+                    <td>${v.site_id}</td>
+                    <td>${v.device || 'outros'}</td>
+                    <td style="font-size:11px">${v.page_url ? v.page_url.substring(0,20)+'...' : '--'}</td>
+                    <td>${new Date(v.created_at).toLocaleString('pt-BR')}</td>
+                    <td><span class="badge ${v.diagnostico === 'FRAUDE' ? 'bg-fraude' : 'bg-limpo'}">${v.diagnostico}</span></td>
+                </tr>
             `).join('');
         }
     }
 
-    async function salvarCliente() {
-        const site = document.getElementById('new-site').value;
-        const adsId = document.getElementById('new-ads-id').value;
-        const { error } = await _supabase.from('ipshield_config').insert([{ site_nome: site, google_ads_id: adsId, limite_cliques: 1, dias_bloqueio: 30 }]);
-        if(error) alert(error.message); else location.reload();
+    // Carrega os sites dinamicamente no filtro
+    async function carregarSitesNoFiltro() {
+        const { data } = await _supabase.from('ipshield_config').select('site_nome');
+        if (data) {
+            const select = document.getElementById('f-site');
+            data.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.site_nome;
+                opt.innerText = s.site_nome;
+                select.appendChild(opt);
+            });
+        }
     }
 
-    async function updateRegra(site, campo, valor) {
-        const obj = {}; obj[campo] = parseInt(valor);
-        await _supabase.from('ipshield_config').update(obj).eq('site_nome', site);
-    }
-
-    // Executa ao abrir
-    carregarTudo();
+    // Inicialização
+    carregarSitesNoFiltro();
+    carregarDados();
 </script>
 </body>
 </html>
