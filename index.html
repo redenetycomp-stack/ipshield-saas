@@ -90,4 +90,78 @@
         <div style="margin-bottom:20px">
             <input type="text" id="raiz-ip" placeholder="Ex: 191.185.10">
             <select id="raiz-site"><option value="">Selecione o Site</option></select>
-            <button onclick="blo
+            <button onclick="bloquearRaiz()" style="background:var(--danger)">BANIR RAIZ</button>
+        </div>
+        <table id="table-raiz">
+            <thead><tr><th>RAIZ BLOQUEADA</th><th>CLIENTE</th><th>DATA</th><th>AÇÃO</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const _supabase = supabase.createClient('https://xirrtonafivrphrzufbq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE');
+
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    async function init() {
+        carregarDashboard();
+        carregarConfiguracoes();
+        carregarEstornos();
+    }
+
+    async function carregarDashboard() {
+        const { data, count } = await _supabase.from('visits').select('*', { count: 'exact' }).eq('diagnostico', 'FRAUDE').order('created_at', { ascending: false });
+        if (data) {
+            document.getElementById('total-fraudes').innerText = count;
+            document.getElementById('economia-total').innerText = 'R$ ' + (count * 5).toLocaleString('pt-BR');
+            document.querySelector('#table-recent tbody').innerHTML = data.slice(0, 5).map(v => `<tr><td>${v.ip}</td><td>${v.site_id}</td><td>${new Date(v.created_at).toLocaleString()}</td><td><span class="badge">BLOQUEADO</span></td></tr>`).join('');
+        }
+    }
+
+    async function carregarEstornos() {
+        // Simulação: busca visitas com diagnóstico fraude que possuem GCLID (ajuste conforme suas colunas)
+        const { data } = await _supabase.from('visits').select('*').eq('diagnostico', 'FRAUDE').not('gclid', 'is', null);
+        if (data) {
+            document.getElementById('total-extorno').innerText = data.length;
+            document.querySelector('#table-extorno tbody').innerHTML = data.map(v => `<tr><td>${new Date(v.created_at).toLocaleDateString()}</td><td>${v.ip}</td><td style="font-size:10px">${v.gclid}</td><td><button class="copy-btn" onclick="navigator.clipboard.writeText('${v.gclid}')">COPIAR GCLID</button></td></tr>`).join('');
+        }
+    }
+
+    async function carregarConfiguracoes() {
+        const { data } = await _supabase.from('ipshield_config').select('*');
+        if (data) {
+            const list = document.getElementById('lista-configuracoes');
+            const selectRaiz = document.getElementById('raiz-site');
+            list.innerHTML = data.map(c => `<div style="display:flex; justify-content:space-between; padding:10px; background:#f4f7f9; margin-bottom:5px; border-radius:5px">
+                <span><b>${c.site_nome}</b> (${c.google_ads_id})</span>
+                <div>
+                    Lim: <input type="number" value="${c.limite_cliques}" onchange="updateRegra('${c.site_nome}', 'limite_cliques', this.value)" style="width:40px">
+                    Dias: <input type="number" value="${c.dias_bloqueio}" onchange="updateRegra('${c.site_nome}', 'dias_bloqueio', this.value)" style="width:40px">
+                </div>
+            </div>`).join('');
+            selectRaiz.innerHTML = '<option value="">Selecione o Site</option>' + data.map(c => `<option value="${c.site_nome}">${c.site_nome}</option>`).join('');
+        }
+    }
+
+    async function salvarCliente() {
+        const site = document.getElementById('new-site').value;
+        const adsId = document.getElementById('new-ads-id').value;
+        await _supabase.from('ipshield_config').insert([{ site_nome: site, google_ads_id: adsId, limite_cliques: 1, dias_bloqueio: 30 }]);
+        location.reload();
+    }
+
+    async function updateRegra(site, campo, valor) {
+        const obj = {}; obj[campo] = parseInt(valor);
+        await _supabase.from('ipshield_config').update(obj).eq('site_nome', site);
+    }
+
+    init();
+</script>
+</body>
+</html>
