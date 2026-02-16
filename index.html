@@ -2,42 +2,95 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Painel IPShield</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPShield Pro - Painel de Controle</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #1a2a3a;
+            --secondary: #27ae60;
+            --danger: #e74c3c;
+            --light: #f4f7f9;
+            --text: #2c3e50;
+        }
+
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: #eef2f5; margin: 0; color: var(--text); }
+        
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+
+        /* Header & Dashboard Cards */
+        .header { background: var(--primary); color: white; padding: 30px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #dcdde1; border: 1px solid #dcdde1; }
+        .stat-card { background: white; padding: 30px; text-align: center; }
+        .stat-card h1 { margin: 10px 0; font-size: 42px; }
+        .stat-label { font-size: 12px; font-weight: bold; color: #7f8c8d; text-transform: uppercase; }
+
+        /* Tables & Lists */
+        .section { background: white; padding: 25px; margin-top: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { text-align: left; color: #95a5a6; font-size: 13px; padding: 10px; border-bottom: 2px solid #f4f7f9; }
+        td { padding: 12px; border-bottom: 1px solid #f4f7f9; font-size: 14px; }
+
+        /* Admin Forms */
+        .form-group { display: grid; grid-template-columns: 1fr 1fr 150px; gap: 10px; margin-bottom: 20px; }
+        input { padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
+        button { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { opacity: 0.9; }
+        .btn-del { background: none; color: var(--danger); border: 1px solid var(--danger); padding: 5px 10px; }
+
+        .config-row { display: flex; align-items: center; justify-content: space-between; background: var(--light); padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        .badge { background: var(--danger); color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+    </style>
 </head>
-<body style="background: #f0f2f5; font-family: sans-serif;">
+<body>
 
-<div id="painel-cliente" style="max-width: 900px; margin: 40px auto; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-    
-    <div style="background: #1a2a3a; color: white; padding: 25px; display: flex; justify-content: space-between; align-items: center;">
+<div class="container">
+    <div class="header">
         <div>
-            <h1 style="margin: 0; font-size: 24px;">🛡️ IPShield Dashboard</h1>
-            <p style="margin: 5px 0 0; opacity: 0.8;">Proteção em tempo real para seus anúncios</p>
+            <h1 style="margin:0">🛡️ IPShield Pro</h1>
+            <p style="margin:5px 0 0; opacity:0.8">Gerenciamento de Proteção Google Ads</p>
         </div>
-        <div style="text-align: right;">
-            <span id="status-badge" style="background: #27ae60; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold;">SISTEMA ATIVO</span>
-        </div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #e0e6ed; border-bottom: 2px solid #e0e6ed;">
-        <div style="background: white; padding: 30px; text-align: center;">
-            <p style="color: #7f8c8d; font-weight: bold; margin-bottom: 10px;">CLIQUES FRAUDULENTOS BLOQUEADOS</p>
-            <span id="total-fraudes" style="font-size: 48px; font-weight: bold; color: #e74c3c;">0</span>
-        </div>
-        <div style="background: white; padding: 30px; text-align: center;">
-            <p style="color: #7f8c8d; font-weight: bold; margin-bottom: 10px;">ECONOMIA GERADA (ESTIMADA)</p>
-            <span id="economia-total" style="font-size: 48px; font-weight: bold; color: #27ae60;">R$ 0,00</span>
+        <div style="text-align:right">
+            <span style="background:var(--secondary); padding:5px 15px; border-radius:20px; font-size:12px; font-weight:bold">SISTEMA ATIVO</span>
         </div>
     </div>
 
-    <div style="padding: 25px;">
-        <h3 style="color: #2c3e50; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px;">Últimas Atividades de Bloqueio</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Cliques de Fraude Bloqueados</div>
+            <h1 id="total-fraudes" style="color: var(--danger)">0</h1>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Economia Estimada (CPC R$ 5,00)</div>
+            <h1 id="economia-total" style="color: var(--secondary)">R$ 0,00</h1>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3 style="margin-top:0">➕ Configurar Novo Cliente / Site</h3>
+        <div class="form-group">
+            <input type="text" id="new-site" placeholder="Domínio (ex: arteinox.com.br)">
+            <input type="text" id="new-ads-id" placeholder="ID Google Ads (000-000-0000)">
+            <button onclick="salvarCliente()">CADASTRAR</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3 style="margin-top:0">⚙️ Regras de Bloqueio por Cliente</h3>
+        <div id="lista-configuracoes">
+            Carregando configurações...
+        </div>
+    </div>
+
+    <div class="section">
+        <h3 style="margin-top:0">🕒 Últimos IPs Banidos (Global)</h3>
+        <table>
             <thead>
-                <tr style="text-align: left; color: #95a5a6; font-size: 13px;">
-                    <th style="padding: 10px;">ENDEREÇO IP</th>
-                    <th style="padding: 10px;">DATA/HORA</th>
-                    <th style="padding: 10px; text-align: right;">STATUS</th>
+                <tr>
+                    <th>ENDEREÇO IP</th>
+                    <th>ORIGEM (SITE)</th>
+                    <th>DATA/HORA</th>
+                    <th style="text-align:right">STATUS</th>
                 </tr>
             </thead>
             <tbody id="tabela-ips">
@@ -47,16 +100,17 @@
 </div>
 
 <script>
-    const _supabase = supabase.createClient('https://xirrtonafivrphrzufbq.supabase.co', 'SUA_CHAVE_AQUI');
+    // CONFIGURAÇÃO SUPABASE
+    const SUPABASE_URL = 'https://xirrtonafivrphrzufbq.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function carregarDados() {
-        const siteAlvo = 'londrisolucao.com.br'; // Isso viria do login do cliente
-
-        const { data, count, error } = await _supabase
+    // 1. CARREGAR DASHBOARD E TABELA
+    async function carregarDashboard() {
+        const { data, count } = await _supabase
             .from('visits')
-            .select('ip, created_at', { count: 'exact' })
+            .select('ip, site_id, created_at', { count: 'exact' })
             .eq('diagnostico', 'FRAUDE')
-            .eq('site_id', siteAlvo)
             .order('created_at', { ascending: false });
 
         if (data) {
@@ -64,18 +118,43 @@
             document.getElementById('economia-total').innerText = 'R$ ' + (count * 5).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
             const tbody = document.getElementById('tabela-ips');
-            tbody.innerHTML = data.slice(0, 8).map(visita => `
-                <tr style="border-bottom: 1px solid #f9f9f9;">
-                    <td style="padding: 12px; font-family: monospace; font-weight: bold;">${visita.ip}</td>
-                    <td style="padding: 12px; color: #7f8c8d; font-size: 14px;">${new Date(visita.created_at).toLocaleString('pt-BR')}</td>
-                    <td style="padding: 12px; text-align: right;"><span style="color: #e74c3c; font-size: 12px; font-weight: bold;">● BANIDO</span></td>
+            tbody.innerHTML = data.slice(0, 10).map(v => `
+                <tr>
+                    <td style="font-family:monospace; font-weight:bold">${v.ip}</td>
+                    <td>${v.site_id}</td>
+                    <td style="color:#7f8c8d">${new Date(v.created_at).toLocaleString('pt-BR')}</td>
+                    <td style="text-align:right"><span class="badge">BANIDO</span></td>
                 </tr>
             `).join('');
         }
     }
 
-    carregarDados();
-    setInterval(carregarDados, 30000); // Atualiza a cada 30 segundos
-</script>
-</body>
-</html>
+    // 2. CARREGAR CONFIGURAÇÕES DOS CLIENTES
+    async function carregarConfiguracoes() {
+        const { data } = await _supabase.from('ipshield_config').select('*').order('site_nome', { ascending: true });
+        
+        if (data) {
+            const container = document.getElementById('lista-configuracoes');
+            container.innerHTML = data.map(c => `
+                <div class="config-row">
+                    <div style="flex: 1">
+                        <strong>${c.site_nome}</strong><br>
+                        <small>Ads ID: ${c.google_ads_id || 'Não definido'}</small>
+                    </div>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <div style="text-align:center">
+                            <label style="display:block; font-size:10px">CLIQUES</label>
+                            <input type="number" value="${c.limite_cliques}" onchange="atualizarRegra('${c.site_nome}', 'limite_cliques', this.value)" style="width:40px; padding:5px">
+                        </div>
+                        <div style="text-align:center">
+                            <label style="display:block; font-size:10px">DIAS</label>
+                            <input type="number" value="${c.dias_bloqueio}" onchange="atualizarRegra('${c.site_nome}', 'dias_bloqueio', this.value)" style="width:40px; padding:5px">
+                        </div>
+                        <button class="btn-del" onclick="deletarCliente('${c.site_nome}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    // 3. SAL
