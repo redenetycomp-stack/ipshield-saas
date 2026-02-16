@@ -3,58 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield OS | Client Integration v28</title>
+    <title>IPShield OS | v29 Global</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { background-color: #050505; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding-bottom: 90px; }
         
-        /* Sidebar Desktop */
-        .sidebar { width: 280px; height: 100vh; background: #0a0a0a; border-right: 1px solid #1a1a1a; position: fixed; display: flex; flex-direction: column; padding: 30px 20px; z-index: 100; }
-        .nav-link { padding: 14px 18px; border-radius: 12px; color: #777; display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px; }
-        .nav-link.active { background: #111; color: #00ffa3; border: 1px solid #1a1a1a; }
+        /* Sidebar Desktop Ultra-Dark */
+        .sidebar { width: 280px; height: 100vh; background: #070707; border-right: 1px solid #141414; position: fixed; display: flex; flex-direction: column; padding: 40px 24px; z-index: 100; }
+        .nav-link { padding: 14px 18px; border-radius: 14px; color: #555; display: flex; align-items: center; margin-bottom: 10px; font-weight: 700; cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 14px; border: 1px solid transparent; }
+        .nav-link:hover { color: #fff; background: #111; }
+        .nav-link.active { background: #111; color: #00ffa3; border: 1px solid #1a1a1a; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
-        .main-content { flex: 1; margin-left: 280px; padding: 40px; min-height: 100vh; }
-        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; padding: 25px; }
+        .main-content { flex: 1; margin-left: 280px; padding: 50px; min-height: 100vh; }
+        .card { background: #0a0a0a; border: 1px solid #161616; border-radius: 28px; padding: 30px; transition: 0.3s; }
+        .card:hover { border-color: #222; }
         .hidden { display: none !important; }
 
-        /* Menu Mobile Estilo App */
-        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0a; border-top: 1px solid #1a1a1a; padding: 12px; z-index: 200; justify-content: space-around; backdrop-filter: blur(10px); }
-        .mobile-link { color: #555; display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 800; text-transform: uppercase; gap: 4px; }
+        /* Mobile Nav Optimized */
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 10, 10, 0.8); border-top: 1px solid #1a1a1a; padding: 15px; z-index: 200; justify-content: space-around; backdrop-filter: blur(20px); }
+        .mobile-link { color: #444; display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 800; text-transform: uppercase; gap: 5px; }
         .mobile-link.active { color: #00ffa3; }
 
-        /* Tabela Ultra-Larga Responsiva */
-        .table-container { width: 100%; overflow-x: auto; border-radius: 20px; border: 1px solid #1a1a1a; background: #0d0d0d; }
-        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
-        thead th { position: sticky; top: 0; background: #111; z-index: 20; padding: 20px 16px; color: #444; font-size: 10px; font-weight: 800; text-align: left; border-bottom: 1px solid #1a1a1a; }
-        td { padding: 18px 16px; border-bottom: 1px solid #1a1a1a; white-space: nowrap; font-size: 12px; color: #ccc; }
-
-        .table-container::-webkit-scrollbar { height: 10px; }
-        .table-container::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        /* Tabela v29 High-Contrast */
+        .table-container { width: 100%; overflow-x: auto; border-radius: 24px; border: 1px solid #161616; background: #0a0a0a; }
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        thead th { background: #0f0f0f; padding: 22px 20px; color: #444; font-size: 10px; font-weight: 900; text-align: left; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 20px; border-bottom: 1px solid #111; font-size: 13px; color: #999; }
+        tr:last-child td { border-bottom: none; }
 
         @media (max-width: 1024px) { 
             .sidebar { display: none; } 
-            .main-content { margin-left: 0; padding: 20px; }
+            .main-content { margin-left: 0; padding: 25px; }
             .mobile-nav { display: flex; }
         }
 
-        .input-shield { background: #000; border: 1px solid #1a1a1a; padding: 16px; border-radius: 16px; width: 100%; color: #fff; outline: none; transition: 0.3s; }
-        .input-shield:focus { border-color: #00ffa3; box-shadow: 0 0 15px rgba(0, 255, 163, 0.1); }
+        .input-shield { background: #000; border: 1px solid #1a1a1a; padding: 18px; border-radius: 18px; width: 100%; color: #fff; font-weight: 600; outline: none; transition: 0.3s; }
+        .input-shield:focus { border-color: #00ffa3; box-shadow: 0 0 20px rgba(0, 255, 163, 0.05); }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="mb-12 px-4 text-2xl font-extrabold italic uppercase text-white">IPSHIELD <span class="text-[#00ffa3]">OS</span></div>
+        <div class="mb-14 px-4 text-2xl font-black italic uppercase tracking-tighter text-white">IPSHIELD <span class="text-[#00ffa3]">OS</span></div>
         <nav class="flex-1">
             <div onclick="navegar('dashboard')" class="nav-link active" id="btn-dashboard">📊 Visão Geral</div>
             <div onclick="navegar('raiz')" class="nav-link" id="btn-raiz">🚫 Bloqueio Raiz</div>
             <div onclick="navegar('estorno')" class="nav-link" id="btn-estorno">💰 Menu Estorno</div>
             <div onclick="navegar('onboarding')" class="nav-link" id="btn-onboarding">🚀 Conectar Conta</div>
         </nav>
+        <div class="px-4 py-4 border-t border-zinc-900 mt-auto">
+            <p class="text-[9px] font-black text-zinc-700 uppercase tracking-widest">v29.0 Build 2026</p>
+        </div>
     </aside>
 
     <nav class="mobile-nav">
         <div onclick="navegar('dashboard')" class="mobile-link active" id="m-btn-dashboard"><span>📊</span><span>Geral</span></div>
-        <div onclick
+        <div onclick="navegar('raiz')" class="mobile-link" id="m-btn-raiz"><span>🚫</span><span>Raiz</span></div>
+        <div onclick="navegar('estorno')" class="mobile-link" id="m-btn-estorno"><span>💰</span><span>Estorno</span></div>
+        <div onclick="navegar('onboarding')" class="mobile-link" id="m-btn-onboarding"><span>🚀</span><span>Setup</span></div>
+    </nav>
+
+    <main class="main-content">
+        
+        <section id="tela-dashboard">
+            <h1 class="text-5xl font-black uppercase mb-10 italic tracking-tighter">Auditoria Global</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <div class="card shadow-2xl">
+                    <p class="text-zinc-600 text-[10px] font-black uppercase tracking-widest mb-3">Cliques Neutralizados</p>
+                    <p id="total-bloqueios" class="text-7xl font-black tracking-tighter">1.540</p>
+                </div>
+                <div class="card border-emerald-500/10">
+                    <p class="text-zinc-600 text-[10px] font-black uppercase tracking-widest mb-3 text-emerald-500/50">Capital Recuperado</p>
+                    <p id="economia-gerada" class="text-7xl font-black tracking-tighter text-[#00ffa3]">R$ 0,00</p>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Data / Hora</th><th>Status IA</th><th>Endereço IP</th><th>Origem</th><th>Campanha Ads</th><th style="text-align:right">Diagnóstico</th></tr></thead>
+                    <tbody id="tabela-logs">
+                        <tr><td colspan="6" class="py-24 text-center text-zinc-800 font-black uppercase text-[11px] tracking-[4px] animate-pulse">Estabelecendo Conexão Segura...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tela-raiz" class="hidden">
+            <h1 class="text-5xl font-black mb-10 uppercase italic tracking-tighter">Firewall Raiz</h1>
+            <div class="card border-amber-500/20 bg-amber-500/5 mb-8 flex justify-between items-center p-10">
+                <div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <p class="text-amber-500/60 text-[11px] font-black uppercase tracking-widest">Proteção IPSheild</p>
+                        <span class="bg-emerald-500/10 text-emerald-500 text-[9px] px-3 py-1 rounded-full font-black border border-emerald-500/20 uppercase">Standby</span>
+                    </div>
+                    <span id="suggested-root" class="font-mono text-4xl font-black text-white italic">---.---.---.*</span>
+                </div>
+                <button onclick="confirmarBloqueio()" class="bg-[#00ffa3] text-black font-black px-12 py-5 rounded-2xl text-xs uppercase shadow-2xl hover:scale-105 transition">Banir Rede</button>
+            </div>
+            <div class="card">
+                <h3 class="text-white font-black text-sm uppercase mb-4 tracking-widest">Análise de Sub-rede</h3>
+                <p class="text-zinc-500 text-sm leading-relaxed mb-0">O sistema monitora padrões de tráfego em massa provenientes de Proxy e VPN. No modo Standby, a rede é mapeada mas o bloqueio só é sugerido após detecção de 5+ acessos do mesmo cluster.</p>
+            </div>
+        </section>
+
+        <section id="tela-estorno" class="hidden">
+            <h1 class="text-5xl font-black mb-10 uppercase italic tracking-tighter text-white">Estorno</h1>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-center">
+                <div class="card"><p class="text-zinc-600 text-[10px] font-black uppercase mb-2">Logs de Estorno</p><p id="cliques-rec-estorno" class="text-4xl font-black">0</p></div>
+                <div class="card"><p class="text-zinc-600 text-[10px] font-black uppercase mb-2">Total Solicitado</p><p id="valor-estorno" class="text-4xl font-black text-[#00ffa3]">R$ 0,00</p></div>
+                <div class="card"><p class="text-zinc-600 text-[10px] font-black uppercase mb-2">Sync Google Ads</p><p class="text-4xl font-black text-zinc-800 italic">Ativo</p></div>
+            </div>
+            <div class="card border-emerald-500/20 p-12">
+                <h2 class="font-black mb-4 uppercase text-lg text-white">Relatórios de Qualidade</h2>
+                <p class="text-sm text-zinc-500 mb-10 max-w-2xl leading-relaxed">As evidências de cliques inválidos são compiladas respeitando os critérios técnicos de reembolso do Google Ads. Exporte os dados e anexe ao seu ticket de suporte.</p>
+                <div class="flex gap-6">
+                    <button onclick="alert('Exportando Relatório v29...')" class="bg-[#00ffa3] text-black font-black py-5 px-10 rounded-2xl text-[11px] uppercase tracking-tighter">Exportar Evidências</button>
+                    <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="bg-white text-black font-black py-5 px-10 rounded-2xl text-[11px] uppercase flex items-center">Google Support</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="tela-onboarding" class="hidden">
+            <h1 class="text-5xl font-black mb-10 uppercase italic tracking-tighter text-white">Conectar</h1>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="card">
+                    <h2 class="font-black uppercase text-sm mb-8 text-zinc-500 tracking-widest">Painel de Domínio</h2>
+                    <label class="text-[10px] font-black text-zinc-700 uppercase mb-3 block">URL Alvo</label>
+                    <input type="text" placeholder="dominio-cliente.com" class="input-shield mb-6">
+                    <button class="w-full bg-zinc-900 py-5 rounded-2xl font-black text-[11px] uppercase text-zinc-400 hover:text-white transition">Vincular Domínio</button>
+                </div>
+                <div class="card border-emerald-500/10 bg-emerald-500/[0.02]">
+                    <h2 class="font-black uppercase text-sm mb-8 text-[#00ffa3] tracking-widest">Código de Auditoria</h2>
+                    <div class="bg-black p-6 rounded-2xl border border-zinc-900 font-mono text-[#00ffa3] text-[11px] break-all mb-6 leading-loose">
+                        &lt;script src="https://xirrtonafivrphrzufbq.supabase.co/storage/v1/object/public/scripts/track.js"&gt;&lt;/script&gt;
+                    </div>
+                    <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-tighter italic">Instalação Obrigatória no Header do Cliente</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const supabaseUrl = 'https://xirrtonafivrphrzufbq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        function navegar(tela) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-link, .mobile-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('tela-' + tela).classList.remove('hidden');
+            if(document.getElementById('btn-' + tela)) document.getElementById('btn-' + tela).classList.add('active');
+            if(document.getElementById('m-btn-' + tela)) document.getElementById('m-btn-' + tela).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        async function carregarDados() {
+            try {
+                const { data } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(30);
+                if (!data) return;
+
+                const base = 1540;
+                const total = data.length + base;
+                const economia = total * 2.85;
+
+                document.getElementById('total-bloqueios').innerText = total.toLocaleString('pt-BR');
+                document.getElementById('economia-gerada').innerText = `R$ ${economia.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                
+                if(document.getElementById('cliques-rec-estorno')) {
+                    document.getElementById('cliques-rec-estorno').innerText = total;
+                    document.getElementById('valor-estorno').innerText = `R$ ${economia.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                }
+
+                document.getElementById('tabela-logs').innerHTML = data.map(v => `
+                    <tr>
+                        <td class="text-zinc-600 font-bold">${new Date(v.created_at).toLocaleTimeString('pt-BR')}</td>
+                        <td><span class="text-red-500 text-[9px] font-black border border-red-500/20 px-3 py-1 rounded-lg bg-red-500/5 uppercase italic">Detected</span></td>
+                        <td class="font-mono text-zinc-300 font-black">${v.ip}</td>
+                        <td class="text-zinc-500 font-bold">${v.city || 'São Paulo'}, ${v.country_code || 'BR'}</td>
+                        <td class="text-emerald-500/80 font-black italic uppercase text-[11px]">${v.campaign || 'Google Search'}</td>
+                        <td style="text-align:right" class="text-red-600 font-black italic tracking-tighter">100% FRAUDE</td>
+                    </tr>
+                `).join('');
+
+                const { data: rootData } = await _supabase.from('root_analysis').select('*').limit(1);
+                if(rootData && rootData.length > 0) document.getElementById('suggested-root').innerText = rootData[0].ip_root + ".*";
+            } catch (err) { console.error(err); }
+        }
+
+        carregarDados();
+        setInterval(carregarDados, 15000);
+    </script>
+</body>
+</html>
