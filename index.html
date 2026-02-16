@@ -9,10 +9,12 @@
         :root { --primary: #1a2a3a; --secondary: #27ae60; --danger: #e74c3c; --light: #f4f7f9; --text: #2c3e50; }
         body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; color: var(--text); }
         .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        
         .header { background: var(--primary); color: white; padding: 25px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; }
         .nav-tabs { display: flex; background: #2c3e50; padding: 0 20px; gap: 10px; }
         .tab-btn { background: none; border: none; color: #bdc3c7; padding: 15px 20px; cursor: pointer; font-weight: bold; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: white; border-bottom-color: var(--secondary); }
+        
         .tab-content { display: none; background: white; padding: 25px; border-radius: 0 0 15px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .tab-content.active { display: block; }
         
@@ -21,11 +23,12 @@
         .stat-card { background: var(--light); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #e0e6ed; }
         .stat-card h1 { margin: 10px 0; font-size: 32px; }
 
-        /* Barra de Filtros Restaurada */
+        /* Filtros */
         .filter-bar { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: end; border: 1px solid #eee; }
         .filter-group { display: flex; flex-direction: column; gap: 5px; }
         .filter-group label { font-size: 11px; font-weight: bold; color: #7f8c8d; text-transform: uppercase; }
         
+        /* Tabelas */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th { text-align: left; color: #95a5a6; font-size: 12px; padding: 12px; border-bottom: 2px solid #f4f7f9; text-transform: uppercase; }
         td { padding: 12px; border-bottom: 1px solid #f4f7f9; font-size: 13px; }
@@ -34,8 +37,11 @@
         .bg-fraude { background: var(--danger); }
         .bg-limpo { background: var(--secondary); }
         
-        input, select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
-        button { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        /* Inputs e Botões */
+        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
+        button { background: var(--primary); color: white; border: none; padding: 11px 22px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { opacity: 0.8; }
+        .btn-delete { background: none; color: var(--danger); border: 1px solid var(--danger); padding: 5px 10px; font-size: 11px; }
     </style>
 </head>
 <body>
@@ -68,23 +74,12 @@
                 <label>Diagnóstico</label>
                 <select id="f-diag" onchange="carregarDados()">
                     <option value="FRAUDE">Apenas Fraude</option>
-                    <option value="all">Ver Tudo (Limpo + Fraude)</option>
+                    <option value="all">Ver Tudo</option>
                 </select>
             </div>
-            <div class="filter-group">
-                <label>Dispositivo</label>
-                <select id="f-dev" onchange="carregarDados()">
-                    <option value="all">Todos</option>
-                    <option value="mobile">Mobile</option>
-                    <option value="desktop">Desktop</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <button onclick="carregarDados()" style="width: 100%;">APLICAR</button>
-            </div>
+            <div class="filter-group"><button onclick="carregarDados()" style="width: 100%;">APLICAR</button></div>
         </div>
 
-        <h3>🕒 Relatório Detalhado de Visitas</h3>
         <table id="table-main">
             <thead>
                 <tr>
@@ -102,14 +97,24 @@
     </div>
 
     <div id="clientes" class="tab-content">
-        <h3>➕ Configurar Novo Cliente</h3>
-        <div id="lista-configuracoes"></div>
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 25px;">
+            <h3 style="margin-top:0">➕ Adicionar Novo Cliente</h3>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="new-site" placeholder="Domínio (ex: arteinox.com.br)" style="flex:2">
+                <input type="text" id="new-ads-id" placeholder="ID Ads (000-000-0000)" style="flex:1">
+                <button onclick="salvarCliente()">CADASTRAR SITE</button>
+            </div>
+        </div>
+
+        <h3>⚙️ Regras de Bloqueio Ativas</h3>
+        <div id="lista-configuracoes">
+            </div>
     </div>
 
     <div id="extorno" class="tab-content">
-        <h3>💰 Dados para Reivindicação (GCLID)</h3>
+        <h3>💰 Dados para Reivindicação de Créditos</h3>
         <table id="table-extorno">
-            <thead><tr><th>DATA</th><th>IP</th><th>GCLID</th></tr></thead>
+            <thead><tr><th>DATA</th><th>IP</th><th>SITE</th><th>GCLID</th></tr></thead>
             <tbody></tbody>
         </table>
     </div>
@@ -130,56 +135,86 @@
     async function carregarDados() {
         const site = document.getElementById('f-site').value;
         const diag = document.getElementById('f-diag').value;
-        const dev = document.getElementById('f-dev').value;
 
         let query = _supabase.from('visits').select('*', { count: 'exact' });
-
         if (site !== 'all') query = query.eq('site_id', site);
         if (diag !== 'all') query = query.eq('diagnostico', diag);
-        if (dev !== 'all') query = query.eq('device', dev);
 
         const { data, count, error } = await query.order('created_at', { ascending: false }).limit(50);
 
         if (!error) {
             document.getElementById('sync-status').innerText = "SINCERIZADO";
             document.getElementById('sync-status').style.background = "#27ae60";
-            
-            // Dashboard (Apenas Fraude para o contador)
-            const fraudes = data.filter(v => v.diagnostico === 'FRAUDE').length;
             document.getElementById('total-fraudes').innerText = count;
             document.getElementById('economia-total').innerText = 'R$ ' + (count * 5).toLocaleString('pt-BR');
 
-            // Tabela Principal com as colunas que você sentia falta
             document.querySelector('#table-main tbody').innerHTML = data.map(v => `
                 <tr>
                     <td style="font-family:monospace"><b>${v.ip}</b></td>
-                    <td>${v.city || 'Desconhecido'}/${v.region || '--'}</td>
+                    <td>${v.city || '---'}/${v.region || '--'}</td>
                     <td>${v.site_id}</td>
-                    <td>${v.device || 'outros'}</td>
-                    <td style="font-size:11px">${v.page_url ? v.page_url.substring(0,20)+'...' : '--'}</td>
+                    <td>${v.device || '---'}</td>
+                    <td style="font-size:11px">${v.page_url ? v.page_url.substring(0,25)+'...' : '--'}</td>
                     <td>${new Date(v.created_at).toLocaleString('pt-BR')}</td>
                     <td><span class="badge ${v.diagnostico === 'FRAUDE' ? 'bg-fraude' : 'bg-limpo'}">${v.diagnostico}</span></td>
                 </tr>
             `).join('');
+
+            // Preenche Estorno
+            const comGclid = data.filter(v => v.gclid);
+            document.getElementById('total-extorno').innerText = comGclid.length;
+            document.querySelector('#table-extorno tbody').innerHTML = comGclid.map(v => `
+                <tr><td>${new Date(v.created_at).toLocaleDateString()}</td><td>${v.ip}</td><td>${v.site_id}</td><td style="font-size:10px">${v.gclid}</td></tr>
+            `).join('');
         }
     }
 
-    // Carrega os sites dinamicamente no filtro
-    async function carregarSitesNoFiltro() {
-        const { data } = await _supabase.from('ipshield_config').select('site_nome');
+    async function carregarConfiguracoes() {
+        const { data } = await _supabase.from('ipshield_config').select('*').order('site_nome', { ascending: true });
         if (data) {
+            const list = document.getElementById('lista-configuracoes');
+            list.innerHTML = data.map(c => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:#f4f7f9; margin-bottom:10px; border-radius:8px; border-left:4px solid var(--primary)">
+                    <div><strong>${c.site_nome}</strong><br><small>Ads ID: ${c.google_ads_id}</small></div>
+                    <div style="display:flex; gap:15px; align-items:center;">
+                        <div>Cliques: <input type="number" value="${c.limite_cliques}" onchange="updateRegra('${c.site_nome}', 'limite_cliques', this.value)" style="width:45px"></div>
+                        <div>Dias: <input type="number" value="${c.dias_bloqueio}" onchange="updateRegra('${c.site_nome}', 'dias_bloqueio', this.value)" style="width:45px"></div>
+                        <button class="btn-delete" onclick="deletarCliente('${c.site_nome}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Atualiza filtro de site na home
             const select = document.getElementById('f-site');
+            select.innerHTML = '<option value="all">Todos os Sites</option>';
             data.forEach(s => {
                 const opt = document.createElement('option');
-                opt.value = s.site_nome;
-                opt.innerText = s.site_nome;
-                select.appendChild(opt);
+                opt.value = s.site_nome; opt.innerText = s.site_nome; select.appendChild(opt);
             });
         }
     }
 
-    // Inicialização
-    carregarSitesNoFiltro();
+    async function salvarCliente() {
+        const site = document.getElementById('new-site').value;
+        const adsId = document.getElementById('new-ads-id').value;
+        if(!site || !adsId) return alert("Preencha Site e ID!");
+        await _supabase.from('ipshield_config').insert([{ site_nome: site, google_ads_id: adsId, limite_cliques: 1, dias_bloqueio: 30 }]);
+        location.reload();
+    }
+
+    async function updateRegra(site, campo, valor) {
+        const obj = {}; obj[campo] = parseInt(valor);
+        await _supabase.from('ipshield_config').update(obj).eq('site_nome', site);
+    }
+
+    async function deletarCliente(site) {
+        if(confirm("Remover site?")) {
+            await _supabase.from('ipshield_config').delete().eq('site_nome', site);
+            location.reload();
+        }
+    }
+
+    carregarConfiguracoes();
     carregarDados();
 </script>
 </body>
