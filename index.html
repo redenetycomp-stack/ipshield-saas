@@ -3,56 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield Pro v7.0 - Monitoramento de Elite</title>
+    <title>IPShield Pro v7.1 - Monitoramento de Elite</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #0f172a; --secondary: #10b981; --danger: #ef4444; --warning: #f59e0b; --light: #f8fafc; --text: #1e293b; --blue: #3b82f6; }
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f1f5f9; margin: 0; color: var(--text); }
+        :root { --primary: #0f172a; --secondary: #10b981; --danger: #ef4444; --warning: #f59e0b; --light: #f8fafc; --text: #1e293b; --blue: #3b82f6; --gray: #94a3b8; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #f1f5f9; margin: 0; color: var(--text); }
         .container { max-width: 1250px; margin: 25px auto; padding: 0 15px; }
-        
-        /* CABEÇALHO */
-        .header { background: var(--primary); color: white; padding: 25px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .nav-tabs { display: flex; background: #1e293b; overflow-x: auto; gap: 2px; padding: 0 10px; border-bottom: 3px solid var(--secondary); }
-        .tab-btn { color: #94a3b8; border: none; background: none; padding: 18px 25px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .header { background: var(--primary); color: white; padding: 25px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .nav-tabs { display: flex; background: #1e293b; overflow-x: auto; padding: 0 10px; border-bottom: 3px solid var(--secondary); }
+        .tab-btn { color: #94a3b8; border: none; background: none; padding: 18px 25px; font-weight: 600; cursor: pointer; white-space: nowrap; }
         .tab-btn.active { color: white; background: rgba(255,255,255,0.05); border-bottom: 3px solid var(--secondary); }
-
-        /* CONTEÚDO */
         .content { background: white; padding: 30px; border-radius: 0 0 15px 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); min-height: 600px; }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* ESTORNO BANNER */
-        .estorno-banner { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; padding: 20px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-google { background: #4285f4; color: white; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 14px; }
-
-        /* TABELAS */
         .table-res { width: 100%; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 10px; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 15px; background: #f8fafc; font-size: 11px; color: #64748b; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
         td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-
-        /* FORMULÁRIOS */
         .card-form { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 30px; }
         .input-group { display: flex; gap: 12px; flex-wrap: wrap; }
-        input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; flex: 1; min-width: 250px; font-size: 14px; }
-        
-        /* BOTÕES */
+        input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; flex: 1; min-width: 250px; }
         .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
         .btn-add { background: var(--secondary); }
         .btn-del { background: var(--danger); padding: 6px 12px; font-size: 12px; }
-        .copy-badge { cursor: pointer; background: var(--blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; }
-
-        /* SCRIPT BOX */
-        .code-box { background: #0f172a; color: #38bdf8; padding: 20px; border-radius: 10px; font-family: 'Fira Code', monospace; white-space: pre-wrap; font-size: 13px; border: 1px solid #334155; margin-top: 15px; overflow-x: auto; }
+        .code-box { background: #0f172a; color: #38bdf8; padding: 20px; border-radius: 10px; font-family: monospace; white-space: pre-wrap; font-size: 13px; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1 style="margin:0">🛡️ IPShield <span style="font-weight:100">PRO v7.0</span></h1>
-        <div style="background:rgba(255,255,255,0.1); padding:8px 20px; border-radius:30px; font-size:12px">● SISTEMA OPERACIONAL</div>
+        <h1 style="margin:0">🛡️ IPShield <span style="font-weight:100">PRO v7.1</span></h1>
+        <div style="background:rgba(255,255,255,0.1); padding:8px 20px; border-radius:30px; font-size:12px">● FILTRAGEM DE DOMÍNIO ATIVA</div>
     </div>
 
     <div class="nav-tabs">
@@ -65,7 +48,7 @@
 
     <div class="content">
         <div id="dash" class="tab-panel active">
-            <h3 style="margin-top:0">🔍 Monitoramento de Acessos</h3>
+            <h3 style="margin-top:0">🔍 Monitoramento Real (Apenas Domínios Válidos)</h3>
             <div class="table-res">
                 <table id="table-main">
                     <thead><tr><th>IP / RECORRÊNCIA</th><th>LOCALIZAÇÃO</th><th>SITE</th><th>HORA</th><th>STATUS</th></tr></thead>
@@ -76,75 +59,51 @@
 
         <div id="clientes" class="tab-panel">
             <div class="card-form">
-                <h3 style="margin-top:0">➕ Adicionar Novo Site/Conta</h3>
+                <h3>➕ Adicionar Novo Site/Conta</h3>
                 <div class="input-group">
                     <input type="text" id="c-nome" placeholder="Domínio (ex: aguiarinox.com.br)">
                     <input type="text" id="c-ads" placeholder="ID Ads (ex: 123-456-7890)">
                     <button class="btn btn-add" onclick="salvarCliente()">ATIVAR PROTEÇÃO</button>
                 </div>
             </div>
-            <h3>📋 Contas Gerenciadas (Bloqueio Nível de Conta)</h3>
-            <div class="table-res">
-                <table>
-                    <thead><tr><th>DOMÍNIO</th><th>ID GOOGLE ADS</th><th>ESTADO</th><th>AÇÕES</th></tr></thead>
-                    <tbody id="tbody-clientes"></tbody>
-                </table>
-            </div>
+            <h3>📋 Contas Gerenciadas</h3>
+            <div class="table-res"><table id="table-clientes"><thead><tr><th>DOMÍNIO</th><th>ID ADS</th><th>ESTADO</th><th>AÇÕES</th></tr></thead><tbody></tbody></table></div>
         </div>
 
         <div id="raiz" class="tab-panel">
-            <h3 style="color:var(--danger)">🚫 Bloqueio Global por Raiz</h3>
+            <h3>🚫 Bloqueio Global por Raiz</h3>
             <div class="card-form" style="border-left: 5px solid var(--danger)">
                 <div class="input-group">
                     <input type="text" id="r-valor" placeholder="Ex: 177.152.10">
-                    <button class="btn" style="background:var(--danger)" onclick="alert('Raiz bloqueada!')">BLOQUEAR FAIXA</button>
+                    <button class="btn" style="background:var(--danger)">BLOQUEAR FAIXA</button>
                 </div>
             </div>
-            <table id="table-sugestao-raiz">
-                <thead><tr><th>RAIZ SUGERIDA</th><th>CLIQUES</th><th>CIDADE</th><th>AÇÃO</th></tr></thead>
-                <tbody></tbody>
-            </table>
         </div>
 
         <div id="extorno" class="tab-panel">
-            <div class="estorno-banner">
-                <div>
-                    <h2 style="margin:0; color: #1e3a8a;">Solicitação de Estorno</h2>
-                    <p style="margin:5px 0; color: #475569;">IDs de clique (GCLID) capturados em acessos suspeitos.</p>
-                </div>
-                <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="btn-google">
-                    <img src="https://www.google.com/favicon.ico" width="16"> ABRIR SUPORTE GOOGLE
-                </a>
-            </div>
-            <div class="table-res">
-                <table id="table-extorno">
-                    <thead><tr><th>DATA</th><th>IP</th><th>SITE</th><th>IDENTIFICADOR GCLID</th><th>CÓPIA</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+            <h2 style="color: #1e3a8a;">💰 IDs de Clique para Estorno</h2>
+            <div class="table-res"><table id="table-extorno"><thead><tr><th>DATA</th><th>IP</th><th>SITE</th><th>GCLID</th><th>AÇÃO</th></tr></thead><tbody></tbody></table></div>
         </div>
 
         <div id="instala" class="tab-panel">
-            <h3>💻 Script de Captura WordPress</h3>
-            <p>Copie o código abaixo e cole no seu WordPress para monitorar este domínio.</p>
+            <h3>💻 Script WordPress</h3>
+            <p>Cole no seu Header do WordPress:</p>
             <div class="code-box" id="script-code">
 &lt;script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"&gt;&lt;/script&gt;
 &lt;script&gt;
 (async () => {
     const _supabase = supabase.createClient('https://xirrtonafivrphrzufbq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE');
-    let ipData = { ip: '0.0.0.0', city: 'Desconhecido', region: '--' };
+    let ipData = { ip: '0.0.0.0', city: 'Desconhecido' };
     try { const res = await fetch('https://ipapi.co/json/'); ipData = await res.json(); } catch (e) {}
     const urlParams = new URLSearchParams(window.location.search);
     const gclid = urlParams.get('gclid');
     await _supabase.from('visits').insert([{
-        ip: ipData.ip, city: ipData.city, region: ipData.region,
-        site_id: window.location.hostname, device: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
-        gclid: gclid, diagnostico: gclid ? "FRAUDE" : "LIMPO", page_url: window.location.href
+        ip: ipData.ip, city: ipData.city, site_id: window.location.hostname,
+        gclid: gclid, diagnostico: gclid ? "FRAUDE" : "LIMPO"
     }]);
 })();
 &lt;/script&gt;
             </div>
-            <button class="btn btn-add" style="margin-top:15px" onclick="copiarScript()">COPIAR SCRIPT PARA O HEADER</button>
         </div>
     </div>
 </div>
@@ -160,80 +119,50 @@
     }
 
     async function carregarDados() {
-        // Puxamos os últimos 100 registros para calcular a recorrência no cliente
-        const { data: visitas, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(100);
-        
+        const { data: visitas } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(200);
         if (visitas) {
             const contagem = {};
             visitas.forEach(v => contagem[v.ip] = (contagem[v.ip] || 0) + 1);
 
-            // Dashboard
-            document.querySelector('#table-main tbody').innerHTML = visitas.map(v => {
+            // FILTRO DE SEGURANÇA: Só mostra registros que tenham um ponto no site_id (domínios reais)
+            const visitasReais = visitas.filter(v => {
+                const sid = String(v.site_id);
+                return sid.includes('.') && !sid.includes('-'); // Remove domínios fakes e UUIDs
+            });
+
+            document.querySelector('#table-main tbody').innerHTML = visitasReais.map(v => {
                 const multi = contagem[v.ip] > 1;
-                return `
-                <tr>
-                    <td><b>${v.ip}</b> <span style="background:${multi?'red':'#666'}; color:white; padding:2px 6px; border-radius:10px; font-size:10px">${contagem[v.ip]}x</span></td>
-                    <td>${v.city || '--'} / ${v.region || '--'}</td>
-                    <td>${v.site_id}</td>
-                    <td>${new Date(v.created_at).toLocaleTimeString('pt-BR')}</td>
-                    <td><span style="color:${multi || v.diagnostico==='FRAUDE' ? 'red' : 'green'}; font-weight:bold">● ${multi || v.diagnostico==='FRAUDE' ? 'SUSPEITO' : 'LIMPO'}</span></td>
+                const ehGoogle = v.ip.startsWith('66.249');
+                return `<tr>
+                    <td><b>${v.ip}</b> <span style="background:${ehGoogle?'#94a3b8':(multi?'red':'#666')};color:white;padding:2px 6px;border-radius:10px;font-size:10px">${contagem[v.ip]}x</span></td>
+                    <td>${v.city || '--'}</td>
+                    <td><small>${v.site_id}</small></td>
+                    <td>${new Date(v.created_at).toLocaleTimeString()}</td>
+                    <td><span style="color:${ehGoogle?'#94a3b8':(multi?'red':'green')};font-weight:bold">● ${ehGoogle?'RASTREADOR':(multi?'SUSPEITO':'LIMPO')}</span></td>
                 </tr>`;
             }).join('');
-
-            // Estorno (GCLIDs)
-            const comGclid = visitas.filter(v => v.gclid);
-            document.querySelector('#table-extorno tbody').innerHTML = comGclid.map(v => `
-                <tr>
-                    <td>${new Date(v.created_at).toLocaleDateString('pt-BR')}</td>
-                    <td><code>${v.ip}</code></td>
-                    <td>${v.site_id}</td>
-                    <td style="font-family:monospace; color:red; font-size:11px">${v.gclid}</td>
-                    <td><span class="copy-badge" onclick="copiarGclid('${v.gclid}')">COPIAR</span></td>
-                </tr>`).join('');
-
-            analisarRaizes(visitas.filter(v => v.diagnostico === 'FRAUDE' || contagem[v.ip] > 1));
         }
     }
 
     async function carregarClientes() {
         const { data } = await _supabase.from('ipshield_config').select('*').order('site_nome');
         if (data) {
-            document.getElementById('tbody-clientes').innerHTML = data.map(c => `
-                <tr>
-                    <td><b>${c.site_nome}</b></td>
-                    <td>${c.google_ads_id}</td>
-                    <td><span style="color:green">● Protegido</span></td>
-                    <td><button class="btn-del" onclick="removerCliente('${c.site_nome}')">REMOVER</button></td>
-                </tr>`).join('');
+            document.getElementById('table-clientes').querySelector('tbody').innerHTML = data.map(c => `
+                <tr><td><b>${c.site_nome}</b></td><td>${c.google_ads_id}</td><td><span style="color:green">Ativo</span></td><td><button class="btn-del" onclick="removerCliente('${c.site_nome}')">REMOVER</button></td></tr>
+            `).join('');
         }
     }
 
     async function salvarCliente() {
         const n = document.getElementById('c-nome').value;
         const a = document.getElementById('c-ads').value;
-        if(!n || !a) return alert("Preencha todos os campos!");
         await _supabase.from('ipshield_config').insert([{ site_nome: n, google_ads_id: a }]);
         location.reload();
     }
 
     async function removerCliente(n) {
-        if(confirm("Remover proteção de " + n + "?")) {
-            await _supabase.from('ipshield_config').delete().eq('site_nome', n);
-            location.reload();
-        }
+        if(confirm("Remover site?")) { await _supabase.from('ipshield_config').delete().eq('site_nome', n); location.reload(); }
     }
-
-    function analisarRaizes(fraudes) {
-        const rz = {};
-        fraudes.forEach(v => { const r = v.ip.split('.').slice(0,3).join('.'); rz[r] = (rz[r] || 0) + 1; });
-        const sorted = Object.entries(rz).sort((a,b) => b[1] - a[1]);
-        document.querySelector('#table-sugestao-raiz tbody').innerHTML = sorted.map(([r, count]) => `
-            <tr><td><b>${r}.*</b></td><td>${count} cliques</td><td>--</td><td><button class="btn-add" style="padding:5px 10px; font-size:10px" onclick="document.getElementById('r-valor').value='${r}'">CAPTURAR</button></td></tr>
-        `).join('');
-    }
-
-    function copiarGclid(t) { navigator.clipboard.writeText(t); alert("GCLID Copiado!"); }
-    function copiarScript() { navigator.clipboard.writeText(document.getElementById('script-code').innerText); alert("Script Copiado!"); }
 
     setInterval(carregarDados, 15000);
     carregarDados();
