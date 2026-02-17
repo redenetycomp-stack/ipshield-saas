@@ -3,53 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield Pro - Sistema de Defesa</title>
+    <title>IPShield Pro - Realtime</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #1a2a3a; --secondary: #27ae60; --danger: #e74c3c; --light: #f4f7f9; --text: #2c3e50; --warning: #f39c12; }
+        :root { --primary: #1a2a3a; --secondary: #27ae60; --danger: #e74c3c; --light: #f4f7f9; --text: #2c3e50; }
+        body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
         
-        body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; color: var(--text); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 10px; }
-        
-        /* Header Responsivo */
-        .header { background: var(--primary); color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
-        .header h1 { margin: 0; font-size: clamp(18px, 5vw, 24px); }
-
-        /* Menu de Abas - Rolagem Horizontal no Mobile */
-        .nav-tabs { display: flex; background: #2c3e50; padding: 0 10px; gap: 5px; overflow-x: auto; white-space: nowrap; border-radius: 8px; margin-bottom: 10px; scrollbar-width: none; }
-        .nav-tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { background: none; border: none; color: #bdc3c7; padding: 15px 18px; cursor: pointer; font-weight: bold; border-bottom: 3px solid transparent; flex-shrink: 0; }
+        /* Layout Responsivo */
+        .header { background: var(--primary); color: white; padding: 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .nav-tabs { display: flex; background: #2c3e50; overflow-x: auto; gap: 5px; padding: 0 10px; }
+        .tab-btn { color: #bdc3c7; border: none; background: none; padding: 15px; font-weight: bold; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: white; border-bottom-color: var(--secondary); }
-
-        .tab-content { display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .tab-content.active { display: block; }
-
-        /* Dashboard Cards */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: var(--light); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #e0e6ed; }
-        .stat-card h1 { margin: 10px 0; font-size: 32px; }
-
-        /* Filtros Responsivos */
-        .filter-bar { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; border: 1px solid #eee; }
-        .filter-group { flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 5px; }
-
-        /* Instruções de Estorno */
-        .instrucoes-box { background: #fff9eb; border-left: 5px solid var(--warning); padding: 15px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; }
-        .btn-google { background: #4285f4; color: white; padding: 10px 15px; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: bold; font-size: 13px; margin-top: 10px; }
-
-        /* Tabelas Responsivas */
-        .table-container { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { text-align: left; color: #95a5a6; font-size: 12px; padding: 12px; border-bottom: 2px solid #f4f7f9; }
-        td { padding: 12px; border-bottom: 1px solid #f4f7f9; font-size: 13px; }
-
-        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box; }
-        button { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: auto; }
         
+        .content { background: white; padding: 20px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Cards */
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .card { background: var(--light); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #ddd; }
+        .card h2 { margin: 5px 0; font-size: 32px; color: var(--primary); }
+
+        /* Tabelas */
+        .table-res { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 12px; color: #7f8c8d; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
+
+        /* Mobile Adjusts */
         @media (max-width: 600px) {
-            .header { text-align: center; justify-content: center; }
-            .filter-group { min-width: 100%; }
-            button { width: 100%; }
+            .grid-stats { grid-template-columns: 1fr; }
+            .header { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -57,162 +42,129 @@
 
 <div class="container">
     <div class="header">
-        <h1>🛡️ IPShield Pro</h1>
-        <span id="sync-status" style="background:#27ae60; color:white; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:bold">CONECTADO</span>
+        <h2>🛡️ IPShield <span style="font-weight: 100;">PRO</span></h2>
+        <div id="db-status">🟢 Banco Conectado</div>
     </div>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="openTab('dash')">RESUMO</button>
-        <button class="tab-btn" onclick="openTab('clientes')">CLIENTES</button>
-        <button class="tab-btn" onclick="openTab('raiz')">RAIZ DE IP</button>
-        <button class="tab-btn" onclick="openTab('extorno')">SOLICITAR ESTORNO</button>
+        <button class="tab-btn active" onclick="tab(event, 'dash')">DASHBOARD</button>
+        <button class="tab-btn" onclick="tab(event, 'extorno')">ESTORNOS (GCLID)</button>
+        <button class="tab-btn" onclick="tab(event, 'raiz')">RAIZ DE IP</button>
+        <button class="tab-btn" onclick="tab(event, 'config')">CLIENTES</button>
     </div>
 
-    <div id="dash" class="tab-content active">
-        <div class="stats-grid">
-            <div class="stat-card"><div>ALERTAS DE FRAUDE</div><h1 id="total-fraudes">0</h1></div>
-            <div class="stat-card"><div>ECONOMIA ESTIMADA</div><h1 id="economia-total" style="color:var(--secondary)">R$ 0,00</h1></div>
-            <div class="stat-card"><div>CLIQUE COM GCLID</div><h1 id="total-extorno" style="color:var(--danger)">0</h1></div>
+    <div class="content">
+        <div id="dash" class="tab-panel active">
+            <div class="grid-stats">
+                <div class="card"><span>BLOQUEIOS REAIS</span><h2 id="count-fraude">0</h2></div>
+                <div class="card"><span>ECONOMIA TOTAL</span><h2 id="sum-money" style="color:var(--secondary)">R$ 0,00</h2></div>
+                <div class="card"><span>PONTOS DE AUDITORIA</span><h2 id="count-gclid" style="color:var(--danger)">0</h2></div>
+            </div>
+
+            <div class="table-res">
+                <table id="main-table">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>LOCALIZAÇÃO</th>
+                            <th>SITE ORIGEM</th>
+                            <th>DISPOSITIVO</th>
+                            <th>DATA/HORA</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="filter-bar">
-            <div class="filter-group"><label>Site</label><select id="f-site" onchange="carregarDados()"><option value="all">Todos</option></select></div>
-            <div class="filter-group"><label>Diagnóstico</label><select id="f-diag" onchange="carregarDados()"><option value="FRAUDE">Fraude</option><option value="all">Ver Tudo</option></select></div>
-            <button onclick="carregarDados()" style="background:var(--secondary)">FILTRAR</button>
-        </div>
-
-        <div class="table-container">
-            <table id="table-main">
-                <thead><tr><th>IP</th><th>CIDADE</th><th>SITE</th><th>HORA</th><th>STATUS</th></tr></thead>
+        <div id="extorno" class="tab-panel">
+            <h3>Relatório de Cliques Inválidos (GCLID)</h3>
+            <p>Copie os IDs abaixo para o formulário de contestação do Google Ads.</p>
+            <table id="gclid-table">
+                <thead><tr><th>DATA</th><th>IP</th><th>SITE</th><th>GCLID</th><th>AÇÃO</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
-    </div>
 
-    <div id="clientes" class="tab-content">
-        <h3 style="margin-top:0">➕ Novo Cliente</h3>
-        <div style="display:flex; flex-direction:column; gap:10px; background:#f9f9f9; padding:15px; border-radius:8px">
-            <input type="text" id="new-site" placeholder="Ex: arteinox.com.br">
-            <input type="text" id="new-ads-id" placeholder="Ex: 123-456-7890">
-            <button onclick="salvarCliente()">CADASTRAR SITE</button>
-        </div>
-        <h3>⚙️ Gerenciar Regras</h3>
-        <div id="lista-configuracoes"></div>
-    </div>
-
-    <div id="raiz" class="tab-content">
-        <h3 style="margin-top:0; color:var(--danger)">🚫 Bloqueio por Range (Raiz)</h3>
-        <p style="font-size:14px">Use para bloquear faixas de IPs suspeitos de concorrentes.</p>
-        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px">
-            <input type="text" id="raiz-val" placeholder="Ex: 191.185.10">
-            <button onclick="alert('Raiz salva!')" style="background:var(--danger)">BLOQUEAR FAIXA AGORA</button>
-        </div>
-        <table id="table-sugestao-raiz">
-            <thead><tr><th>RAIZ</th><th>ATAQUES</th><th>ÚLTIMA CIDADE</th><th>AÇÃO</th></tr></thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <div id="extorno" class="tab-content">
-        <h3 style="margin-top:0">💰 Central de Reivindicação de Créditos</h3>
-        
-        <div class="instrucoes-box">
-            <strong>Como solicitar o estorno no Google Ads:</strong><br>
-            1. Acesse o link abaixo do Formulário de Investigação de Cliques.<br>
-            2. Forneça o <b>GCLID</b> (ID do Clique) e o <b>IP</b> constantes na tabela abaixo.<br>
-            3. Informe que o sistema IPShield detectou comportamento automatizado/repetitivo.<br>
-            <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="btn-google">
-                <img src="https://www.google.com/favicon.ico" width="16"> ABRIR FORMULÁRIO DO GOOGLE
-            </a>
-        </div>
-
-        <div style="display:flex; gap:10px; margin-bottom:20px">
-            <button onclick="window.print()" style="background:#95a5a6; flex:1">GERAR RELATÓRIO PDF</button>
-            <button onclick="carregarDados()" style="flex:1">ATUALIZAR LISTA</button>
-        </div>
-
-        <div class="table-container">
-            <table id="table-extorno">
-                <thead><tr><th>DATA</th><th>IP</th><th>SITE</th><th>GCLID (IDENTIFICADOR)</th><th>AÇÃO</th></tr></thead>
-                <tbody></tbody>
-            </table>
+        <div id="config" class="tab-panel">
+            <h3>Gerenciar Sites e IDs do Ads</h3>
+            <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap: wrap;">
+                <input type="text" id="add-site" placeholder="URL do Site" style="flex:1; padding:10px">
+                <input type="text" id="add-id" placeholder="ID Google Ads" style="flex:1; padding:10px">
+                <button onclick="addClient()" style="background:var(--secondary); color:white; border:none; padding:10px 20px; border-radius:5px">CADASTRAR</button>
+            </div>
+            <div id="client-list"></div>
         </div>
     </div>
 </div>
 
 <script>
-    const SUPABASE_URL = 'https://xirrtonafivrphrzufbq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const _supabase = supabase.createClient('https://xirrtonafivrphrzufbq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE');
 
-    function openTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    function tab(e, id) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
+        document.getElementById(id).classList.add('active');
+        e.currentTarget.classList.add('active');
     }
 
-    async function carregarDados() {
-        const site = document.getElementById('f-site').value;
-        const diag = document.getElementById('f-diag').value;
-        let query = _supabase.from('visits').select('*', { count: 'exact' });
-        if (site !== 'all') query = query.eq('site_id', site);
-        if (diag !== 'all') query = query.eq('diagnostico', diag);
-
-        const { data, count, error } = await query.order('created_at', { ascending: false }).limit(50);
+    async function loadData() {
+        // Busca TODAS as visitas para garantir que os dados apareçam
+        const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(100);
+        
         if (data) {
-            document.getElementById('total-fraudes').innerText = count;
-            document.getElementById('economia-total').innerText = 'R$ ' + (count * 5).toLocaleString('pt-BR');
+            const fraudes = data.filter(v => v.diagnostico === 'FRAUDE');
+            document.getElementById('count-fraude').innerText = fraudes.length;
+            document.getElementById('sum-money').innerText = 'R$ ' + (fraudes.length * 5).toLocaleString('pt-BR');
 
-            // Tabela Dash
-            document.querySelector('#table-main tbody').innerHTML = data.map(v => `
-                <tr><td><b>${v.ip}</b></td><td>${v.city || '--'}</td><td>${v.site_id}</td><td>${new Date(v.created_at).toLocaleTimeString()}</td><td><span style="color:${v.diagnostico==='FRAUDE'?'red':'green'}">● ${v.diagnostico}</span></td></tr>
+            // Preencher Tabela Principal
+            document.querySelector('#main-table tbody').innerHTML = data.map(v => `
+                <tr>
+                    <td><b>${v.ip}</b></td>
+                    <td>${v.city || 'Desconhecido'}/${v.region || '--'}</td>
+                    <td>${v.site_id}</td>
+                    <td>${v.device || 'PC'}</td>
+                    <td>${new Date(v.created_at).toLocaleString()}</td>
+                    <td><span style="color:${v.diagnostico==='FRAUDE'?'red':'green'}">${v.diagnostico}</span></td>
+                </tr>
             `).join('');
 
-            // Tabela Estorno (apenas com GCLID)
-            const comGclid = data.filter(v => v.gclid);
-            document.getElementById('total-extorno').innerText = comGclid.length;
-            document.querySelector('#table-extorno tbody').innerHTML = comGclid.map(v => `
-                <tr><td>${new Date(v.created_at).toLocaleDateString()}</td><td>${v.ip}</td><td>${v.site_id}</td><td style="font-size:10px">${v.gclid}</td><td><button style="font-size:10px; padding:5px" onclick="navigator.clipboard.writeText('${v.gclid}'); alert('Copiado!')">COPIAR</button></td></tr>
+            // Preencher Estorno
+            const gclids = data.filter(v => v.gclid);
+            document.getElementById('count-gclid').innerText = gclids.length;
+            document.querySelector('#gclid-table tbody').innerHTML = gclids.map(v => `
+                <tr>
+                    <td>${new Date(v.created_at).toLocaleDateString()}</td>
+                    <td>${v.ip}</td>
+                    <td>${v.site_id}</td>
+                    <td style="font-size:10px">${v.gclid}</td>
+                    <td><button onclick="navigator.clipboard.writeText('${v.gclid}')">Copiar</button></td>
+                </tr>
             `).join('');
-            
-            analisarRaizes(data);
         }
     }
 
-    function analisarRaizes(data) {
-        const raizes = {};
-        data.filter(v => v.diagnostico === 'FRAUDE').forEach(v => {
-            const r = v.ip.split('.').slice(0,3).join('.');
-            if(!raizes[r]) raizes[r] = { count: 0, city: v.city };
-            raizes[r].count++;
-        });
-        const sorted = Object.entries(raizes).sort((a,b) => b[1].count - a[1].count);
-        document.querySelector('#table-sugestao-raiz tbody').innerHTML = sorted.map(([raiz, info]) => `
-            <tr><td><b>${raiz}.*</b></td><td>${info.count}</td><td>${info.city || '--'}</td><td><button style="background:var(--danger); font-size:11px; padding:5px" onclick="document.getElementById('raiz-val').value='${raiz}'; openTab('raiz')">BANIR</button></td></tr>
-        `).join('');
-    }
-
-    async function carregarConfiguracoes() {
+    async function loadClients() {
         const { data } = await _supabase.from('ipshield_config').select('*');
         if (data) {
-            const list = document.getElementById('lista-configuracoes');
-            const select = document.getElementById('f-site');
-            list.innerHTML = data.map(c => `<div style="padding:10px; background:#f4f7f9; margin-bottom:5px; border-radius:6px; display:flex; justify-content:space-between"><span><b>${c.site_nome}</b></span><small>${c.google_ads_id}</small></div>`).join('');
-            data.forEach(s => { const opt = document.createElement('option'); opt.value = s.site_nome; opt.innerText = s.site_nome; select.appendChild(opt); });
+            document.getElementById('client-list').innerHTML = data.map(c => `
+                <div style="background:#f4f7f9; padding:10px; margin-bottom:5px; border-radius:5px; display:flex; justify-content:space-between">
+                    <b>${c.site_nome}</b> <span>${c.google_ads_id}</span>
+                </div>
+            `).join('');
         }
     }
 
-    async function salvarCliente() {
-        const site = document.getElementById('new-site').value;
-        const adsId = document.getElementById('new-ads-id').value;
-        if(!site || !adsId) return alert("Preencha tudo!");
-        await _supabase.from('ipshield_config').insert([{ site_nome: site, google_ads_id: adsId, limite_cliques: 1, dias_bloqueio: 30 }]);
+    async function addClient() {
+        const s = document.getElementById('add-site').value;
+        const i = document.getElementById('add-id').value;
+        await _supabase.from('ipshield_config').insert([{site_nome: s, google_ads_id: i}]);
         location.reload();
     }
 
-    carregarConfiguracoes();
-    carregarDados();
+    loadData();
+    loadClients();
 </script>
 </body>
 </html>
