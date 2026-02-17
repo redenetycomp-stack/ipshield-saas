@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield Pro - Sistema de Defesa</title>
+    <title>IPShield Pro - Auditoria Total</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #1a2a3a; --secondary: #27ae60; --danger: #e74c3c; --warning: #f39c12; --light: #f8f9fa; --text: #2c3e50; }
+        :root { --primary: #1a2a3a; --secondary: #27ae60; --danger: #e74c3c; --warning: #f39c12; --light: #f8f9fa; --text: #2c3e50; --blue: #3b82f6; }
         body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; color: var(--text); }
         .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
         
@@ -20,109 +20,107 @@
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* CARDS ESTORNO PREMIUM */
-        .instrucoes-estorno {
-            background: linear-gradient(135deg, #eef2ff 0%, #f1f5f9 100%);
-            border-left: 6px solid #4f46e5;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .btn-google-ads {
-            background: #ffffff;
-            color: #4285f4;
-            border: 2px solid #4285f4;
-            padding: 10px 18px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-        }
+        /* FORMULÁRIOS PROFISSIONAIS */
+        .card-form { background: #fdfdfd; border: 1px solid #e2e8f0; padding: 20px; border-radius: 10px; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .input-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        input, select { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; flex: 1; min-width: 180px; outline: none; }
+        input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1); }
+
+        /* BOTÕES */
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-add { background: var(--secondary); }
+        .btn-del { background: var(--danger); padding: 8px 12px; font-size: 11px; }
+        .btn-copy { background: var(--blue); font-size: 11px; padding: 6px 10px; }
 
         /* TABELAS */
-        .table-res { width: 100%; overflow-x: auto; margin-top: 15px; }
+        .table-res { width: 100%; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th { text-align: left; padding: 12px; background: #f8f9fa; font-size: 12px; color: #666; text-transform: uppercase; border-bottom: 2px solid #ddd; }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
-        
-        /* BOTÕES */
-        .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; }
-        .btn-primary { background: var(--primary); }
-        .btn-danger { background: var(--danger); }
-        .copy-badge { cursor: pointer; background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; }
+        th { text-align: left; padding: 15px; background: #f8fafc; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+
+        /* ESTORNO INFO */
+        .estorno-header { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1 style="margin:0">🛡️ IPShield <span style="font-weight:100">AUDITORIA</span></h1>
-        <div class="badge" style="background:var(--secondary); padding:5px 15px; border-radius:20px; font-size:12px">CONECTADO AO SUPABASE</div>
+        <h1 style="margin:0">🛡️ IPShield <span style="font-weight:100">PRO</span></h1>
+        <div style="font-size: 12px; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px;">Painel de Controle v6.2</div>
     </div>
 
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab(event, 'dash')">DASHBOARD</button>
-        <button class="tab-btn" onclick="switchTab(event, 'clientes')">CLIENTES</button>
+        <button class="tab-btn" onclick="switchTab(event, 'clientes')">GUIA CLIENTES</button>
         <button class="tab-btn" onclick="switchTab(event, 'raiz')">RAIZ DE IP</button>
         <button class="tab-btn" onclick="switchTab(event, 'extorno')">SOLICITAR ESTORNO</button>
     </div>
 
     <div class="content">
         <div id="dash" class="tab-panel active">
-            <h3 style="margin-top:0">🕒 Tráfego em Tempo Real</h3>
+            <h3 style="margin-top:0">🔍 Monitoramento de Cliques</h3>
             <div class="table-res">
                 <table id="table-main">
-                    <thead><tr><th>IP</th><th>LOCALIDADE</th><th>SITE</th><th>HORA</th><th>STATUS</th></tr></thead>
+                    <thead><tr><th>IP</th><th>LOCALIZAÇÃO</th><th>SITE</th><th>DEVICE</th><th>HORA</th><th>DIAGNÓSTICO</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
         </div>
 
         <div id="clientes" class="tab-panel">
-            <h3>👥 Gerenciar Clientes</h3>
-            <div id="lista-clientes-config"></div>
+            <div class="card-form">
+                <h3 style="margin-top:0">➕ Adicionar Novo Cliente/Site</h3>
+                <div class="input-row">
+                    <input type="text" id="c-nome" placeholder="Nome do Site (ex: arteinox.com.br)">
+                    <input type="text" id="c-ads" placeholder="ID Google Ads (ex: 123-456-7890)">
+                    <button class="btn btn-add" onclick="salvarCliente()">CADASTRAR SITE</button>
+                </div>
+            </div>
+            
+            <h3>📋 Sites Gerenciados</h3>
+            <div class="table-res">
+                <table>
+                    <thead><tr><th>SITE</th><th>GOOGLE ADS ID</th><th>LIMITE CLIQUES</th><th>STATUS</th><th>AÇÕES</th></tr></thead>
+                    <tbody id="tbody-clientes"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="raiz" class="tab-panel">
-            <h3 style="color:var(--danger)">🚫 Bloqueio de Raiz</h3>
-            <div style="background:#fff5f5; padding:15px; border-radius:8px; border:1px solid #feb2b2; margin-bottom:20px">
-                <input type="text" id="raiz-valor" placeholder="Ex: 177.152.10" style="padding:10px; width:200px">
-                <button class="btn btn-danger" onclick="alert('Raiz bloqueada!')">BLOQUEAR AGORA</button>
+            <div class="card-form" style="border-left: 5px solid var(--danger)">
+                <h3 style="margin:0; color:var(--danger)">🚫 Bloqueio por Faixa (Raiz)</h3>
+                <p style="font-size:13px; color:#666">Bloqueie todos os IPs que começam com a mesma numeração.</p>
+                <div class="input-row">
+                    <input type="text" id="r-valor" placeholder="Ex: 189.10.25">
+                    <button class="btn btn-danger" onclick="alert('Faixa Bloqueada!')">BANIR FAIXA AGORA</button>
+                </div>
             </div>
             <table id="table-sugestao-raiz">
-                <thead><tr><th>RAIZ</th><th>ATAQUES</th><th>CIDADE</th><th>AÇÃO</th></tr></thead>
+                <thead><tr><th>RAIZ SUGERIDA</th><th>FREQUÊNCIA</th><th>ÚLTIMA CIDADE</th><th>AÇÃO</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
 
         <div id="extorno" class="tab-panel">
-            <div class="instrucoes-estorno">
-                <div style="font-size: 35px;">💰</div>
+            <div class="estorno-header">
                 <div>
-                    <h3 style="margin:0; color: #1e3a8a;">Central de Reivindicação de Créditos</h3>
-                    <p style="margin:5px 0; font-size: 13px; color: #475569;">
-                        Use os <b>GCLIDs</b> abaixo para provar cliques inválidos no suporte do Google Ads.
-                    </p>
-                    <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="btn-google-ads">
-                        <img src="https://www.google.com/favicon.ico" width="16"> FORMULÁRIO GOOGLE ADS
-                    </a>
+                    <h2 style="margin:0; color: #1e40af;">Recuperação de Créditos</h2>
+                    <p style="margin:5px 0; color: #1e3a8a; font-size: 14px;">Identificamos os seguintes GCLIDs como suspeitos de fraude.</p>
                 </div>
+                <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="btn" style="background:#4285f4">
+                    <img src="https://www.google.com/favicon.ico" width="16"> ABRIR SUPORTE GOOGLE
+                </a>
             </div>
 
             <div class="table-res">
                 <table id="table-extorno">
                     <thead>
                         <tr>
-                            <th>DATA/HORA</th>
-                            <th>IP</th>
+                            <th>DATA DO CLIQUE</th>
+                            <th>IP ORIGEM</th>
                             <th>SITE</th>
-                            <th>GCLID</th>
+                            <th>IDENTIFICADOR GCLID</th>
                             <th>AÇÃO</th>
                         </tr>
                     </thead>
@@ -145,22 +143,21 @@
 
     async function carregarDados() {
         const { data: visitas } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(50);
-        
         if (visitas) {
-            // Tabela Dash
+            // Dashboard
             document.querySelector('#table-main tbody').innerHTML = visitas.map(v => `
-                <tr><td><b>${v.ip}</b></td><td>${v.city || '--'}</td><td>${v.site_id}</td><td>${new Date(v.created_at).toLocaleTimeString()}</td><td><span style="color:${v.diagnostico==='FRAUDE'?'red':'green'}">● ${v.diagnostico}</span></td></tr>
+                <tr><td><b>${v.ip}</b></td><td>${v.city || '--'}</td><td>${v.site_id}</td><td>${v.device || 'PC'}</td><td>${new Date(v.created_at).toLocaleTimeString()}</td><td><span style="color:${v.diagnostico==='FRAUDE'?'red':'green'}">● ${v.diagnostico}</span></td></tr>
             `).join('');
 
-            // Tabela Estorno (Foco nos GCLIDs)
+            // Estorno
             const comGclid = visitas.filter(v => v.gclid);
             document.querySelector('#table-extorno tbody').innerHTML = comGclid.map(v => `
                 <tr>
-                    <td>${new Date(v.created_at).toLocaleDateString()}</td>
+                    <td>${new Date(v.created_at).toLocaleString()}</td>
                     <td><code>${v.ip}</code></td>
                     <td>${v.site_id}</td>
-                    <td style="font-family:monospace; color:red; font-size:11px">${v.gclid}</td>
-                    <td><span class="copy-badge" onclick="copiarGclid('${v.gclid}')">COPIAR</span></td>
+                    <td style="font-family:monospace; color:red; font-size:11px; word-break:break-all">${v.gclid}</td>
+                    <td><button class="btn btn-copy" onclick="copiar('${v.gclid}')">COPIAR GCLID</button></td>
                 </tr>
             `).join('');
 
@@ -168,10 +165,40 @@
         }
     }
 
-    function copiarGclid(texto) {
-        navigator.clipboard.writeText(texto);
+    async function carregarClientes() {
+        const { data } = await _supabase.from('ipshield_config').select('*').order('site_nome');
+        if (data) {
+            document.getElementById('tbody-clientes').innerHTML = data.map(c => `
+                <tr>
+                    <td><b>${c.site_nome}</b></td>
+                    <td>${c.google_ads_id}</td>
+                    <td>${c.limite_cliques || 1} cliques</td>
+                    <td><span style="color:green">● Ativo</span></td>
+                    <td><button class="btn btn-del" onclick="removerCliente('${c.site_nome}')">REMOVER</button></td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    async function salvarCliente() {
+        const s = document.getElementById('c-nome').value;
+        const a = document.getElementById('c-ads').value;
+        if(!s || !a) return alert("Preencha Nome e ID Ads");
+        await _supabase.from('ipshield_config').insert([{ site_nome: s, google_ads_id: a }]);
+        location.reload();
+    }
+
+    async function removerCliente(nome) {
+        if(confirm("Remover este site?")) {
+            await _supabase.from('ipshield_config').delete().eq('site_nome', nome);
+            location.reload();
+        }
+    }
+
+    function copiar(t) {
+        navigator.clipboard.writeText(t);
         event.target.innerText = "COPIADO!";
-        setTimeout(() => { event.target.innerText = "COPIAR"; }, 2000);
+        setTimeout(() => event.target.innerText = "COPIAR GCLID", 2000);
     }
 
     function analisarRaizes(fraudes) {
@@ -181,25 +208,13 @@
             if(!raizes[r]) raizes[r] = { count: 0, city: v.city };
             raizes[r].count++;
         });
-        const sorted = Object.entries(raizes).sort((a,b) => b[1].count - a[1].count);
-        document.querySelector('#table-sugestao-raiz tbody').innerHTML = sorted.map(([raiz, info]) => `
-            <tr><td><b>${raiz}.*</b></td><td>${info.count}</td><td>${info.city || '--'}</td><td><button class="btn btn-danger" style="font-size:10px" onclick="document.getElementById('raiz-valor').value='${raiz}'">CAPTURAR</button></td></tr>
+        document.querySelector('#table-sugestao-raiz tbody').innerHTML = Object.entries(raizes).map(([r, info]) => `
+            <tr><td><b>${r}.*</b></td><td>${info.count}</td><td>${info.city || '--'}</td><td><button class="btn btn-copy" onclick="document.getElementById('r-valor').value='${r}'">USAR</button></td></tr>
         `).join('');
     }
 
-    async function carregarConfig() {
-        const { data } = await _supabase.from('ipshield_config').select('*');
-        if (data) {
-            document.getElementById('lista-clientes-config').innerHTML = data.map(c => `
-                <div style="padding:10px; background:#f4f7f9; margin-bottom:5px; border-radius:5px; display:flex; justify-content:space-between">
-                    <b>${c.site_nome}</b> <span>Ads ID: ${c.google_ads_id}</span>
-                </div>
-            `).join('');
-        }
-    }
-
     carregarDados();
-    carregarConfig();
+    carregarClientes();
 </script>
 </body>
 </html>
