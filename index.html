@@ -3,73 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield Pro - Realtime</title>
+    <title>IPShield Pro - Auditoria Completa</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --primary: #1a2a3a; --secondary: #27ae60; --danger: #e74c3c; --light: #f4f7f9; --text: #2c3e50; }
-        body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; padding: 0; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
+        :root { --primary: #1a2a3a; --secondary: #27ae60; --danger: #e74c3c; --warning: #f39c12; --light: #f8f9fa; }
+        body { font-family: 'Inter', sans-serif; background: #eef2f5; margin: 0; color: #333; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 15px; }
         
-        /* Layout Responsivo */
+        /* Cabeçalho e Navegação */
         .header { background: var(--primary); color: white; padding: 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
-        .nav-tabs { display: flex; background: #2c3e50; overflow-x: auto; gap: 5px; padding: 0 10px; }
-        .tab-btn { color: #bdc3c7; border: none; background: none; padding: 15px; font-weight: bold; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: white; border-bottom-color: var(--secondary); }
+        .nav-tabs { display: flex; background: #2c3e50; overflow-x: auto; padding: 0 15px; gap: 5px; }
+        .tab-btn { color: #bdc3c7; border: none; background: none; padding: 16px; font-weight: 600; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; transition: 0.2s; }
+        .tab-btn.active { color: white; border-bottom-color: var(--secondary); background: rgba(255,255,255,0.05); }
         
-        .content { background: white; padding: 20px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        /* Conteúdo */
+        .content { background: white; padding: 25px; border-radius: 0 0 12px 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        /* Cards */
-        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .card { background: var(--light); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #ddd; }
-        .card h2 { margin: 5px 0; font-size: 32px; color: var(--primary); }
+        /* Filtros Inteligentes */
+        .filter-section { background: var(--light); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px; }
+        .filter-group label { font-size: 11px; font-weight: bold; color: #666; text-transform: uppercase; }
 
-        /* Tabelas */
-        .table-res { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 12px; color: #7f8c8d; }
+        /* Tabela Pro */
+        .table-res { width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { background: #f1f3f5; padding: 15px 12px; text-align: left; font-size: 12px; color: #444; border-bottom: 2px solid #dee2e6; }
         td { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
-
-        /* Mobile Adjusts */
-        @media (max-width: 600px) {
-            .grid-stats { grid-template-columns: 1fr; }
-            .header { flex-direction: column; text-align: center; }
-        }
+        
+        /* Badges e Alertas */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .recorrencia { background: #fff5f5; color: var(--danger); border: 1px solid #feb2b2; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+        
+        @media (max-width: 768px) { .grid-stats { grid-template-columns: 1fr; } .filter-group { min-width: 100%; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h2>🛡️ IPShield <span style="font-weight: 100;">PRO</span></h2>
-        <div id="db-status">🟢 Banco Conectado</div>
+        <h2>🛡️ IPShield <span style="font-weight: 100;">Vistoria Final</span></h2>
+        <div id="status-mcc" class="badge" style="background: var(--secondary);">MCC: ATIVA</div>
     </div>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="tab(event, 'dash')">DASHBOARD</button>
-        <button class="tab-btn" onclick="tab(event, 'extorno')">ESTORNOS (GCLID)</button>
-        <button class="tab-btn" onclick="tab(event, 'raiz')">RAIZ DE IP</button>
-        <button class="tab-btn" onclick="tab(event, 'config')">CLIENTES</button>
+        <button class="tab-btn active" onclick="tab(event, 'dash')">📊 MONITORAMENTO</button>
+        <button class="tab-btn" onclick="tab(event, 'extorno')">💰 ESTORNOS (GCLID)</button>
+        <button class="tab-btn" onclick="event.preventDefault(); tab(event, 'raiz')">🚫 RAÍZES</button>
+        <button class="tab-btn" onclick="tab(event, 'config')">👥 CLIENTES</button>
     </div>
 
     <div class="content">
         <div id="dash" class="tab-panel active">
-            <div class="grid-stats">
-                <div class="card"><span>BLOQUEIOS REAIS</span><h2 id="count-fraude">0</h2></div>
-                <div class="card"><span>ECONOMIA TOTAL</span><h2 id="sum-money" style="color:var(--secondary)">R$ 0,00</h2></div>
-                <div class="card"><span>PONTOS DE AUDITORIA</span><h2 id="count-gclid" style="color:var(--danger)">0</h2></div>
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label>Período</label>
+                    <select id="f-periodo" onchange="loadData()">
+                        <option value="24h">Últimas 24 Horas</option>
+                        <option value="7d">Últimos 7 Dias</option>
+                        <option value="30d">Últimos 30 Dias</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Site</label>
+                    <select id="f-site" onchange="loadData()"><option value="all">Todos os Sites</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>Diagnóstico</label>
+                    <select id="f-diag" onchange="loadData()">
+                        <option value="FRAUDE">Somente Ataques</option>
+                        <option value="all">Todo o Tráfego</option>
+                    </select>
+                </div>
+                <button onclick="loadData()" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer;">🔍 ATUALIZAR</button>
             </div>
 
             <div class="table-res">
                 <table id="main-table">
                     <thead>
                         <tr>
-                            <th>IP</th>
-                            <th>LOCALIZAÇÃO</th>
-                            <th>SITE ORIGEM</th>
-                            <th>DISPOSITIVO</th>
-                            <th>DATA/HORA</th>
+                            <th>IP / RECORRÊNCIA</th>
+                            <th>PROVEDOR/CIDADE</th>
+                            <th>SITE</th>
+                            <th>DATA E HORA</th>
+                            <th>PÁGINA ACESSADA</th>
                             <th>STATUS</th>
                         </tr>
                     </thead>
@@ -79,21 +97,24 @@
         </div>
 
         <div id="extorno" class="tab-panel">
-            <h3>Relatório de Cliques Inválidos (GCLID)</h3>
-            <p>Copie os IDs abaixo para o formulário de contestação do Google Ads.</p>
+            <div style="background: #eef2ff; border: 1px solid #c3dafe; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <h4 style="margin:0; color: #1e40af;">📌 Instruções de Estorno</h4>
+                <p style="font-size: 13px; color: #374151;">Use os códigos GCLID abaixo para contestar no suporte do Google Ads. Isso prova que o clique veio de uma rede suspeita ou repetitiva.</p>
+            </div>
             <table id="gclid-table">
                 <thead><tr><th>DATA</th><th>IP</th><th>SITE</th><th>GCLID</th><th>AÇÃO</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
 
+        <div id="raiz" class="tab-panel">
+            <h3>🚫 Bloqueio de Raiz de IP</h3>
+            <p>Bloqueie faixas inteiras de IPs de um mesmo provedor.</p>
+            <div id="sugestao-raiz-list"></div>
+        </div>
+
         <div id="config" class="tab-panel">
-            <h3>Gerenciar Sites e IDs do Ads</h3>
-            <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap: wrap;">
-                <input type="text" id="add-site" placeholder="URL do Site" style="flex:1; padding:10px">
-                <input type="text" id="add-id" placeholder="ID Google Ads" style="flex:1; padding:10px">
-                <button onclick="addClient()" style="background:var(--secondary); color:white; border:none; padding:10px 20px; border-radius:5px">CADASTRAR</button>
-            </div>
+            <h3>👥 Gerenciamento de Clientes</h3>
             <div id="client-list"></div>
         </div>
     </div>
@@ -110,61 +131,64 @@
     }
 
     async function loadData() {
-        // Busca TODAS as visitas para garantir que os dados apareçam
-        const { data, error } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(100);
+        const site = document.getElementById('f-site').value;
+        const diag = document.getElementById('f-diag').value;
+        const periodo = document.getElementById('f-periodo').value;
+
+        // Lógica de Datas
+        let dias = periodo === '7d' ? 7 : (periodo === '30d' ? 30 : 1);
+        let dataCorte = new Date();
+        dataCorte.setDate(dataCorte.getDate() - dias);
+
+        let query = _supabase.from('visits').select('*').gte('created_at', dataCorte.toISOString());
+        
+        if (site !== 'all') query = query.eq('site_id', site);
+        if (diag !== 'all') query = query.eq('diagnostico', diag);
+
+        const { data, error } = await query.order('created_at', { ascending: false });
         
         if (data) {
-            const fraudes = data.filter(v => v.diagnostico === 'FRAUDE');
-            document.getElementById('count-fraude').innerText = fraudes.length;
-            document.getElementById('sum-money').innerText = 'R$ ' + (fraudes.length * 5).toLocaleString('pt-BR');
+            // Conta recorrência de IP
+            const ipCounts = {};
+            data.forEach(v => ipCounts[v.ip] = (ipCounts[v.ip] || 0) + 1);
 
-            // Preencher Tabela Principal
             document.querySelector('#main-table tbody').innerHTML = data.map(v => `
                 <tr>
-                    <td><b>${v.ip}</b></td>
-                    <td>${v.city || 'Desconhecido'}/${v.region || '--'}</td>
+                    <td><b>${v.ip}</b> <span class="recorrencia">${ipCounts[v.ip]}x</span></td>
+                    <td><small>${v.city || '---'}</small><br><b>${v.region || 'Desconhecido'}</b></td>
                     <td>${v.site_id}</td>
-                    <td>${v.device || 'PC'}</td>
                     <td>${new Date(v.created_at).toLocaleString()}</td>
-                    <td><span style="color:${v.diagnostico==='FRAUDE'?'red':'green'}">${v.diagnostico}</span></td>
+                    <td><div style="width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${v.page_url || 'Home'}</div></td>
+                    <td><span class="badge" style="background:${v.diagnostico==='FRAUDE'?'var(--danger)':'var(--secondary)'}; color:white">${v.diagnostico}</span></td>
                 </tr>
             `).join('');
 
-            // Preencher Estorno
+            // Tabela GCLID
             const gclids = data.filter(v => v.gclid);
-            document.getElementById('count-gclid').innerText = gclids.length;
             document.querySelector('#gclid-table tbody').innerHTML = gclids.map(v => `
                 <tr>
                     <td>${new Date(v.created_at).toLocaleDateString()}</td>
                     <td>${v.ip}</td>
                     <td>${v.site_id}</td>
-                    <td style="font-size:10px">${v.gclid}</td>
+                    <td style="font-family:monospace; font-size:10px">${v.gclid}</td>
                     <td><button onclick="navigator.clipboard.writeText('${v.gclid}')">Copiar</button></td>
                 </tr>
             `).join('');
         }
     }
 
-    async function loadClients() {
-        const { data } = await _supabase.from('ipshield_config').select('*');
-        if (data) {
-            document.getElementById('client-list').innerHTML = data.map(c => `
-                <div style="background:#f4f7f9; padding:10px; margin-bottom:5px; border-radius:5px; display:flex; justify-content:space-between">
-                    <b>${c.site_nome}</b> <span>${c.google_ads_id}</span>
-                </div>
-            `).join('');
-        }
+    async function init() {
+        // Carrega sites no filtro
+        const { data } = await _supabase.from('ipshield_config').select('site_nome');
+        if(data) data.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = opt.innerText = s.site_nome;
+            document.getElementById('f-site').appendChild(opt);
+        });
+        loadData();
     }
 
-    async function addClient() {
-        const s = document.getElementById('add-site').value;
-        const i = document.getElementById('add-id').value;
-        await _supabase.from('ipshield_config').insert([{site_nome: s, google_ads_id: i}]);
-        location.reload();
-    }
-
-    loadData();
-    loadClients();
+    init();
 </script>
 </body>
 </html>
