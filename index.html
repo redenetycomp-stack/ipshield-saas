@@ -1,114 +1,205 @@
-<style>
-    .instrucoes-estorno {
-        background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
-        border-left: 6px solid #4f46e5;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-    .btn-google-ads {
-        background: #ffffff;
-        color: #4285f4;
-        border: 2px solid #4285f4;
-        padding: 10px 20px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: bold;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: 0.3s;
-    }
-    .btn-google-ads:hover {
-        background: #4285f4;
-        color: white;
-    }
-    .copy-badge {
-        cursor: pointer;
-        background: #3b82f6;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 10px;
-        transition: 0.2s;
-    }
-    .copy-badge:active { transform: scale(0.9); }
-</style>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPShield Pro - Sistema de Defesa</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #1a2a3a; --secondary: #27ae60; --danger: #e74c3c; --warning: #f39c12; --light: #f8f9fa; --text: #2c3e50; }
+        body { font-family: 'Segoe UI', sans-serif; background: #eef2f5; margin: 0; color: var(--text); }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        
+        /* HEADER & TABS */
+        .header { background: var(--primary); color: white; padding: 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .nav-tabs { display: flex; background: #2c3e50; overflow-x: auto; gap: 5px; padding: 0 10px; border-bottom: 2px solid var(--secondary); }
+        .tab-btn { color: #bdc3c7; border: none; background: none; padding: 15px 20px; font-weight: bold; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: white; border-bottom-color: var(--secondary); background: rgba(255,255,255,0.05); }
 
-<div id="extorno" class="tab-panel">
-    <div class="instrucoes-estorno">
-        <div style="font-size: 40px;">💰</div>
-        <div>
-            <h3 style="margin:0; color: #1e3a8a;">Central de Recuperação de Créditos</h3>
-            <p style="margin:5px 0; font-size: 14px; color: #475569;">
-                O Google Ads permite solicitar o reembolso de cliques inválidos. Abaixo estão os <b>GCLIDs</b> (identificadores únicos) 
-                que nosso sistema detectou como fraude. Use o botão abaixo para abrir o formulário oficial.
-            </p>
-            <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="btn-google-ads">
-                <img src="https://www.google.com/favicon.ico" width="16"> ABRIR FORMULÁRIO DE INVESTIGAÇÃO
-            </a>
+        .content { background: white; padding: 25px; border-radius: 0 0 12px 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); min-height: 500px; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* CARDS ESTORNO PREMIUM */
+        .instrucoes-estorno {
+            background: linear-gradient(135deg, #eef2ff 0%, #f1f5f9 100%);
+            border-left: 6px solid #4f46e5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .btn-google-ads {
+            background: #ffffff;
+            color: #4285f4;
+            border: 2px solid #4285f4;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        /* TABELAS */
+        .table-res { width: 100%; overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { text-align: left; padding: 12px; background: #f8f9fa; font-size: 12px; color: #666; text-transform: uppercase; border-bottom: 2px solid #ddd; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
+        
+        /* BOTÕES */
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; }
+        .btn-primary { background: var(--primary); }
+        .btn-danger { background: var(--danger); }
+        .copy-badge { cursor: pointer; background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 style="margin:0">🛡️ IPShield <span style="font-weight:100">AUDITORIA</span></h1>
+        <div class="badge" style="background:var(--secondary); padding:5px 15px; border-radius:20px; font-size:12px">CONECTADO AO SUPABASE</div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'dash')">DASHBOARD</button>
+        <button class="tab-btn" onclick="switchTab(event, 'clientes')">CLIENTES</button>
+        <button class="tab-btn" onclick="switchTab(event, 'raiz')">RAIZ DE IP</button>
+        <button class="tab-btn" onclick="switchTab(event, 'extorno')">SOLICITAR ESTORNO</button>
+    </div>
+
+    <div class="content">
+        <div id="dash" class="tab-panel active">
+            <h3 style="margin-top:0">🕒 Tráfego em Tempo Real</h3>
+            <div class="table-res">
+                <table id="table-main">
+                    <thead><tr><th>IP</th><th>LOCALIDADE</th><th>SITE</th><th>HORA</th><th>STATUS</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3 style="margin:0">Lista de Cliques para Auditoria</h3>
-        <button class="btn btn-primary btn-small" onclick="window.print()">📥 EXPORTAR PDF</button>
-    </div>
+        <div id="clientes" class="tab-panel">
+            <h3>👥 Gerenciar Clientes</h3>
+            <div id="lista-clientes-config"></div>
+        </div>
 
-    <div class="table-res">
-        <table id="table-extorno">
-            <thead>
-                <tr>
-                    <th>DATA/HORA</th>
-                    <th>IP DO INVASOR</th>
-                    <th>SITE ORIGEM</th>
-                    <th>GCLID (ID DO CLIQUE)</th>
-                    <th>AÇÃO</th>
-                </tr>
-            </thead>
-            <tbody>
-                </tbody>
-        </table>
+        <div id="raiz" class="tab-panel">
+            <h3 style="color:var(--danger)">🚫 Bloqueio de Raiz</h3>
+            <div style="background:#fff5f5; padding:15px; border-radius:8px; border:1px solid #feb2b2; margin-bottom:20px">
+                <input type="text" id="raiz-valor" placeholder="Ex: 177.152.10" style="padding:10px; width:200px">
+                <button class="btn btn-danger" onclick="alert('Raiz bloqueada!')">BLOQUEAR AGORA</button>
+            </div>
+            <table id="table-sugestao-raiz">
+                <thead><tr><th>RAIZ</th><th>ATAQUES</th><th>CIDADE</th><th>AÇÃO</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="extorno" class="tab-panel">
+            <div class="instrucoes-estorno">
+                <div style="font-size: 35px;">💰</div>
+                <div>
+                    <h3 style="margin:0; color: #1e3a8a;">Central de Reivindicação de Créditos</h3>
+                    <p style="margin:5px 0; font-size: 13px; color: #475569;">
+                        Use os <b>GCLIDs</b> abaixo para provar cliques inválidos no suporte do Google Ads.
+                    </p>
+                    <a href="https://support.google.com/google-ads/contact/click_quality" target="_blank" class="btn-google-ads">
+                        <img src="https://www.google.com/favicon.ico" width="16"> FORMULÁRIO GOOGLE ADS
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-res">
+                <table id="table-extorno">
+                    <thead>
+                        <tr>
+                            <th>DATA/HORA</th>
+                            <th>IP</th>
+                            <th>SITE</th>
+                            <th>GCLID</th>
+                            <th>AÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    // ... (Na sua função de carregar dados, certifique-se que esta parte está assim:)
-    
-    function renderizarEstorno(visitas) {
-        const comGclid = visitas.filter(v => v.gclid);
-        document.getElementById('total-gclid').innerText = comGclid.length;
-        
-        const tbody = document.querySelector('#table-extorno tbody');
-        if (comGclid.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px; color:#999;">Nenhum GCLID capturado ainda. Aguardando tráfego pago...</td></tr>';
-            return;
-        }
+    const _supabase = supabase.createClient('https://xirrtonafivrphrzufbq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE');
 
-        tbody.innerHTML = comGclid.map(v => `
-            <tr>
-                <td>${new Date(v.created_at).toLocaleString('pt-BR')}</td>
-                <td><code style="background:#f1f5f9; padding:2px 5px; border-radius:4px;">${v.ip}</code></td>
-                <td>${v.site_id}</td>
-                <td style="font-family: monospace; color: #ef4444; font-size: 11px;">${v.gclid}</td>
-                <td>
-                    <span class="copy-badge" onclick="copiarGclid('${v.gclid}')">COPIAR GCLID</span>
-                </td>
-            </tr>
-        `).join('');
+    function switchTab(e, id) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        e.currentTarget.classList.add('active');
+    }
+
+    async function carregarDados() {
+        const { data: visitas } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(50);
+        
+        if (visitas) {
+            // Tabela Dash
+            document.querySelector('#table-main tbody').innerHTML = visitas.map(v => `
+                <tr><td><b>${v.ip}</b></td><td>${v.city || '--'}</td><td>${v.site_id}</td><td>${new Date(v.created_at).toLocaleTimeString()}</td><td><span style="color:${v.diagnostico==='FRAUDE'?'red':'green'}">● ${v.diagnostico}</span></td></tr>
+            `).join('');
+
+            // Tabela Estorno (Foco nos GCLIDs)
+            const comGclid = visitas.filter(v => v.gclid);
+            document.querySelector('#table-extorno tbody').innerHTML = comGclid.map(v => `
+                <tr>
+                    <td>${new Date(v.created_at).toLocaleDateString()}</td>
+                    <td><code>${v.ip}</code></td>
+                    <td>${v.site_id}</td>
+                    <td style="font-family:monospace; color:red; font-size:11px">${v.gclid}</td>
+                    <td><span class="copy-badge" onclick="copiarGclid('${v.gclid}')">COPIAR</span></td>
+                </tr>
+            `).join('');
+
+            analisarRaizes(visitas.filter(v => v.diagnostico === 'FRAUDE'));
+        }
     }
 
     function copiarGclid(texto) {
         navigator.clipboard.writeText(texto);
-        // Pequeno feedback visual no clique
         event.target.innerText = "COPIADO!";
-        event.target.style.background = "#10b981";
-        setTimeout(() => {
-            event.target.innerText = "COPIAR GCLID";
-            event.target.style.background = "#3b82f6";
-        }, 2000);
+        setTimeout(() => { event.target.innerText = "COPIAR"; }, 2000);
     }
+
+    function analisarRaizes(fraudes) {
+        const raizes = {};
+        fraudes.forEach(v => {
+            const r = v.ip.split('.').slice(0,3).join('.');
+            if(!raizes[r]) raizes[r] = { count: 0, city: v.city };
+            raizes[r].count++;
+        });
+        const sorted = Object.entries(raizes).sort((a,b) => b[1].count - a[1].count);
+        document.querySelector('#table-sugestao-raiz tbody').innerHTML = sorted.map(([raiz, info]) => `
+            <tr><td><b>${raiz}.*</b></td><td>${info.count}</td><td>${info.city || '--'}</td><td><button class="btn btn-danger" style="font-size:10px" onclick="document.getElementById('raiz-valor').value='${raiz}'">CAPTURAR</button></td></tr>
+        `).join('');
+    }
+
+    async function carregarConfig() {
+        const { data } = await _supabase.from('ipshield_config').select('*');
+        if (data) {
+            document.getElementById('lista-clientes-config').innerHTML = data.map(c => `
+                <div style="padding:10px; background:#f4f7f9; margin-bottom:5px; border-radius:5px; display:flex; justify-content:space-between">
+                    <b>${c.site_nome}</b> <span>Ads ID: ${c.google_ads_id}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    carregarDados();
+    carregarConfig();
 </script>
+</body>
+</html>
