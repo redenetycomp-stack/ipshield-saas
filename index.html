@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPShield Pro v7.1 - Monitoramento de Elite</title>
+    <title>IPShield Pro v7.2 - Auditoria Total</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --primary: #0f172a; --secondary: #10b981; --danger: #ef4444; --warning: #f59e0b; --light: #f8fafc; --text: #1e293b; --blue: #3b82f6; --gray: #94a3b8; }
@@ -22,36 +22,32 @@
         th { text-align: left; padding: 15px; background: #f8fafc; font-size: 11px; color: #64748b; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
         td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
         .card-form { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 30px; }
-        .input-group { display: flex; gap: 12px; flex-wrap: wrap; }
-        input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; flex: 1; min-width: 250px; }
         .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
         .btn-add { background: var(--secondary); }
         .btn-del { background: var(--danger); padding: 6px 12px; font-size: 12px; }
-        .code-box { background: #0f172a; color: #38bdf8; padding: 20px; border-radius: 10px; font-family: monospace; white-space: pre-wrap; font-size: 13px; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1 style="margin:0">🛡️ IPShield <span style="font-weight:100">PRO v7.1</span></h1>
-        <div style="background:rgba(255,255,255,0.1); padding:8px 20px; border-radius:30px; font-size:12px">● FILTRAGEM DE DOMÍNIO ATIVA</div>
+        <h1 style="margin:0">🛡️ IPShield <span style="font-weight:100">PRO v7.2</span></h1>
+        <div style="background:rgba(255,255,255,0.1); padding:8px 20px; border-radius:30px; font-size:12px">● MONITORAMENTO EM TEMPO REAL</div>
     </div>
 
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab(event, 'dash')">📊 DASHBOARD</button>
         <button class="tab-btn" onclick="switchTab(event, 'clientes')">👥 GUIA CLIENTES</button>
-        <button class="tab-btn" onclick="switchTab(event, 'raiz')">🚫 RAIZ DE IP</button>
         <button class="tab-btn" onclick="switchTab(event, 'extorno')">💰 SOLICITAR ESTORNO</button>
         <button class="tab-btn" onclick="switchTab(event, 'instala')">💻 INSTALAÇÃO</button>
     </div>
 
     <div class="content">
         <div id="dash" class="tab-panel active">
-            <h3 style="margin-top:0">🔍 Monitoramento Real (Apenas Domínios Válidos)</h3>
+            <h3 style="margin-top:0">🔍 Acessos Detectados</h3>
             <div class="table-res">
                 <table id="table-main">
-                    <thead><tr><th>IP / RECORRÊNCIA</th><th>LOCALIZAÇÃO</th><th>SITE</th><th>HORA</th><th>STATUS</th></tr></thead>
+                    <thead><tr><th>IP / RECORRÊNCIA</th><th>LOCALIZAÇÃO</th><th>SITE ID</th><th>HORA</th><th>STATUS</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -59,57 +55,68 @@
 
         <div id="clientes" class="tab-panel">
             <div class="card-form">
-                <h3>➕ Adicionar Novo Site/Conta</h3>
-                <div class="input-group">
-                    <input type="text" id="c-nome" placeholder="Domínio (ex: aguiarinox.com.br)">
-                    <input type="text" id="c-ads" placeholder="ID Ads (ex: 123-456-7890)">
-                    <button class="btn btn-add" onclick="salvarCliente()">ATIVAR PROTEÇÃO</button>
+                <h3>➕ Registrar Novo Cliente</h3>
+                <div style="display:flex; gap:10px">
+                    <input type="text" id="c-nome" placeholder="Domínio ou ID do Site" style="padding:10px; flex:1">
+                    <input type="text" id="c-ads" placeholder="ID Ads (000-000-0000)" style="padding:10px; flex:1">
+                    <button class="btn btn-add" onclick="salvarCliente()">ATIVAR</button>
                 </div>
             </div>
-            <h3>📋 Contas Gerenciadas</h3>
-            <div class="table-res"><table id="table-clientes"><thead><tr><th>DOMÍNIO</th><th>ID ADS</th><th>ESTADO</th><th>AÇÕES</th></tr></thead><tbody></tbody></table></div>
-        </div>
-
-        <div id="raiz" class="tab-panel">
-            <h3>🚫 Bloqueio Global por Raiz</h3>
-            <div class="card-form" style="border-left: 5px solid var(--danger)">
-                <div class="input-group">
-                    <input type="text" id="r-valor" placeholder="Ex: 177.152.10">
-                    <button class="btn" style="background:var(--danger)">BLOQUEAR FAIXA</button>
-                </div>
+            <div class="table-res">
+                <table id="table-clientes">
+                    <thead><tr><th>DOMÍNIO/ID</th><th>CONTA ADS</th><th>AÇÕES</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
 
         <div id="extorno" class="tab-panel">
-            <h2 style="color: #1e3a8a;">💰 IDs de Clique para Estorno</h2>
-            <div class="table-res"><table id="table-extorno"><thead><tr><th>DATA</th><th>IP</th><th>SITE</th><th>GCLID</th><th>AÇÃO</th></tr></thead><tbody></tbody></table></div>
+            <h3>💰 GCLIDs para Reembolso</h3>
+            <div class="table-res">
+                <table id="table-extorno">
+                    <thead><tr><th>DATA</th><th>IP</th><th>CÓDIGO GCLID</th><th>AÇÃO</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="instala" class="tab-panel">
-            <h3>💻 Script WordPress</h3>
-            <p>Cole no seu Header do WordPress:</p>
-            <div class="code-box" id="script-code">
-&lt;script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"&gt;&lt;/script&gt;
-&lt;script&gt;
+            <h3>💻 Script de Captura (Direct Fetch)</h3>
+            <p>Use este script para contornar bloqueios de segurança do WordPress:</p>
+            <textarea readonly style="width:100%; height:250px; font-family:monospace; padding:15px; background:#1e293b; color:#38bdf8; border-radius:8px">
+<script>
 (async () => {
-    const _supabase = supabase.createClient('https://xirrtonafivrphrzufbq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE');
-    let ipData = { ip: '0.0.0.0', city: 'Desconhecido' };
-    try { const res = await fetch('https://ipapi.co/json/'); ipData = await res.json(); } catch (e) {}
-    const urlParams = new URLSearchParams(window.location.search);
-    const gclid = urlParams.get('gclid');
-    await _supabase.from('visits').insert([{
-        ip: ipData.ip, city: ipData.city, site_id: window.location.hostname,
-        gclid: gclid, diagnostico: gclid ? "FRAUDE" : "LIMPO"
-    }]);
+    try {
+        const resIp = await fetch('https://ipapi.co/json/');
+        const ipData = await resIp.json();
+        const urlParams = new URLSearchParams(window.location.search);
+        const gclid = urlParams.get('gclid');
+        const dados = {
+            ip: ipData.ip,
+            city: ipData.city,
+            site_id: "aguiarinox.com.br",
+            gclid: gclid || "",
+            diagnostico: gclid ? "FRAUDE" : "LIMPO"
+        };
+        await fetch('https://xirrtonafivrphrzufbq.supabase.co/rest/v1/visits', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnr1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnr1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE',
+                'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify(dados)
+        });
+    } catch (e) {}
 })();
-&lt;/script&gt;
-            </div>
+</script></textarea>
         </div>
     </div>
 </div>
 
 <script>
-    const _supabase = supabase.createClient('https://xirrtonafivrphrzufbq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnp1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE');
+    const _supabase = supabase.createClient('https://xirrtonafivrphrzufbq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhpcnJ0b25hZml2cnBocnr1ZmJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMDgxMTgsImV4cCI6MjA4NjU4NDExOH0.Fl5QjNnT9SAgW-PmL1gcImCes8r6JJAS6Rrz2Q6FQkE');
 
     function switchTab(e, id) {
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -119,16 +126,13 @@
     }
 
     async function carregarDados() {
-        const { data: visitas } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(200);
+        const { data: visitas } = await _supabase.from('visits').select('*').order('created_at', { ascending: false }).limit(100);
         if (visitas) {
             const contagem = {};
             visitas.forEach(v => contagem[v.ip] = (contagem[v.ip] || 0) + 1);
 
-            // FILTRO DE SEGURANÇA: Só mostra registros que tenham um ponto no site_id (domínios reais)
-            const visitasReais = visitas.filter(v => {
-                const sid = String(v.site_id);
-                return sid.includes('.') && !sid.includes('-'); // Remove domínios fakes e UUIDs
-            });
+            // ALTERAÇÃO SUGERIDA: Removido filtro restritivo para garantir que tudo apareça
+            const visitasReais = visitas; 
 
             document.querySelector('#table-main tbody').innerHTML = visitasReais.map(v => {
                 const multi = contagem[v.ip] > 1;
@@ -136,19 +140,28 @@
                 return `<tr>
                     <td><b>${v.ip}</b> <span style="background:${ehGoogle?'#94a3b8':(multi?'red':'#666')};color:white;padding:2px 6px;border-radius:10px;font-size:10px">${contagem[v.ip]}x</span></td>
                     <td>${v.city || '--'}</td>
-                    <td><small>${v.site_id}</small></td>
+                    <td><small style="color:blue">${v.site_id}</small></td>
                     <td>${new Date(v.created_at).toLocaleTimeString()}</td>
-                    <td><span style="color:${ehGoogle?'#94a3b8':(multi?'red':'green')};font-weight:bold">● ${ehGoogle?'RASTREADOR':(multi?'SUSPEITO':'LIMPO')}</span></td>
+                    <td><span style="color:${ehGoogle?'#94a3b8':(multi?'red':'green')};font-weight:bold">● ${ehGoogle?'BOT':(multi?'SUSPEITO':'LIMPO')}</span></td>
                 </tr>`;
             }).join('');
+
+            const comGclid = visitasReais.filter(v => v.gclid && v.gclid !== "");
+            document.querySelector('#table-extorno tbody').innerHTML = comGclid.map(v => `
+                <tr>
+                    <td>${new Date(v.created_at).toLocaleDateString()}</td>
+                    <td>${v.ip}</td>
+                    <td style="font-family:monospace; font-size:11px; color:red">${v.gclid}</td>
+                    <td><button onclick="navigator.clipboard.writeText('${v.gclid}');alert('Copiado!')">COPIAR</button></td>
+                </tr>`).join('');
         }
     }
 
     async function carregarClientes() {
-        const { data } = await _supabase.from('ipshield_config').select('*').order('site_nome');
+        const { data } = await _supabase.from('ipshield_config').select('*');
         if (data) {
             document.getElementById('table-clientes').querySelector('tbody').innerHTML = data.map(c => `
-                <tr><td><b>${c.site_nome}</b></td><td>${c.google_ads_id}</td><td><span style="color:green">Ativo</span></td><td><button class="btn-del" onclick="removerCliente('${c.site_nome}')">REMOVER</button></td></tr>
+                <tr><td>${c.site_nome}</td><td>${c.google_ads_id}</td><td><button class="btn-del" onclick="removerCliente('${c.site_nome}')">X</button></td></tr>
             `).join('');
         }
     }
@@ -161,10 +174,10 @@
     }
 
     async function removerCliente(n) {
-        if(confirm("Remover site?")) { await _supabase.from('ipshield_config').delete().eq('site_nome', n); location.reload(); }
+        if(confirm("Remover?")) { await _supabase.from('ipshield_config').delete().eq('site_nome', n); location.reload(); }
     }
 
-    setInterval(carregarDados, 15000);
+    setInterval(carregarDados, 10000);
     carregarDados();
     carregarClientes();
 </script>
