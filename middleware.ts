@@ -4,7 +4,7 @@ export const config = {
   matcher: ['/lp/:path*', '/landing/:path*', '/ads/:path*'],
 };
 
-const SUPABASE_URL = process.env.SUPABASE_URL!;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!; // Note o NEXT_PUBLIC_ se necessário
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY!;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
 const DECOY_PAGE = '/blocked'; // página isca
