@@ -1,9 +1,10 @@
-export default function BlockedPage({
+export default async function BlockedPage({
   searchParams,
 }: {
-  searchParams: { ip?: string };
+  searchParams: Promise<{ ip?: string }>;
 }) {
-  const ip = searchParams.ip || "IP detectado";
+  const params = await searchParams;
+  const ip = params.ip || "IP detectado";
 
   return (
     <div style={{ margin: 0, background: "#0a0a0a", color: "#e8e8e8", fontFamily: "sans-serif", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
