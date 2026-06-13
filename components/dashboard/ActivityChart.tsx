@@ -1,7 +1,4 @@
 'use client'
-cd ~/Downloads/ipshield-saas
-cat > components/dashboard/ActivityChart.tsx << 'EOF'
-'use client'
 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
